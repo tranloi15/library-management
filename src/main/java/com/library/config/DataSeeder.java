@@ -74,8 +74,8 @@ public class DataSeeder implements CommandLineRunner {
 
             // 1. Sách đang mượn, còn hạn 9 ngày
             BorrowRecord b1 = new BorrowRecord(
-                docs.get(0).getId(), // Clean Code
-                reader1.getId(),
+                docs.get(0), // Clean Code
+                reader1,
                 today.minusDays(5),
                 today.plusDays(9),
                 "BORROWING"
@@ -83,8 +83,8 @@ public class DataSeeder implements CommandLineRunner {
 
             // 2. Sách đang mượn, đã quá hạn 6 ngày
             BorrowRecord b2 = new BorrowRecord(
-                docs.get(4).getId(), // Head First Java
-                reader1.getId(),
+                docs.get(4), // Head First Java
+                reader1,
                 today.minusDays(20),
                 today.minusDays(6),
                 "BORROWING"
@@ -92,8 +92,8 @@ public class DataSeeder implements CommandLineRunner {
 
             // 3. Sách đã trả
             BorrowRecord b3 = new BorrowRecord(
-                docs.get(1).getId(), // Effective Java
-                reader1.getId(),
+                docs.get(1), // Effective Java
+                reader1,
                 today.minusDays(30),
                 today.minusDays(16),
                 today.minusDays(18),

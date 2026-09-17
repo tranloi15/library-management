@@ -55,6 +55,25 @@ public class BorrowRecord extends BaseEntity {
         this.returnDate = returnDate;
     }
 
+    public BorrowRecord(Document document, User user, LocalDate borrowDate, LocalDate dueDate, String status) {
+        this.document = document;
+        this.user = user;
+        if (document != null) {
+            this.bookId = document.getId();
+        }
+        if (user != null) {
+            this.userId = user.getId();
+        }
+        this.borrowDate = borrowDate;
+        this.dueDate = dueDate;
+        this.status = status;
+    }
+
+    public BorrowRecord(Document document, User user, LocalDate borrowDate, LocalDate dueDate, LocalDate returnDate, String status) {
+        this(document, user, borrowDate, dueDate, status);
+        this.returnDate = returnDate;
+    }
+
     public long getDaysRemaining() {
         if (dueDate == null) return 0;
         return ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
