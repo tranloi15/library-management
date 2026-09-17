@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Kho Sách & Tạp chí - Quản lý Thư viện</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- TIÊU ĐỀ TRANG & NÚT TÁC VỤ NHANH -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1 tracking-tight">Danh mục Tài liệu Thư viện</h4>
+            <p class="text-secondary small m-0">Tra cứu, phân loại tài liệu học thuật và kiểm soát số lượng tồn kho</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/documents/add-book}" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i> Thêm tài liệu mới
+            </a>
+            <a th:href="@{/documents/export}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                <i class="bi bi-download"></i> Xuất CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- THANH BỘ LỌC TỐI GIẢN (FILTER BAR) -->
+    <div class="app-card p-3 mb-4">
+        <form th:action="@{/}" method="get" class="m-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                    <div class="position-relative" style="min-width: 240px; flex-grow: 1;">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" name="keyword" th:value="${keyword}" 
+                               class="form-control form-control-sm ps-5 py-2" 
+                               placeholder="Lọc nhanh tên sách, tác giả, ISBN...">
+                    </div>
+
+                    <select name="type" class="form-select form-select-sm py-2" style="width: 150px;">
+                        <option value="">Tất cả thể loại</option>
+                        <option value="BOOK">Sách chuyên khảo</option>
+                        <option value="MAGAZINE">Tạp chí khoa học</option>
+                    </select>
+
+                    <div class="form-check form-switch d-flex align-items-center gap-2 m-0 ms-2">
+                        <input class="form-check-input" type="checkbox" name="inStock" id="filterInStock" value="true" style="cursor: pointer;">
+                        <label class="form-check-label small text-secondary" for="filterInStock" style="cursor: pointer;">
+                            Chỉ sách còn kho
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-sm btn-outline-primary px-3 py-2">
+                        <i class="bi bi-funnel"></i> Lọc
+                    </button>
+                </div>
+
+                <!-- CHUYỂN VIEW LƯỚI / BẢNG -->
+                <div class="d-flex align-items-center gap-1 border p-1 rounded-2 bg-body-tertiary">
+                    <button type="button" id="btnViewGrid" class="btn btn-sm btn-primary px-2 py-1 small active" title="Dạng lưới thẻ sách">
+                        <i class="bi bi-grid-fill me-1"></i> Lưới (Độc giả)
+                    </button>
+                    <button type="button" id="btnViewTable" class="btn btn-sm btn-outline-secondary px-2 py-1 small" title="Dạng bảng dữ liệu">
+                        <i class="bi bi-table me-1"></i> Bảng (Thủ thư)
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 1. DẠNG LƯỚI CARD SÁCH VỚI HIỆU ỨNG GÁY 3D (READER VIEW) -->
+    <div id="bookGridView" class="book-grid mb-4">
+        <!-- Cuốn 1 -->
+        <div class="book-card">
+            <div class="book-cover-stage">
+                <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="status-pill success"><span class="status-dot"></span> Còn 8 cuốn</span>
+                <span class="craft-code">978-604-012</span>
+            </div>
+            <h5 class="book-title">Lập trình Hướng đối tượng với Java & Design Patterns</h5>
+            <div class="book-author">GS. Trần Nhật Nam • NXB Bưu điện (2024)</div>
+            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">380 trang</span>
+                <a th:href="@{/documents/detail/1}" class="btn btn-sm btn-outline-primary px-2 py-1" style="font-size: 0.76rem;">Mượn sách</a>
+            </div>
+        </div>
+
+        <!-- Cuốn 2 -->
+        <div class="book-card">
+            <div class="book-cover-stage">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="status-pill warning"><span class="status-dot"></span> Còn 2 cuốn</span>
+                <span class="craft-code">978-604-589</span>
+            </div>
+            <h5 class="book-title">Cấu trúc Dữ liệu và Giải thuật Ứng dụng</h5>
+            <div class="book-author">TS. Lê Minh Nam • NXB Giáo Dục (2025)</div>
+            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">420 trang</span>
+                <a th:href="@{/documents/detail/2}" class="btn btn-sm btn-outline-primary px-2 py-1" style="font-size: 0.76rem;">Mượn sách</a>
+            </div>
+        </div>
+
+        <!-- Cuốn 3: Hết kho -->
+        <div class="book-card">
+            <div class="book-cover-stage" style="opacity: 0.75; filter: grayscale(30%);">
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="status-pill danger"><span class="status-dot"></span> Tạm hết</span>
+                <span class="craft-code">978-604-991</span>
+            </div>
+            <h5 class="book-title">Thiết kế Hệ quản trị Cơ sở dữ liệu & Tối ưu SQL</h5>
+            <div class="book-author">Vũ Thế Phong • NXB TT&TT (2023)</div>
+            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">512 trang</span>
+                <button class="btn btn-sm btn-light text-muted px-2 py-1" style="font-size: 0.76rem;" disabled>Hết kho</button>
+            </div>
+        </div>
+
+        <!-- Cuốn 4: Tạp chí -->
+        <div class="book-card">
+            <div class="book-cover-stage">
+                <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="status-pill info"><span class="status-dot"></span> Tạp chí</span>
+                <span class="craft-code">MAG-88/08</span>
+            </div>
+            <h5 class="book-title">Tạp chí Khoa học & Công nghệ Thông tin (Số 08/2026)</h5>
+            <div class="book-author">NXB Khoa học Tự nhiên • Tháng 08/2026</div>
+            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                <span class="text-secondary small">Còn 15 cuốn</span>
+                <a th:href="@{/documents/detail/4}" class="btn btn-sm btn-outline-primary px-2 py-1" style="font-size: 0.76rem;">Đọc tại chỗ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. DẠNG BẢNG THỦ THƯ (ADMIN CRAFT TABLE) -->
+    <div id="bookTableView" class="app-card p-0 d-none overflow-hidden">
+        <div class="table-responsive">
+            <table class="craft-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Tiêu đề tài liệu</th>
+                        <th>Loại</th>
+                        <th>Mã định danh (ISBN)</th>
+                        <th>Nhà xuất bản</th>
+                        <th>Năm XB</th>
+                        <th>Tồn kho</th>
+                        <th>Trạng thái</th>
+                        <th style="width: 100px; text-align: right;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-secondary small font-mono">1</td>
+                        <td>
+                            <div class="fw-semibold text-primary">Lập trình Hướng đối tượng với Java</div>
+                            <div class="text-secondary" style="font-size: 0.75rem;">Trần Nhật Nam</div>
+                        </td>
+                        <td><span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">Sách</span></td>
+                        <td><span class="craft-code">978-604-012</span></td>
+                        <td>NXB Bưu điện</td>
+                        <td class="font-mono">2024</td>
+                        <td class="fw-semibold font-mono">8</td>
+                        <td><span class="status-pill success"><span class="status-dot"></span> Sẵn sàng</span></td>
+                        <td style="text-align: right;">
+                            <a th:href="@{/documents/edit/1}" class="btn-ghost-action me-1" title="Sửa"><i class="bi bi-pencil"></i></a>
+                            <button type="button" class="btn-ghost-action text-danger btn-delete-confirm" 
+                                    data-action="/documents/delete/1" data-item-name="Lập trình Hướng đối tượng với Java" title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary small font-mono">2</td>
+                        <td>
+                            <div class="fw-semibold text-primary">Cấu trúc Dữ liệu và Giải thuật Ứng dụng</div>
+                            <div class="text-secondary" style="font-size: 0.75rem;">Lê Minh Nam</div>
+                        </td>
+                        <td><span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">Sách</span></td>
+                        <td><span class="craft-code">978-604-589</span></td>
+                        <td>NXB Giáo Dục</td>
+                        <td class="font-mono">2025</td>
+                        <td class="fw-semibold font-mono">2</td>
+                        <td><span class="status-pill warning"><span class="status-dot"></span> Còn ít</span></td>
+                        <td style="text-align: right;">
+                            <a th:href="@{/documents/edit/2}" class="btn-ghost-action me-1" title="Sửa"><i class="bi bi-pencil"></i></a>
+                            <button type="button" class="btn-ghost-action text-danger btn-delete-confirm" 
+                                    data-action="/documents/delete/2" data-item-name="Cấu trúc Dữ liệu và Giải thuật" title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary small font-mono">3</td>
+                        <td>
+                            <div class="fw-semibold text-primary">Thiết kế Hệ quản trị Cơ sở dữ liệu & Tối ưu SQL</div>
+                            <div class="text-secondary" style="font-size: 0.75rem;">Vũ Thế Phong</div>
+                        </td>
+                        <td><span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">Sách</span></td>
+                        <td><span class="craft-code">978-604-991</span></td>
+                        <td>NXB TT&TT</td>
+                        <td class="font-mono">2023</td>
+                        <td class="fw-semibold text-danger font-mono">0</td>
+                        <td><span class="status-pill danger"><span class="status-dot"></span> Hết kho</span></td>
+                        <td style="text-align: right;">
+                            <a th:href="@{/documents/edit/3}" class="btn-ghost-action me-1" title="Sửa"><i class="bi bi-pencil"></i></a>
+                            <button type="button" class="btn-ghost-action text-danger btn-delete-confirm" 
+                                    data-action="/documents/delete/3" data-item-name="Thiết kế Hệ quản trị Cơ sở dữ liệu" title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-secondary small font-mono">4</td>
+                        <td>
+                            <div class="fw-semibold text-primary">Tạp chí Khoa học & Công nghệ Thông tin (Số 08/2026)</div>
+                            <div class="text-secondary" style="font-size: 0.75rem;">Số 88 • Tháng 08/2026</div>
+                        </td>
+                        <td><span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">Tạp chí</span></td>
+                        <td><span class="craft-code">MAG-88/08</span></td>
+                        <td>NXB Khoa học Tự nhiên</td>
+                        <td class="font-mono">2026</td>
+                        <td class="fw-semibold font-mono">15</td>
+                        <td><span class="status-pill info"><span class="status-dot"></span> Tạp chí</span></td>
+                        <td style="text-align: right;">
+                            <a th:href="@{/documents/edit/4}" class="btn-ghost-action me-1" title="Sửa"><i class="bi bi-pencil"></i></a>
+                            <button type="button" class="btn-ghost-action text-danger btn-delete-confirm" 
+                                    data-action="/documents/delete/4" data-item-name="Tạp chí KH&CN Thông tin" title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1474 @@
+/* ==========================================================================
+   CRAFT UI - HỆ THỐNG QUẢN LÝ THƯ VIỆN
+   Triết lý: Contemporary Academic & Refined Craftsmanship (Chống phong cách AI slop)
+   Lấy cảm hứng từ: Linear, Stripe, Apple Books & Thư viện số quốc tế
+   Hỗ trợ: Light Theme (Mặc định) & Refined Dark Slate
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* --- 1. DESIGN TOKENS --- */
+:root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-heading: var(--font-sans);
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Light Palette: Warm, Crisp & Editorial (Không chói, không generic) */
+    --bg-app: #F8F9FA;
+    --bg-surface: #FFFFFF;
+    --bg-surface-elevated: #FFFFFF;
+    --bg-subtle: #F3F4F6;
+    --bg-muted: #E5E7EB;
+
+    /* Sidebar Light Mode (Hòa quyện tinh tế, không tương phản đen kịt) */
+    --sidebar-bg: #FFFFFF;
+    --sidebar-border: #E5E7EB;
+    --sidebar-text: #374151;
+    --sidebar-text-muted: #9CA3AF;
+    --sidebar-active-bg: #F0F8FF;
+    --sidebar-active-text: #0E73BD;
+    --sidebar-active-indicator: #36A4F7;
+
+    /* Typography Hierarchy */
+    --text-primary: #111827;
+    --text-secondary: #4B5563;
+    --text-tertiary: #9CA3AF;
+
+    /* Single Refined Accent: Bright Vivid Sky Cerulean (#36A4F7) */
+    --accent-primary: #36A4F7;
+    --accent-hover: #178DE5;
+    --accent-light: #F0F8FF;
+    --accent-border: #BAE0FD;
+
+    /* Override Bootstrap primary */
+    --bs-primary: var(--accent-primary);
+    --bs-primary-rgb: 54, 164, 247;
+    --bs-link-color: var(--accent-primary);
+    --bs-link-hover-color: var(--accent-hover);
+
+    /* Borders & Dividers */
+    --border-hairline: 1px solid #E5E7EB;
+    --border-subtle: 1px solid #F3F4F6;
+    --border-focus: #36A4F7;
+
+    /* Refined Semantic Colors (Tiết chế, không lòe loẹt) */
+    --state-success-text: #065F46;
+    --state-success-bg: #ECFDF5;
+    --state-success-border: #A7F3D0;
+
+    --state-warning-text: #92400E;
+    --state-warning-bg: #FFFBEB;
+    --state-warning-border: #FDE68A;
+
+    --state-danger-text: #991B1B;
+    --state-danger-bg: #FEF2F2;
+    --state-danger-border: #FECACA;
+
+    --state-info-text: #1E40AF;
+    --state-info-bg: #EFF6FF;
+    --state-info-border: #BFDBFE;
+
+    /* Shadows: Subtle, Multi-layer natural lighting */
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+    --shadow-card-hover: 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
+    --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+
+    /* Radii: Hài hòa, không bong bóng */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 9999px;
+
+    --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark Palette: Midnight Obsidian & Slate */
+[data-bs-theme="dark"] {
+    --bg-app: #0B0E14;
+    --bg-surface: #121722;
+    --bg-surface-elevated: #182030;
+    --bg-subtle: #182030;
+    --bg-muted: #263246;
+
+    --sidebar-bg: #0E121B;
+    --sidebar-border: #1E293B;
+    --sidebar-text: #94A3B8;
+    --sidebar-text-muted: #64748B;
+    --sidebar-active-bg: rgba(59, 130, 246, 0.12);
+    --sidebar-active-text: #60BCFC;
+    --sidebar-active-indicator: #36A4F7;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-tertiary: #64748B;
+
+    --accent-primary: #36A4F7;
+    --accent-hover: #60BCFC;
+    --accent-light: rgba(54, 164, 247, 0.15);
+    --accent-border: rgba(54, 164, 247, 0.35);
+
+    --border-hairline: 1px solid rgba(255, 255, 255, 0.08);
+    --border-subtle: 1px solid rgba(255, 255, 255, 0.04);
+
+    --state-success-text: #34D399;
+    --state-success-bg: rgba(16, 185, 129, 0.12);
+    --state-success-border: rgba(16, 185, 129, 0.25);
+
+    --state-warning-text: #FBBF24;
+    --state-warning-bg: rgba(245, 158, 11, 0.12);
+    --state-warning-border: rgba(245, 158, 11, 0.25);
+
+    --state-danger-text: #F87171;
+    --state-danger-bg: rgba(239, 68, 68, 0.12);
+    --state-danger-border: rgba(239, 68, 68, 0.25);
+
+    --state-info-text: #60A5FA;
+    --state-info-bg: rgba(59, 130, 246, 0.12);
+    --state-info-border: rgba(59, 130, 246, 0.25);
+
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    --shadow-card-hover: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+    --shadow-dropdown: 0 12px 30px -5px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   MULTI-PALETTE ARCHITECTURE (5 PHONG CÁCH & BẢNG MÀU CHUYÊN NGHIỆP)
+   ========================================================================== */
+
+/* 1. NORDIC WARM AMBER & CEDAR (Thư viện Bắc Âu / Gỗ sồi & Hổ phách) */
+[data-theme-palette="nordic"] {
+    --bg-app: #FAF8F5;
+    --bg-surface: #FFFFFF;
+    --bg-surface-elevated: #F6F3ED;
+    --bg-subtle: #F4F0E8;
+    --bg-muted: #E6E0D4;
+
+    --sidebar-bg: #F5F1E8;
+    --sidebar-border: #E8E2D5;
+    --sidebar-text: #2C2825;
+    --sidebar-text-muted: #78716C;
+    --sidebar-active-bg: #EAE3D5;
+    --sidebar-active-text: #9A3412;
+    --sidebar-active-indicator: #C2410C;
+
+    --text-primary: #1C1917;
+    --text-secondary: #57534E;
+    --text-tertiary: #A8A29E;
+
+    --accent-primary: #C2410C; /* Warm Cedar / Terracotta */
+    --accent-hover: #9A3412;
+    --accent-light: #FFF7ED;
+    --accent-border: #FED7AA;
+
+    --border-hairline: 1px solid #E8E2D5;
+    --border-subtle: 1px solid #F4F0E8;
+    --border-focus: #EA580C;
+}
+
+[data-theme-palette="nordic"][data-bs-theme="dark"] {
+    --bg-app: #141210;
+    --bg-surface: #1C1917;
+    --bg-surface-elevated: #24201D;
+    --bg-subtle: #24201D;
+    --bg-muted: #332E2A;
+
+    --sidebar-bg: #181513;
+    --sidebar-border: #2B2622;
+    --sidebar-text: #A8A29E;
+    --sidebar-text-muted: #78716C;
+    --sidebar-active-bg: rgba(234, 88, 12, 0.15);
+    --sidebar-active-text: #FB923C;
+    --sidebar-active-indicator: #EA580C;
+
+    --text-primary: #F5F3EB;
+    --text-secondary: #D6D3C7;
+    --text-tertiary: #78716C;
+
+    --accent-primary: #FB923C;
+    --accent-hover: #FDBA74;
+    --accent-light: rgba(234, 88, 12, 0.15);
+    --accent-border: rgba(234, 88, 12, 0.3);
+
+    --border-hairline: 1px solid #2B2622;
+    --border-subtle: 1px solid #201C19;
+}
+
+/* 2. TOKYO CRIMSON & SUMI INK (Tạp chí Monocle & Phong cách Đỏ Son) */
+[data-theme-palette="crimson"] {
+    --bg-app: #F6F6F9;
+    --bg-surface: #FFFFFF;
+    --bg-surface-elevated: #FFFFFF;
+    --bg-subtle: #F0F0F5;
+    --bg-muted: #E2E2EA;
+
+    --sidebar-bg: #FFFFFF;
+    --sidebar-border: #E5E5ED;
+    --sidebar-text: #18181B;
+    --sidebar-text-muted: #71717A;
+    --sidebar-active-bg: #FFF1F2;
+    --sidebar-active-text: #BE123C;
+    --sidebar-active-indicator: #E11D48;
+
+    --text-primary: #09090B;
+    --text-secondary: #52525B;
+    --text-tertiary: #A1A1AA;
+
+    --accent-primary: #BE123C; /* Crimson Carmine */
+    --accent-hover: #9F1239;
+    --accent-light: #FFF1F2;
+    --accent-border: #FECDD3;
+
+    --border-hairline: 1px solid #E4E4E9;
+    --border-subtle: 1px solid #F0F0F5;
+    --border-focus: #E11D48;
+}
+
+[data-theme-palette="crimson"][data-bs-theme="dark"] {
+    --bg-app: #0E0E11;
+    --bg-surface: #16161C;
+    --bg-surface-elevated: #1D1D26;
+    --bg-subtle: #1D1D26;
+    --bg-muted: #2E2E3C;
+
+    --sidebar-bg: #121216;
+    --sidebar-border: #23232D;
+    --sidebar-text: #A1A1AA;
+    --sidebar-text-muted: #71717A;
+    --sidebar-active-bg: rgba(225, 29, 72, 0.15);
+    --sidebar-active-text: #FB7185;
+    --sidebar-active-indicator: #F43F5E;
+
+    --text-primary: #FAFAFA;
+    --text-secondary: #D4D4D8;
+    --text-tertiary: #71717A;
+
+    --accent-primary: #FB7185;
+    --accent-hover: #FDA4AF;
+    --accent-light: rgba(225, 29, 72, 0.15);
+    --accent-border: rgba(225, 29, 72, 0.3);
+
+    --border-hairline: 1px solid #23232D;
+    --border-subtle: 1px solid #191920;
+}
+
+/* 3. OXFORD FOREST EMERALD (Di sản Hàn lâm Xanh Ngọc Lục Bảo) */
+[data-theme-palette="emerald"], [data-theme-style="editorial"] {
+    --bg-app: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-surface-elevated: #F1F5F9;
+    --bg-subtle: #F1F5F9;
+    --bg-muted: #E2E8F0;
+
+    --sidebar-bg: #FFFFFF;
+    --sidebar-border: #E2E8F0;
+    --sidebar-text: #1E293B;
+    --sidebar-text-muted: #64748B;
+    --sidebar-active-bg: #ECFDF5;
+    --sidebar-active-text: #065F46;
+    --sidebar-active-indicator: #059669;
+
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-tertiary: #94A3B8;
+
+    --accent-primary: #065F46;
+    --accent-hover: #047857;
+    --accent-light: #ECFDF5;
+    --accent-border: #A7F3D0;
+    --accent-gold: #059669;
+
+    --border-hairline: 1px solid #E2E8F0;
+    --border-subtle: 1px solid #F1F5F9;
+    --border-focus: #059669;
+}
+
+[data-theme-palette="emerald"][data-bs-theme="dark"], [data-theme-style="editorial"][data-bs-theme="dark"] {
+    --bg-app: #0B1310;
+    --bg-surface: #121D18;
+    --bg-surface-elevated: #182620;
+    --bg-subtle: #182620;
+    --bg-muted: #243830;
+
+    --sidebar-bg: #0E1713;
+    --sidebar-border: #1E3128;
+    --sidebar-text: #94A3B8;
+    --sidebar-text-muted: #64748B;
+    --sidebar-active-bg: rgba(52, 211, 153, 0.15);
+    --sidebar-active-text: #34D399;
+    --sidebar-active-indicator: #10B981;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-tertiary: #64748B;
+
+    --accent-primary: #34D399;
+    --accent-hover: #6EE7B7;
+    --accent-light: rgba(52, 211, 153, 0.15);
+    --accent-border: rgba(52, 211, 153, 0.3);
+    --accent-gold: #34D399;
+
+    --border-hairline: 1px solid #1E3128;
+    --border-subtle: 1px solid #14221C;
+}
+
+/* 4. SWISS TITANIUM & ELECTRIC CYAN (Tối giản Công nghệ cao / Linear-Vercel) */
+[data-theme-palette="obsidian"] {
+    --bg-app: #F4F5F7;
+    --bg-surface: #FFFFFF;
+    --bg-surface-elevated: #FFFFFF;
+    --bg-subtle: #EBEDF2;
+    --bg-muted: #DFE2E8;
+
+    --sidebar-bg: #FFFFFF;
+    --sidebar-border: #E1E4EA;
+    --sidebar-text: #0F172A;
+    --sidebar-text-muted: #64748B;
+    --sidebar-active-bg: #F0F9FF;
+    --sidebar-active-text: #0369A1;
+    --sidebar-active-indicator: #0284C7;
+
+    --text-primary: #020617;
+    --text-secondary: #334155;
+    --text-tertiary: #64748B;
+
+    --accent-primary: #0284C7; /* Electric Cobalt Sky */
+    --accent-hover: #0369A1;
+    --accent-light: #F0F9FF;
+    --accent-border: #BAE6FD;
+
+    --border-hairline: 1px solid #E1E4EA;
+    --border-subtle: 1px solid #EDF0F5;
+    --border-focus: #0284C7;
+}
+
+[data-theme-palette="obsidian"][data-bs-theme="dark"] {
+    --bg-app: #08090D;
+    --bg-surface: #0F121A;
+    --bg-surface-elevated: #161B26;
+    --bg-subtle: #161B26;
+    --bg-muted: #222A3B;
+
+    --sidebar-bg: #0B0E14;
+    --sidebar-border: #1B2232;
+    --sidebar-text: #94A3B8;
+    --sidebar-text-muted: #64748B;
+    --sidebar-active-bg: rgba(56, 189, 248, 0.15);
+    --sidebar-active-text: #38BDF8;
+    --sidebar-active-indicator: #0EA5E9;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-tertiary: #64748B;
+
+    --accent-primary: #38BDF8;
+    --accent-hover: #7DD3FC;
+    --accent-light: rgba(56, 189, 248, 0.15);
+    --accent-border: rgba(56, 189, 248, 0.3);
+
+    --border-hairline: 1px solid #1B2232;
+    --border-subtle: 1px solid #141924;
+}
+
+[data-theme-style="editorial"] h1,
+[data-theme-style="editorial"] h2,
+[data-theme-style="editorial"] h3,
+[data-theme-style="editorial"] h4,
+[data-theme-style="editorial"] .book-title,
+[data-theme-style="editorial"] .brand-title {
+    font-family: var(--font-heading);
+    letter-spacing: -0.01em;
+}
+
+[data-theme-style="editorial"] .brand-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+[data-theme-style="editorial"] .book-title {
+    font-size: 1.08rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+[data-theme-style="editorial"] .editorial-crest {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-gold, #B45309);
+    font-weight: 600;
+}
+
+
+/* --- 2. GLOBAL RESET & BASE --- */
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+    margin: 0;
+    transition: background-color 0.2s var(--ease-standard), color 0.2s var(--ease-standard);
+}
+
+/* --- REFINED BUTTONS & BOOTSTRAP OVERRIDES --- */
+.btn-primary {
+    background-color: var(--accent-primary) !important;
+    border-color: var(--accent-primary) !important;
+    color: #ffffff !important;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(54, 164, 247, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.15s var(--ease-standard);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(54, 164, 247, 0.35);
+}
+
+.btn-outline-primary {
+    color: var(--accent-primary) !important;
+    border-color: var(--accent-border) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--accent-light) !important;
+    color: var(--accent-primary) !important;
+    border-color: var(--accent-primary) !important;
+}
+
+.text-primary {
+    color: var(--accent-primary) !important;
+}
+
+.bg-primary {
+    background-color: var(--accent-primary) !important;
+}
+
+.bg-primary-subtle {
+    background-color: var(--accent-light) !important;
+    color: var(--accent-primary) !important;
+}
+
+.border-primary {
+    border-color: var(--accent-primary) !important;
+}
+
+/* Layout Container */
+.app-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- 3. REFINED SIDEBAR (TỐI GIẢN, KHÔNG ĐEN KỊT NẶNG NỀ) --- */
+.app-sidebar {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    border-right: var(--border-hairline);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    transition: transform 0.25s var(--ease-standard);
+}
+
+.sidebar-brand {
+    height: 64px;
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    border-bottom: var(--border-hairline);
+}
+
+.brand-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-primary);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.05rem;
+}
+
+.brand-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0.85rem 0.65rem;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.menu-category {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sidebar-text-muted);
+    padding: 0.85rem 0.65rem 0.35rem;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: background-color 0.15s ease, color 0.15s ease;
+    position: relative;
+}
+
+.menu-link i {
+    font-size: 1.05rem;
+    width: 20px;
+    color: var(--sidebar-text-muted);
+    transition: color 0.15s ease;
+}
+
+.menu-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-subtle);
+}
+
+.menu-link:hover i {
+    color: var(--text-primary);
+}
+
+.menu-item.active .menu-link {
+    color: var(--sidebar-active-text);
+    background-color: var(--sidebar-active-bg);
+    font-weight: 600;
+}
+
+.menu-item.active .menu-link i {
+    color: var(--sidebar-active-text);
+}
+
+.menu-item.active .menu-link::before {
+    content: '';
+    position: absolute;
+    left: -0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 18px;
+    border-radius: 0 3px 3px 0;
+    background-color: var(--sidebar-active-indicator);
+}
+
+.sidebar-footer {
+    padding: 0.85rem 1.25rem;
+    border-top: var(--border-hairline);
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+}
+
+/* --- 4. TOP NAVBAR (CRAFT COMMAND BAR) --- */
+.app-main {
+    flex-grow: 1;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-header {
+    height: 64px;
+    background-color: var(--bg-surface);
+    border-bottom: var(--border-hairline);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+/* Search Box with <kbd> Command Shortcut */
+.header-search {
+    position: relative;
+    width: 480px;
+    max-width: 100%;
+}
+
+.header-search input {
+    width: 100%;
+    padding: 0.5rem 4.2rem 0.5rem 2.4rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-md);
+    border: var(--border-hairline);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    transition: all 0.15s ease;
+}
+
+.header-search input:focus {
+    outline: none;
+    background-color: var(--bg-surface);
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 1px var(--border-focus);
+}
+
+.header-search .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+}
+
+.header-search kbd {
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    background-color: var(--bg-surface);
+    border: var(--border-hairline);
+    color: var(--text-tertiary);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+
+/* Header Actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Notification Bell: Minimalist Dot Indicator */
+.notif-btn {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    border: var(--border-hairline);
+    background-color: var(--bg-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.notif-btn:hover {
+    background-color: var(--bg-subtle);
+    color: var(--text-primary);
+}
+
+.notif-badge-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    background-color: #EF4444;
+    border-radius: 50%;
+}
+
+/* Profile Trigger */
+.profile-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: background-color 0.15s ease;
+}
+
+.profile-dropdown-btn:hover {
+    background-color: var(--bg-subtle);
+}
+
+.profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: var(--border-hairline);
+}
+
+.profile-name {
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.profile-role-tag {
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-subtle);
+    color: var(--text-secondary);
+    border: var(--border-hairline);
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+    border: var(--border-hairline);
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-dropdown);
+    padding: 0.4rem;
+}
+
+/* Theme Switch Segmented Control */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-subtle);
+    margin: 0.2rem 0 0.4rem;
+}
+
+/* --- 5. TACTILE BOOK COVERS (GÁY SÁCH 3D CHÂN THỰC) --- */
+.content-body {
+    padding: 1.75rem;
+    flex-grow: 1;
+}
+
+.app-card {
+    background-color: var(--bg-surface);
+    border: var(--border-hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Book Grid */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.75rem;
+}
+
+.book-card {
+    background-color: var(--bg-surface);
+    border: var(--border-hairline);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s var(--ease-standard), box-shadow 0.25s var(--ease-standard);
+    position: relative;
+    padding: 0.85rem;
+}
+
+.book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* TACTILE REALISTIC 3D BOOK COVER */
+.book-cover-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.45; /* Tỉ lệ bìa sách chuẩn 1:1.45 */
+    border-radius: 4px 8px 8px 4px;
+    overflow: hidden;
+    margin-bottom: 0.85rem;
+    background-color: var(--bg-muted);
+    /* Đổ bóng vật lý như cuốn sách thật nằm trên kệ */
+    box-shadow: 
+        0 4px 10px -2px rgba(15, 23, 42, 0.16),
+        -2px 0 4px rgba(0, 0, 0, 0.08),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+/* Thumbnail cố định cho Card mượn sách ngang hoặc danh sách */
+.book-cover-thumb,
+.book-cover-stage.stage-sm {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 4px 8px 8px 4px !important;
+    width: 84px !important;
+    height: 122px !important;
+    min-width: 84px !important;
+    max-width: 84px !important;
+    min-height: 122px !important;
+    max-height: 122px !important;
+    aspect-ratio: unset !important;
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+    align-self: flex-start !important;
+    flex-shrink: 0 !important;
+    background-color: var(--bg-muted);
+    box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.16), -2px 0 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+.book-cover-img,
+.book-cover-thumb img,
+.book-cover-stage img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    display: block;
+}
+
+/* Hiệu ứng gáy sách (Spine Lighting Effect) */
+.book-cover-thumb::before,
+.book-cover-stage::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 100%;
+    background: linear-gradient(to right, 
+        rgba(0, 0, 0, 0.28) 0%, 
+        rgba(0, 0, 0, 0.08) 30%, 
+        rgba(255, 255, 255, 0.2) 65%, 
+        transparent 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+}
+
+.book-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-primary);
+    margin: 0 0 0.35rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.book-author {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.65rem;
+}
+
+.book-isbn {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    background-color: var(--bg-subtle);
+    padding: 0.15rem 0.4rem;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}
+
+/* Status Pill Indicators (Tinh tế, không chói lóa) */
+.status-pill {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-pill);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid transparent;
+}
+
+.status-pill.success {
+    color: var(--state-success-text);
+    background-color: var(--state-success-bg);
+    border-color: var(--state-success-border);
+}
+
+.status-pill.warning {
+    color: var(--state-warning-text);
+    background-color: var(--state-warning-bg);
+    border-color: var(--state-warning-border);
+}
+
+.status-pill.danger {
+    color: var(--state-danger-text);
+    background-color: var(--state-danger-bg);
+    border-color: var(--state-danger-border);
+}
+
+.status-pill.info {
+    color: var(--state-info-text);
+    background-color: var(--state-info-bg);
+    border-color: var(--state-info-border);
+}
+
+/* Craft Code Token */
+.craft-code {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    background-color: var(--bg-subtle);
+    padding: 0.15rem 0.4rem;
+    border-radius: var(--radius-sm);
+    border: var(--border-hairline);
+    display: inline-block;
+}
+
+/* Grid Layout App Card Normalization */
+.row .app-card {
+    margin-bottom: 0;
+}
+
+/* --- CUSTOM NAV TABS (Craft UI Tabs) --- */
+.custom-nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: var(--border-hairline);
+    padding-bottom: 0;
+    margin-bottom: 1.5rem;
+}
+
+.custom-nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.custom-nav-tabs .nav-link {
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.88rem;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.15s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.custom-nav-tabs .nav-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-subtle);
+}
+
+.custom-nav-tabs .nav-link.active {
+    color: var(--accent-primary);
+    font-weight: 600;
+    background-color: transparent;
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+/* --- 6. CRAFT DATA TABLE --- */
+.craft-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.85rem;
+}
+
+.craft-table th {
+    background-color: var(--bg-subtle);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: var(--border-hairline);
+}
+
+.craft-table td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-bottom: var(--border-hairline);
+    color: var(--text-primary);
+    transition: background-color 0.1s ease;
+}
+
+.craft-table tbody tr:hover td {
+    background-color: var(--bg-subtle);
+}
+
+.craft-table .code-col {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* Ghost Action Button */
+.btn-ghost-action {
+    background: transparent;
+    border: var(--border-hairline);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    transition: all 0.15s ease;
+}
+
+.btn-ghost-action:hover {
+    background-color: var(--bg-subtle);
+    color: var(--text-primary);
+    border-color: var(--border-focus);
+}
+
+/* Footer */
+.app-footer {
+    padding: 1rem 1.75rem;
+    border-top: var(--border-hairline);
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- 7. TASTESKILL DIRECTIVES: TACTILE FEEDBACK & BUTTON DISCIPLINE --- */
+/* (Ref: tasteskill.dev / Leonxlnx/taste-skill Section 4.5) */
+.btn,
+.btn-ghost-action,
+.btn-switch-style,
+.custom-nav-tabs .nav-link,
+.notif-btn,
+.profile-dropdown-btn {
+    transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), 
+                background-color 0.15s ease, 
+                border-color 0.15s ease, 
+                color 0.15s ease, 
+                box-shadow 0.15s ease;
+}
+
+/* Tactile push: physical feedback on :active */
+.btn:active:not(:disabled),
+.btn-ghost-action:active:not(:disabled),
+.btn-switch-style:active:not(:disabled) {
+    transform: scale(0.98) translateY(1px) !important;
+}
+
+/* CTA Wrap Ban & Contrast Lock: No wrapped buttons on desktop */
+.btn {
+    white-space: nowrap !important;
+    letter-spacing: -0.01em;
+}
+
+.btn-primary {
+    background-color: var(--accent-primary) !important;
+    border-color: var(--accent-primary) !important;
+    color: #FFFFFF !important;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+    color: #FFFFFF !important;
+}
+
+.btn-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.25) !important;
+}
+
+[data-bs-theme="dark"] .btn-primary:focus-visible {
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.35) !important;
+}
+
+/* --- 8. DASHBOARD KPI & CIRCULATION DESK STYLES --- */
+.stat-card {
+    background-color: var(--bg-surface);
+    border: var(--border-hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 1.25rem 1.35rem;
+    transition: transform 0.2s var(--ease-standard), box-shadow 0.2s var(--ease-standard);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.stat-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background-color: var(--bg-subtle);
+    color: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.stat-value {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.35rem;
+}
+
+.stat-trend {
+    font-size: 0.76rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-tertiary);
+}
+
+.stat-trend.positive { color: var(--state-success-text); }
+.stat-trend.warning { color: var(--state-warning-text); }
+.stat-trend.danger { color: var(--state-danger-text); }
+
+/* Circulation Desk Barcode Scanner Area */
+.scanner-box {
+    background-color: var(--bg-subtle);
+    border: 2px dashed var(--accent-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.scanner-box:focus-within {
+    border-color: var(--accent-primary);
+    background-color: var(--accent-light);
+}
+
+.scanner-input {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Patron / Book Preview Card inside Circulation */
+.patron-card-preview {
+    background-color: var(--bg-surface);
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.patron-avatar-lg {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    border: var(--border-hairline);
+}
+
+/* Mini Progress Bar */
+.craft-progress {
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background-color: var(--bg-subtle);
+    overflow: hidden;
+}
+
+.craft-progress .progress-bar {
+    border-radius: var(--radius-pill);
+}
+
+/* Activity Feed */
+.activity-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-feed-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.85rem 0;
+    border-bottom: var(--border-hairline);
+}
+
+.activity-feed-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.activity-icon-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+/* Modal Craft UI */
+.modal-content {
+    border: var(--border-hairline);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-surface);
+    box-shadow: var(--shadow-dropdown);
+}
+
+.modal-header {
+    border-bottom: var(--border-hairline);
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-footer {
+    border-top: var(--border-hairline);
+    padding: 1rem 1.5rem;
+}
+
+/* Responsive Drawer */
+@media (max-width: 991.98px) {
+    .app-sidebar { transform: translateX(-100%); }
+    .app-sidebar.show { transform: translateX(0); }
+    .app-main { margin-left: 0; }
+    .header-search { width: 200px; }
+}
+
+/* ==========================================================================
+   SHELF LOCATOR & BOOK DETAIL ENHANCEMENTS
+   ========================================================================== */
+.shelf-locator-box {
+    background: var(--bg-subtle);
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+}
+
+.shelf-visual-path {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+}
+
+.shelf-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    background: var(--bg-surface);
+    border: var(--border-hairline);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.shelf-node.active {
+    background: var(--accent-light);
+    border-color: var(--accent-border);
+    color: var(--accent-primary);
+}
+
+.ddc-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-muted);
+    color: var(--text-primary);
+    border: var(--border-hairline);
+}
+
+/* ==========================================================================
+   COMMAND PALETTE (CTRL + K)
+   ========================================================================== */
+.command-dialog .modal-content {
+    background: var(--bg-surface);
+    border: var(--border-hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-dropdown);
+    overflow: hidden;
+}
+
+.command-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-bottom: var(--border-hairline);
+    background: var(--bg-surface);
+}
+
+.command-input-wrapper input {
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background: transparent;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+.command-input-wrapper input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.command-results {
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.command-group-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    padding: 0.5rem 0.75rem 0.25rem;
+}
+
+.command-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+
+.command-item:hover, .command-item.active {
+    background-color: var(--bg-subtle);
+    color: var(--text-primary);
+}
+
+.command-item i {
+    font-size: 1rem;
+    color: var(--text-tertiary);
+    width: 24px;
+}
+
+/* ==========================================================================
+   VIETQR PAYMENT & PRINTABLE RECEIPT
+   ========================================================================== */
+.qr-payment-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    text-align: center;
+    color: #111827;
+}
+
+[data-bs-theme="dark"] .qr-payment-card {
+    background: #182030;
+    border-color: #263246;
+    color: #F8FAFC;
+}
+
+.qr-box {
+    display: inline-block;
+    padding: 0.75rem;
+    background: #FFFFFF;
+    border-radius: var(--radius-md);
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.receipt-frame {
+    border: 2px dashed var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    background: var(--bg-surface);
+    font-family: var(--font-sans);
+}
+
+.receipt-header {
+    text-align: center;
+    border-bottom: 1px solid var(--border-hairline);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.receipt-title {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.receipt-table td {
+    padding: 0.35rem 0;
+    font-size: 0.82rem;
+}
+
+/* Block Alert Banner */
+.borrow-block-banner {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-left: 4px solid #DC2626;
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1rem;
+    color: #991B1B;
+}
+
+[data-bs-theme="dark"] .borrow-block-banner {
+    background: rgba(220, 38, 38, 0.12);
+    border-color: rgba(220, 38, 38, 0.3);
+    border-left-color: #EF4444;
+    color: #FCA5A5;
+}
+

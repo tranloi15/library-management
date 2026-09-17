@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header class="app-header" th:fragment="navbar">
+    <!-- Nút Menu Mobile & Command Search Bar -->
+    <div class="d-flex align-items-center gap-2">
+        <button id="btnToggleSidebar" class="btn btn-sm btn-outline-secondary d-lg-none" type="button">
+            <i class="bi bi-list fs-5"></i>
+        </button>
+        
+        <!-- Thanh Tìm Kiếm Command Bar (⌘K / Ctrl+K) -->
+        <div class="header-search d-none d-md-block">
+            <i class="bi bi-search search-icon"></i>
+            <form th:action="@{/}" method="get" class="m-0">
+                <input type="text" name="keyword" th:value="${keyword}" 
+                       placeholder="Tìm kiếm sách, tác giả, ISBN..." autocomplete="off">
+            </form>
+            <kbd>Ctrl K</kbd>
+        </div>
+    </div>
+
+    <!-- Công cụ & Profile góc phải -->
+    <div class="header-actions">
+        <!-- Chuông thông báo tinh gọn (Notification Bell with Minimal Dot) -->
+        <div class="dropdown">
+            <a href="#" class="notif-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo mượn trả">
+                <i class="bi bi-bell fs-6"></i>
+                <span class="notif-badge-dot"></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 320px; padding: 0.5rem 0;">
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                    <span class="fw-semibold small">Thông báo mượn trả</span>
+                    <span class="status-pill danger" style="font-size: 0.68rem;">1 quá hạn</span>
+                </div>
+                <div class="py-1">
+                    <a th:href="@{/borrow/history}" class="dropdown-item px-3 py-2 d-flex gap-2 align-items-start">
+                        <i class="bi bi-exclamation-circle-fill text-danger mt-1"></i>
+                        <div class="flex-grow-1">
+                            <div class="fw-medium small text-danger">Quá hạn trả sách!</div>
+                            <div class="text-muted" style="font-size: 0.76rem;">"Cấu trúc Dữ liệu" trễ 2 ngày (Phạt: 10.000đ).</div>
+                        </div>
+                    </a>
+                    <a th:href="@{/borrow/history}" class="dropdown-item px-3 py-2 d-flex gap-2 align-items-start">
+                        <i class="bi bi-clock-history text-warning mt-1"></i>
+                        <div class="flex-grow-1">
+                            <div class="fw-medium small text-warning">Sắp đến hạn</div>
+                            <div class="text-muted" style="font-size: 0.76rem;">"Lập trình Java" còn 4 ngày (Hạn: 17/09).</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="px-3 pt-2 pb-1 border-top text-center">
+                    <a th:href="@{/borrow/history}" class="small text-decoration-none text-primary fw-medium" style="font-size: 0.78rem;">
+                        Xem toàn bộ lịch sử <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE DROPDOWN -->
+        <div class="dropdown">
+            <a href="#" class="profile-dropdown-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" 
+                     alt="Avatar" class="profile-avatar">
+                <div class="d-none d-sm-flex align-items-center gap-2">
+                    <span class="profile-name" sec:authentication="name" th:text="${userName != null ? userName : 'Nguyễn Văn Hưng'}">Hưng</span>
+                    <span class="profile-role-tag">Thủ thư</span>
+                </div>
+            </a>
+            
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 240px;">
+                <!-- Theme Toggle Switch tinh xảo -->
+                <li class="px-2">
+                    <div class="theme-switch-wrapper">
+                        <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem; font-weight: 500;">
+                            <i id="themeIcon" class="bi bi-sun text-muted fs-6"></i>
+                            <span id="themeLabel">Nền sáng</span>
+                        </div>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="themeToggleCheckbox" style="cursor: pointer;">
+                        </div>
+                    </div>
+                </li>
+
+                <li><hr class="dropdown-divider my-1"></li>
+
+                <li>
+                    <a class="dropdown-item py-1 px-3 d-flex align-items-center gap-2 small" th:href="@{/borrow/history}">
+                        <i class="bi bi-journal-bookmark text-muted"></i> Sách đang mượn của tôi
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item py-1 px-3 d-flex align-items-center gap-2 small" th:href="@{/profile}">
+                        <i class="bi bi-person text-muted"></i> Cài đặt tài khoản
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider my-1"></li>
+                <li>
+                    <a class="dropdown-item py-1 px-3 d-flex align-items-center gap-2 small text-danger" th:href="@{/logout}">
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+</body>
+</html>

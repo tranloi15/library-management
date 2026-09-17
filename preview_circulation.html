@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quầy Nghiệp Vụ Mượn / Trả Sách - N09 Library</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons 1.11.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Custom Craft UI CSS -->
+    <link rel="stylesheet" href="src/main/resources/static/css/custom.css">
+</head>
+<body data-bs-theme="light">
+
+<div class="app-wrapper">
+    <!-- 1. SIDEBAR -->
+    <aside class="app-sidebar">
+        <a href="preview_dashboard.html" class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="bi bi-book"></i>
+            </div>
+            <div class="d-flex flex-column">
+                <span class="brand-title">N09 LIBRARY</span>
+                <span class="text-muted" style="font-size: 0.65rem; letter-spacing: 0.06em;">THƯ VIỆN ĐIỆN TỬ</span>
+            </div>
+        </a>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">TỔNG QUAN</li>
+            <li class="menu-item">
+                <a href="preview_dashboard.html" class="menu-link">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Bảng điều khiển</span>
+                </a>
+            </li>
+
+            <li class="menu-category">NGHIỆP VỤ THỦ THƯ</li>
+            <li class="menu-item active">
+                <a href="preview_circulation.html" class="menu-link">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Quầy Mượn / Trả</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="preview_index.html" class="menu-link">
+                    <i class="bi bi-bookshelf"></i>
+                    <span>Kho Sách & Tạp chí</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="preview_patrons.html" class="menu-link">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Hồ sơ Độc giả</span>
+                </a>
+            </li>
+
+            <li class="menu-category">GÓC NHÌN ĐỘC GIẢ</li>
+            <li class="menu-item">
+                <a href="preview_history.html" class="menu-link">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Sách tôi đang mượn</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Học viện Công nghệ BCVT</span>
+                <span class="badge bg-light text-muted border" style="font-size: 0.65rem;">v2.0</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 2. MAIN AREA -->
+    <div class="app-main">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="d-flex align-items-center gap-2">
+                <button id="btnToggleSidebar" class="btn btn-sm btn-outline-secondary d-lg-none" type="button">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <div class="header-search d-none d-md-block">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" placeholder="Quét barcode thẻ sinh viên hoặc mã sách..." autocomplete="off">
+                    <kbd>Ctrl K</kbd>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <!-- PROFILE DROPDOWN (NỀN SÁNG / TỐI) -->
+                <div class="dropdown">
+                    <a href="#" class="profile-dropdown-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" 
+                             alt="Avatar" class="profile-avatar">
+                        <div class="d-none d-sm-flex align-items-center gap-2">
+                            <span class="profile-name">Nguyễn Văn Hưng</span>
+                            <span class="profile-role-tag">Thủ thư</span>
+                        </div>
+                    </a>
+                    
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 240px;">
+                        <li class="px-2">
+                            <div class="theme-switch-wrapper">
+                                <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem; font-weight: 500;">
+                                    <i id="themeIcon" class="bi bi-sun text-muted fs-6"></i>
+                                    <span id="themeLabel">Nền sáng</span>
+                                </div>
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="themeToggleCheckbox" style="cursor: pointer;">
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-1 px-3 small" href="preview_dashboard.html"><i class="bi bi-grid-1x2 text-muted me-2"></i> Bảng điều khiển</a></li>
+                        <li><a class="dropdown-item py-1 px-3 small" href="preview_history.html"><i class="bi bi-journal-bookmark text-muted me-2"></i> Cổng độc giả</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- NỘI DUNG CHÍNH QUẦY MƯỢN TRẢ -->
+        <main class="content-body">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                <div>
+                    <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Quầy Nghiệp Vụ Mượn / Trả Sách (Circulation Desk)</h4>
+                    <p class="text-secondary small m-0">Xử lý cấp phát mượn tài liệu, tiếp nhận sách hoàn trả và thanh toán phí phạt quá hạn</p>
+                </div>
+            </div>
+
+            <!-- 4 TABS NGHIỆP VỤ QUẦY MƯỢN TRẢ -->
+            <div class="custom-nav-tabs mb-4">
+                <button class="nav-link active" id="tabCheckoutBtn" type="button">
+                    <i class="bi bi-box-arrow-up-right"></i> 1. Cho mượn tài liệu (Check-out)
+                </button>
+                <button class="nav-link" id="tabCheckinBtn" type="button">
+                    <i class="bi bi-box-arrow-in-down-left"></i> 2. Nhận trả sách & Thu phạt (Check-in)
+                </button>
+                <button class="nav-link" id="tabRenewBtn" type="button">
+                    <i class="bi bi-arrow-repeat"></i> 3. Gia hạn mượn tại quầy (Renewal)
+                </button>
+                <button class="nav-link" id="tabShiftBtn" type="button">
+                    <i class="bi bi-journal-text"></i> 4. Nhật ký ca & Bàn giao (Shift Audit)
+                </button>
+            </div>
+
+            <!-- SECTION 1: CHO MƯỢN TÀI LIỆU (CHECKOUT) -->
+            <div id="sectionCheckout">
+                <!-- GIẢ LẬP TRẠNG THÁI ĐỘC GIẢ (THỬ NGHIỆM TÌNH HUỐNG THỰC TẾ) -->
+                <div class="d-flex align-items-center justify-content-between p-2 mb-3 bg-body-tertiary border rounded-3 small">
+                    <span class="text-secondary d-flex align-items-center gap-2">
+                        <i class="bi bi-sliders text-primary"></i> <strong>Mô phỏng tình huống quầy:</strong>
+                    </span>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-xs btn-primary active" id="btnSimulateValidPatron">
+                            <i class="bi bi-check-circle"></i> Độc giả Bình thường (Hợp lệ)
+                        </button>
+                        <button type="button" class="btn btn-xs btn-outline-danger" id="btnSimulateBlockedPatron">
+                            <i class="bi bi-shield-x"></i> Độc giả Bị Khóa do Nợ Phạt & Quá Hạn
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CẢNH BÁO KHÓA QUYỀN MƯỢN (ẨN MẶC ĐỊNH, HIỆN KHI ĐỘC GIẢ VI PHẠM) -->
+                <div id="borrowBlockBanner" class="borrow-block-banner mb-4 d-none">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-exclamation-octagon-fill fs-4 mt-1"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">CẢNH BÁO: ĐỘC GIẢ ĐANG BỊ KHÓA QUYỀN MƯỢN TÀI LIỆU!</h6>
+                                <p class="mb-1 small">
+                                    Độc giả còn nợ <strong>25.000 VNĐ</strong> tiền phạt từ phiếu mượn <code>#BR-882</code> và đang giữ <strong>01 cuốn sách quá hạn 12 ngày</strong>.
+                                </p>
+                                <div class="small fw-semibold">
+                                    Yêu cầu: Thanh toán tiền phạt và hoàn trả tài liệu quá hạn trước khi phát hành phiếu mượn mới.
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-danger px-3 py-1 fw-medium" type="button" onclick="document.getElementById('tabCheckinBtn').click()">
+                            <i class="bi bi-cash-stack me-1"></i> Thu phạt & Trả sách ngay
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- BƯỚC 1: QUÉT THẺ ĐỘC GIẢ -->
+                    <div class="col-12 col-lg-5">
+                        <div class="app-card mb-4">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                                <span class="badge bg-primary rounded-circle" style="width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem;">1</span>
+                                Tra cứu Thẻ Độc giả
+                            </h6>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-body-tertiary"><i class="bi bi-person-badge"></i></span>
+                                <input type="text" id="patronSearchInput" class="form-control" value="B22DCCN512" placeholder="Nhập mã sinh viên hoặc quét barcode...">
+                                <button class="btn btn-outline-primary" type="button">Tìm kiếm</button>
+                            </div>
+
+                            <!-- CARD THÔNG TIN ĐỘC GIẢ SAU KHI QUÉT -->
+                            <div class="p-3 border rounded-3 bg-body-tertiary" id="patronInfoCard">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80" 
+                                         alt="Avatar Độc giả" class="patron-avatar-lg" id="patronAvatar">
+                                    <div>
+                                        <div class="fw-bold fs-6" id="patronName">Phạm Minh Anh</div>
+                                        <div class="text-muted small">MSSV: <span class="font-monospace fw-semibold text-dark" id="patronId">B22DCCN512</span></div>
+                                        <div class="text-secondary small" id="patronClass">Lớp: D22CQCN01-B • Khoa CNTT 1</div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 pt-2 border-top text-center" style="font-size: 0.78rem;">
+                                    <div class="col-4 border-end">
+                                        <div class="text-muted">Trạng thái</div>
+                                        <span class="status-pill success mt-1" id="patronStatusPill" style="font-size: 0.65rem;">Hợp lệ</span>
+                                    </div>
+                                    <div class="col-4 border-end">
+                                        <div class="text-muted">Đang mượn</div>
+                                        <strong class="text-primary mt-1 d-block" id="patronLoanCount">2 / 5 cuốn</strong>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-muted">Hạn thẻ</div>
+                                        <span class="text-secondary mt-1 d-block">30/06/2026</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BƯỚC 2: QUÉT MÃ SÁCH CẦN CHO MƯỢN -->
+                        <div class="app-card">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                                <span class="badge bg-primary rounded-circle" style="width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem;">2</span>
+                                Quét Mã Vạch Sách
+                            </h6>
+
+                            <div class="scanner-box mb-3">
+                                <i class="bi bi-upc-scan fs-3 text-primary mb-2 d-block"></i>
+                                <input type="text" class="form-control scanner-input mb-2" placeholder="978-604-012..." value="978-604-012">
+                                <span class="text-secondary small">Hướng máy quét barcode hoặc nhập mã ISBN sách</span>
+                            </div>
+
+                            <button class="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2" id="btnAddBookToLoan" type="button">
+                                <i class="bi bi-plus-circle"></i> Thêm vào Phiếu Mượn này
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BƯỚC 3: DANH SÁCH SÁCH SẼ XUẤT MƯỢN (GIỎ MƯỢN) -->
+                    <div class="col-12 col-lg-7">
+                        <div class="app-card h-100 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <span class="badge bg-primary rounded-circle" style="width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem;">3</span>
+                                    Danh mục Tài liệu Xuất Mượn (2 cuốn)
+                                </h6>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.75rem;">
+                                    Thời hạn mượn chuẩn: 14 ngày
+                                </span>
+                            </div>
+
+                            <div class="table-responsive flex-grow-1">
+                                <table class="craft-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tên sách & Tác giả</th>
+                                            <th>Mã ISBN</th>
+                                            <th>Ngày mượn</th>
+                                            <th>Hạn trả dự kiến</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>
+                                                <div class="fw-medium text-primary">Lập trình Hướng đối tượng với Java</div>
+                                                <div class="text-muted small">GS. Trần Nhật Nam • Kệ A2-04</div>
+                                            </td>
+                                            <td><span class="craft-code">978-604-012</span></td>
+                                            <td class="small">13/09/2026</td>
+                                            <td class="small fw-semibold text-primary">27/09/2026</td>
+                                            <td>
+                                                <button class="btn btn-xs btn-outline-danger py-1 px-2" title="Xóa khỏi danh sách"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>
+                                                <div class="fw-medium text-primary">Thiết kế Hệ quản trị CSDL & Tối ưu SQL</div>
+                                                <div class="text-muted small">Vũ Thế Phong • Kệ B1-12</div>
+                                            </td>
+                                            <td><span class="craft-code">978-604-991</span></td>
+                                            <td class="small">13/09/2026</td>
+                                            <td class="small fw-semibold text-primary">27/09/2026</td>
+                                            <td>
+                                                <button class="btn btn-xs btn-outline-danger py-1 px-2" title="Xóa khỏi danh sách"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="p-3 bg-body-tertiary rounded-3 mt-3 border">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-secondary small">Độc giả sau khi mượn sẽ giữ:</span>
+                                    <span class="fw-bold" id="postLoanCount">4 / 5 cuốn tối đa</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-secondary small">Ghi chú lưu hành:</span>
+                                    <span class="text-muted small">Tài liệu mới, sách nguyên vẹn không rách</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <button class="btn btn-outline-secondary px-3 py-2 fw-medium" type="button">Hủy bỏ</button>
+                                <button class="btn btn-primary px-4 py-2 fw-medium d-flex align-items-center gap-2" id="btnConfirmLoan" type="button">
+                                    <i class="bi bi-printer"></i> Xác nhận & In Phiếu Mượn
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: NHẬN TRẢ SÁCH & THU PHẠT (CHECK-IN) -->
+            <div id="sectionCheckin" class="d-none">
+                <div class="row g-4">
+                    <!-- KHUNG QUÉT SÁCH TRẢ -->
+                    <div class="col-12 col-lg-5">
+                        <div class="app-card mb-4">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-arrow-down-left-square text-success"></i>
+                                Tiếp Nhận Sách Hoàn Trả
+                            </h6>
+
+                            <div class="scanner-box mb-3">
+                                <i class="bi bi-upc-scan fs-3 text-success mb-2 d-block"></i>
+                                <input type="text" class="form-control scanner-input mb-2" placeholder="978-604-589..." value="978-604-589">
+                                <span class="text-secondary small">Quét mã vạch trên gáy sách hoặc nhập mã barcode vật lý</span>
+                            </div>
+
+                            <button class="btn btn-success w-100 py-2 d-flex align-items-center justify-content-center gap-2" type="button">
+                                <i class="bi bi-search"></i> Kiểm Tra Trạng Thái Sách
+                            </button>
+                        </div>
+
+                        <!-- KHUNG KHAI BÁO MẤT SÁCH TẠI QUẦY -->
+                        <div class="p-3 bg-body-tertiary border rounded-3">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="fw-bold small text-danger d-flex align-items-center gap-1">
+                                    <i class="bi bi-journal-x"></i> Độc giả làm mất sách?
+                                </span>
+                                <button class="btn btn-xs btn-outline-danger" id="btnDeclareLostBook" type="button">
+                                    Khai báo Mất tài liệu
+                                </button>
+                            </div>
+                            <p class="text-muted small m-0" style="font-size: 0.76rem;">
+                                Khi độc giả không có sách để quét barcode, bấm nút trên để chuyển sang quy trình lập biên bản và bồi hoàn giá trị sách.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- THÔNG TIN PHIẾU MƯỢN CỦA SÁCH VỪA QUÉT -->
+                    <div class="col-12 col-lg-7">
+                        <div class="app-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0">Chi Tiết Trạng Thái Trả Sách</h6>
+                                <span class="status-pill danger" id="checkinStatusPill"><i class="bi bi-exclamation-triangle"></i> Quá hạn trả 2 ngày</span>
+                            </div>
+
+                            <!-- CARD CHI TIẾT SÁCH & ĐỘC GIẢ -->
+                            <div class="p-3 border rounded-3 bg-body-tertiary mb-3">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <div class="book-cover-stage stage-sm" style="width: 54px !important; height: 78px !important;">
+                                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-1" id="checkinBookTitle">Cấu trúc Dữ liệu và Giải thuật Ứng dụng</h6>
+                                        <div class="text-muted small">Người mượn: <strong>Lê Hoàng Nam (<span class="font-monospace">B21DCVT102</span>)</strong></div>
+                                        <div class="text-muted small">Ngày mượn: <strong>28/08/2026</strong> • Hạn trả: <strong class="text-danger">11/09/2026</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BẢNG TÍNH TIỀN PHẠT QUÁ HẠN & BỒI HOÀN -->
+                            <div class="p-3 border rounded-3 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0 small text-uppercase text-secondary">Bảng tính phí phạt & bồi hoàn</h6>
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle small" id="fineTag">Vi phạm quá hạn</span>
+                                </div>
+                                <div class="d-flex justify-content-between py-1 border-bottom small">
+                                    <span>Số ngày trễ hạn:</span>
+                                    <span class="text-danger fw-semibold" id="daysOverdue">2 ngày</span>
+                                </div>
+                                <div class="d-flex justify-content-between py-1 border-bottom small">
+                                    <span>Đơn giá phạt quá hạn:</span>
+                                    <span>5.000đ / ngày</span>
+                                </div>
+                                <div class="d-flex justify-content-between py-1 border-bottom small align-items-center">
+                                    <span>Tình trạng tài liệu hoàn trả:</span>
+                                    <select class="form-select form-select-sm" id="selectBookCondition" style="width: 220px;">
+                                        <option value="GOOD">Nguyên vẹn (+0đ)</option>
+                                        <option value="DAMAGED">Rách bìa / Viết bẩn (+20.000đ)</option>
+                                        <option value="LOST">Mất sách (Bồi thường 200.000đ)</option>
+                                    </select>
+                                </div>
+
+                                <!-- LỰA CHỌN PHƯƠNG THỨC THANH TOÁN -->
+                                <div class="pt-3 border-top mt-2">
+                                    <label class="small fw-semibold text-secondary mb-2 d-block">Hình thức thanh toán phí:</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="paymentMethod" id="payMethodCash" value="cash" checked>
+                                            <label class="form-check-label small" for="payMethodCash">
+                                                <i class="bi bi-cash me-1"></i> Tiền mặt
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="paymentMethod" id="payMethodQR" value="vietqr">
+                                            <label class="form-check-label small fw-semibold text-primary" for="payMethodQR">
+                                                <i class="bi bi-qr-code me-1"></i> Quét mã VietQR (Chuyển khoản)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between pt-3 mt-2 border-top fw-bold fs-6">
+                                    <span>Tổng số tiền phạt phải thu:</span>
+                                    <span class="text-danger fs-5" id="totalFineDisplay">10.000 VNĐ</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center gap-2 pt-2 border-top">
+                                <button class="btn btn-outline-secondary px-3 py-2 fw-medium d-flex align-items-center gap-2" id="btnPrintReceiptBtn" type="button">
+                                    <i class="bi bi-receipt"></i> In Biên Lai Thu Tiền
+                                </button>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary px-3 py-2 fw-medium d-flex align-items-center gap-2" id="btnOpenVietQrModal" type="button">
+                                        <i class="bi bi-qr-code"></i> Hiện Mã QR Thu Tiền
+                                    </button>
+                                    <button class="btn btn-primary px-4 py-2 fw-medium d-flex align-items-center gap-2" id="btnConfirmCheckin" type="button">
+                                        <i class="bi bi-check2-circle"></i> Hoàn tất Trả sách
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: GIA HẠN MƯỢN TẠI QUẦY (DESK RENEWAL) -->
+            <div id="sectionRenewal" class="d-none">
+                <div class="row g-4">
+                    <div class="col-12 col-lg-5">
+                        <div class="app-card">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-person-check text-primary"></i>
+                                Quét Thẻ Độc Giả Xin Gia Hạn
+                            </h6>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-body-tertiary"><i class="bi bi-upc-scan"></i></span>
+                                <input type="text" class="form-control" value="B22DCCN512" placeholder="Quét barcode thẻ sinh viên...">
+                                <button class="btn btn-outline-primary" type="button">Tra cứu</button>
+                            </div>
+
+                            <div class="p-3 bg-body-tertiary border rounded-3 mb-3">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-info-circle text-primary"></i>
+                                    <span class="fw-bold small">Chính sách gia hạn thư viện:</span>
+                                </div>
+                                <ul class="small text-secondary mb-0 ps-3" style="font-size: 0.78rem; line-height: 1.6;">
+                                    <li>Mỗi cuốn sách được phép gia hạn <strong>tối đa 02 lần</strong>.</li>
+                                    <li>Mỗi lần gia hạn cộng thêm <strong>14 ngày</strong> kể từ hạn cũ.</li>
+                                    <li>Không được phép gia hạn nếu sách đang có độc giả khác đặt trước hoặc thẻ đang nợ phạt quá hạn.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-7">
+                        <div class="app-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0">Tài Liệu Đang Mượn Đủ Điều Kiện Gia Hạn</h6>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle small">Độc giả: B22DCCN512</span>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="craft-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên sách & Mã ISBN</th>
+                                            <th>Số lần đã gia hạn</th>
+                                            <th>Hạn trả hiện tại</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-medium text-primary">Lập trình Hướng đối tượng với Java</div>
+                                                <div class="text-muted small">978-604-012 • Kệ A2-04</div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary-subtle text-secondary">0 / 2 lần</span>
+                                            </td>
+                                            <td>
+                                                <span class="fw-semibold" id="dueJava">27/09/2026</span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary py-1 px-2 d-flex align-items-center gap-1 btn-renew" data-book="java">
+                                                    <i class="bi bi-arrow-clockwise"></i> Gia hạn +14 ngày
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-medium text-primary">Thiết kế Hệ quản trị CSDL & SQL</div>
+                                                <div class="text-muted small">978-604-991 • Kệ B1-12</div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-warning-subtle text-warning-emphasis">1 / 2 lần</span>
+                                            </td>
+                                            <td>
+                                                <span class="fw-semibold" id="dueDb">27/09/2026</span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary py-1 px-2 d-flex align-items-center gap-1 btn-renew" data-book="db">
+                                                    <i class="bi bi-arrow-clockwise"></i> Gia hạn +14 ngày
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-medium text-muted">Toán Rời Rạc & Lý thuyết Đồ thị</div>
+                                                <div class="text-muted small">978-604-321 • Kệ C3-09</div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-danger-subtle text-danger">2 / 2 lần (Đạt giới hạn)</span>
+                                            </td>
+                                            <td>
+                                                <span class="fw-semibold text-danger">18/09/2026</span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary py-1 px-2" disabled title="Đã hết lượt gia hạn">
+                                                    Hết lượt gia hạn
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: NHẬT KÝ CA & BÀN GIAO (SHIFT AUDIT) -->
+            <div id="sectionShift" class="d-none">
+                <div class="row g-4 mb-4">
+                    <div class="col-12 col-md-3">
+                        <div class="app-card text-center p-3 mb-0">
+                            <div class="text-muted small mb-1">Xuất mượn trong ca</div>
+                            <div class="fs-3 fw-bold text-primary">48 <span class="fs-6 fw-normal text-muted">cuốn</span></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="app-card text-center p-3 mb-0">
+                            <div class="text-muted small mb-1">Tiếp nhận hoàn trả</div>
+                            <div class="fs-3 fw-bold text-success">35 <span class="fs-6 fw-normal text-muted">cuốn</span></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="app-card text-center p-3 mb-0">
+                            <div class="text-muted small mb-1">Tiền phạt đã thu</div>
+                            <div class="fs-3 fw-bold text-danger">140.000 <span class="fs-6 fw-normal text-muted">đ</span></div>
+                            <div class="text-muted small" style="font-size: 0.7rem;">Tiền mặt: 40k • QR: 100k</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="app-card text-center p-3 mb-0">
+                            <div class="text-muted small mb-1">Gia hạn tại quầy</div>
+                            <div class="fs-3 fw-bold text-info">19 <span class="fs-6 fw-normal text-muted">lượt</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-0">Lịch Sử Giao Dịch Gần Nhất Trong Ca Trực</h6>
+                            <span class="text-muted small">Thủ thư trực ca: <strong>Nguyễn Văn Hưng</strong> (Ca Sáng: 07:30 - 12:00)</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" type="button">
+                                <i class="bi bi-file-earmark-excel"></i> Xuất Excel Ca
+                            </button>
+                            <button class="btn btn-sm btn-primary d-flex align-items-center gap-1" type="button" onclick="alert('Đã tạo Biên bản Bàn giao Ca trực và gửi báo cáo về Ban Giám đốc Thư viện!')">
+                                <i class="bi bi-clipboard-check"></i> Chốt & Bàn Giao Ca
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="craft-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã GD</th>
+                                    <th>Thời gian</th>
+                                    <th>Nghiệp vụ</th>
+                                    <th>Độc giả</th>
+                                    <th>Tài liệu / Chi tiết</th>
+                                    <th>Thu phí</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="craft-code">#TX-891</span></td>
+                                    <td class="small">10:14</td>
+                                    <td><span class="badge bg-primary-subtle text-primary">Xuất mượn</span></td>
+                                    <td class="small">Phạm Minh Anh (B22DCCN512)</td>
+                                    <td class="small">2 cuốn (OOP Java, CSDL SQL)</td>
+                                    <td class="small text-muted">-</td>
+                                    <td><span class="status-pill success">Hoàn tất</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="craft-code">#TX-890</span></td>
+                                    <td class="small">10:02</td>
+                                    <td><span class="badge bg-success-subtle text-success">Trả sách</span></td>
+                                    <td class="small">Lê Hoàng Nam (B21DCVT102)</td>
+                                    <td class="small">Cấu trúc Dữ liệu (Quá hạn 2 ngày)</td>
+                                    <td class="small fw-semibold text-danger">10.000đ (VietQR)</td>
+                                    <td><span class="status-pill success">Đã thu tiền</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="craft-code">#TX-889</span></td>
+                                    <td class="small">09:48</td>
+                                    <td><span class="badge bg-info-subtle text-info">Gia hạn</span></td>
+                                    <td class="small">Trần Văn Quân (B22DCCN044)</td>
+                                    <td class="small">Mạng Máy Tính Cơ Bản (+14 ngày)</td>
+                                    <td class="small text-muted">-</td>
+                                    <td><span class="status-pill success">Gia hạn xong</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="craft-code">#TX-888</span></td>
+                                    <td class="small">09:30</td>
+                                    <td><span class="badge bg-primary-subtle text-primary">Xuất mượn</span></td>
+                                    <td class="small">TS. Trần Anh Tuấn (GV-0042)</td>
+                                    <td class="small">Học máy Nâng cao (Nghiên cứu)</td>
+                                    <td class="small text-muted">-</td>
+                                    <td><span class="status-pill success">Hoàn tất</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="craft-code">#TX-887</span></td>
+                                    <td class="small">09:12</td>
+                                    <td><span class="badge bg-success-subtle text-success">Trả sách</span></td>
+                                    <td class="small">Đỗ Thùy Linh (B23DCAT045)</td>
+                                    <td class="small">3 cuốn giáo trình đúng hạn</td>
+                                    <td class="small text-muted">0đ</td>
+                                    <td><span class="status-pill success">Hoàn tất</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <span>© 2026 Học viện Công nghệ Bưu chính Viễn thông (PTIT) • Hệ thống Quản lý Thư viện</span>
+            <span class="text-muted">Lập trình hướng đối tượng - Nhóm 9</span>
+        </footer>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 1: THANH TOÁN PHÍ PHẠT QUA MÃ VIETQR (DYNAMIC QR PAYMENT MODAL)
+     ========================================================================== -->
+<div class="modal fade" id="vietQrModal" tabindex="-1" aria-labelledby="vietQrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary-subtle text-primary p-2 rounded-2"><i class="bi bi-qr-code fs-5"></i></span>
+                    <div>
+                        <h6 class="modal-title fw-bold" id="vietQrModalLabel">Quét Mã VietQR Nộp Phí</h6>
+                        <span class="text-muted small" style="font-size: 0.72rem;">Chuyển khoản nhanh 24/7 qua Napas247</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <div class="qr-payment-card mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                        <span class="badge bg-danger text-white fw-bold" style="font-size: 0.7rem;">Vietcombank</span>
+                        <span class="text-muted small" style="font-size: 0.7rem;">Tài khoản Thư viện</span>
+                    </div>
+
+                    <!-- HÌNH ẢNH MÃ QR SVG ĐỘNG TINH XẢO -->
+                    <div class="qr-box my-2">
+                        <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background -->
+                            <rect width="180" height="180" fill="white" rx="8"/>
+                            <!-- QR Pattern Elements -->
+                            <rect x="15" y="15" width="45" height="45" rx="6" fill="#111827"/>
+                            <rect x="23" y="23" width="29" height="29" rx="3" fill="white"/>
+                            <rect x="28" y="28" width="19" height="19" rx="2" fill="#111827"/>
+
+                            <rect x="120" y="15" width="45" height="45" rx="6" fill="#111827"/>
+                            <rect x="128" y="23" width="29" height="29" rx="3" fill="white"/>
+                            <rect x="133" y="28" width="19" height="19" rx="2" fill="#111827"/>
+
+                            <rect x="15" y="120" width="45" height="45" rx="6" fill="#111827"/>
+                            <rect x="23" y="128" width="29" height="29" rx="3" fill="white"/>
+                            <rect x="28" y="133" width="19" height="19" rx="2" fill="#111827"/>
+
+                            <!-- Grid Mock Dots -->
+                            <rect x="70" y="20" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="90" y="20" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="70" y="40" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="95" y="45" width="8" height="8" rx="2" fill="#111827"/>
+                            <rect x="20" y="70" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="40" y="70" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="20" y="95" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="45" y="90" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="70" y="70" width="40" height="40" rx="4" fill="#36A4F7"/>
+                            <rect x="120" y="75" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="145" y="75" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="130" y="95" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="70" y="125" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="95" y="125" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="75" y="145" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="125" y="125" width="10" height="10" rx="2" fill="#111827"/>
+                            <rect x="145" y="145" width="15" height="15" rx="2" fill="#111827"/>
+                            <!-- Center Crest -->
+                            <circle cx="90" cy="90" r="14" fill="white"/>
+                            <text x="90" y="94" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#36A4F7" text-anchor="middle">N09</text>
+                        </svg>
+                    </div>
+
+                    <div class="mt-2">
+                        <span class="text-muted small">Số tiền cần nộp:</span>
+                        <div class="fs-4 fw-bold text-danger" id="qrAmountDisplay">10.000 VNĐ</div>
+                    </div>
+                </div>
+
+                <div class="p-2 border rounded-2 bg-body-tertiary text-start small mb-3" style="font-size: 0.78rem;">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">STK Thư viện:</span>
+                        <span class="font-monospace fw-bold">0451 000 398 299</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Chủ TK:</span>
+                        <span class="fw-semibold">HOC VIEN CONG NGHE BCVT</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Nội dung CK:</span>
+                        <span class="font-monospace text-primary fw-bold" id="qrNoteDisplay">THUPHAT B21DCVT102</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center gap-2 text-success small mb-3">
+                    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                    <span>Đang chờ hệ thống ngân hàng ghi nhận...</span>
+                </div>
+
+                <button type="button" class="btn btn-success w-100 py-2 fw-medium d-flex align-items-center justify-content-center gap-2" id="btnSimulatePaymentSuccess">
+                    <i class="bi bi-check2-circle fs-5"></i> [Mô phỏng] Đã Nhận Tiền Thành Công
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 2: IN BIÊN LAI THU TIỀN PHẠT & BỒI HOÀN (PRINTABLE RECEIPT)
+     ========================================================================== -->
+<div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <div class="receipt-frame" id="printableReceipt">
+                    <div class="receipt-header">
+                        <div class="fw-bold text-muted small" style="font-size: 0.68rem; letter-spacing: 0.08em;">BỘ THÔNG TIN VÀ TRUYỀN THÔNG</div>
+                        <div class="fw-bold" style="font-size: 0.85rem;">HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG</div>
+                        <div class="text-muted small" style="font-size: 0.72rem;">TRUNG TÂM THÔNG TIN THƯ VIỆN</div>
+                        <div class="receipt-title mt-2 text-danger">BIÊN LAI THU PHÍ PHẠT & BỒI HOÀN</div>
+                        <div class="text-muted small" style="font-size: 0.7rem;">Số: BL-2026/09/13-890 • Ngày: 13/09/2026 10:02</div>
+                    </div>
+
+                    <table class="w-100 receipt-table mb-3">
+                        <tr>
+                            <td class="text-muted" style="width: 120px;">Họ tên người nộp:</td>
+                            <td class="fw-bold">Lê Hoàng Nam</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Mã số sinh viên:</td>
+                            <td class="font-monospace fw-semibold">B21DCVT102</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Lớp / Khoa:</td>
+                            <td>D21CQVT01-B • Khoa Viễn thông 1</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Lý do thu phí:</td>
+                            <td id="receiptReasonDisplay">Phạt quá hạn trả sách 02 ngày (Giáo trình Cấu trúc Dữ liệu)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Hình thức:</td>
+                            <td class="fw-medium text-primary" id="receiptMethodDisplay">Chuyển khoản VietQR</td>
+                        </tr>
+                    </table>
+
+                    <div class="p-2 bg-body-tertiary rounded-2 text-center mb-3">
+                        <span class="text-muted small">Số tiền đã thanh toán:</span>
+                        <div class="fs-4 fw-bold text-danger" id="receiptAmountDisplay">10.000 VNĐ</div>
+                        <span class="text-muted fst-italic small" style="font-size: 0.72rem;">(Bằng chữ: Mười nghìn đồng chẵn)</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between text-center pt-2" style="font-size: 0.76rem;">
+                        <div>
+                            <div class="text-muted">Người nộp tiền</div>
+                            <div class="mt-4 fw-semibold">Lê Hoàng Nam</div>
+                        </div>
+                        <div>
+                            <div class="text-muted">Thủ thư thu tiền</div>
+                            <div class="mt-4 fw-semibold">Nguyễn Văn Hưng</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2" onclick="window.print()">
+                        <i class="bi bi-printer"></i> In Biên Lai Ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 3: COMMAND PALETTE TOÀN HỆ THỐNG (CTRL + K QUICK SEARCH)
+     ========================================================================== -->
+<div class="modal fade command-dialog" id="commandPaletteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 560px;">
+        <div class="modal-content">
+            <div class="command-input-wrapper">
+                <i class="bi bi-search text-muted fs-5"></i>
+                <input type="text" id="commandInput" placeholder="Tìm nhanh sách, độc giả, phiếu mượn, hoặc lệnh tác vụ..." autocomplete="off">
+                <kbd class="small text-muted" style="font-size: 0.7rem;">ESC để đóng</kbd>
+            </div>
+            <div class="command-results">
+                <div class="command-group-title">Chuyển trang nghiệp vụ</div>
+                <a href="preview_circulation.html" class="command-item active">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-left-right text-primary"></i>
+                        <span>Quầy Nghiệp Vụ Mượn / Trả Sách (Circulation Desk)</span>
+                    </div>
+                    <kbd class="small text-muted">1</kbd>
+                </a>
+                <a href="preview_index.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-bookshelf text-info"></i>
+                        <span>Kho Sách & Tạp chí Thư viện (Catalog)</span>
+                    </div>
+                    <kbd class="small text-muted">2</kbd>
+                </a>
+                <a href="preview_patrons.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-person-lines-fill text-success"></i>
+                        <span>Quản Lý Hồ Sơ Độc Giả (Patrons)</span>
+                    </div>
+                    <kbd class="small text-muted">3</kbd>
+                </a>
+                <a href="preview_history.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history text-warning"></i>
+                        <span>Cổng Độc Giả: Sách Tôi Đang Mượn</span>
+                    </div>
+                    <kbd class="small text-muted">4</kbd>
+                </a>
+
+                <div class="command-group-title">Tra cứu nhanh tài liệu tiêu biểu</div>
+                <a href="preview_index.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-book text-muted"></i>
+                        <div>
+                            <div>Lập trình Hướng đối tượng với Java</div>
+                            <span class="text-muted" style="font-size: 0.72rem;">Kệ A2-04 • DDC 005.133 • Còn 8 cuốn</span>
+                        </div>
+                    </div>
+                    <span class="badge bg-success-subtle text-success" style="font-size: 0.65rem;">Sẵn sàng</span>
+                </a>
+                <a href="preview_index.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-book text-muted"></i>
+                        <div>
+                            <div>Thiết kế Hệ quản trị CSDL & Tối ưu SQL</div>
+                            <span class="text-muted" style="font-size: 0.72rem;">Kệ B1-12 • DDC 005.74 • Còn 5 cuốn</span>
+                        </div>
+                    </div>
+                    <span class="badge bg-success-subtle text-success" style="font-size: 0.65rem;">Sẵn sàng</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // 1. TABS CHUYỂN ĐỔI NGHIỆP VỤ QUẦY MƯỢN TRẢ
+    const tabCheckoutBtn = document.getElementById('tabCheckoutBtn');
+    const tabCheckinBtn = document.getElementById('tabCheckinBtn');
+    const tabRenewBtn = document.getElementById('tabRenewBtn');
+    const tabShiftBtn = document.getElementById('tabShiftBtn');
+
+    const sectionCheckout = document.getElementById('sectionCheckout');
+    const sectionCheckin = document.getElementById('sectionCheckin');
+    const sectionRenewal = document.getElementById('sectionRenewal');
+    const sectionShift = document.getElementById('sectionShift');
+
+    const allTabs = [tabCheckoutBtn, tabCheckinBtn, tabRenewBtn, tabShiftBtn];
+    const allSections = [sectionCheckout, sectionCheckin, sectionRenewal, sectionShift];
+
+    function activateTab(activeBtn, activeSection) {
+        allTabs.forEach(t => t.classList.remove('active'));
+        allSections.forEach(s => s.classList.add('d-none'));
+        activeBtn.classList.add('active');
+        activeSection.classList.remove('d-none');
+    }
+
+    if (tabCheckoutBtn) {
+        tabCheckoutBtn.addEventListener('click', () => activateTab(tabCheckoutBtn, sectionCheckout));
+        tabCheckinBtn.addEventListener('click', () => activateTab(tabCheckinBtn, sectionCheckin));
+        tabRenewBtn.addEventListener('click', () => activateTab(tabRenewBtn, sectionRenewal));
+        tabShiftBtn.addEventListener('click', () => activateTab(tabShiftBtn, sectionShift));
+
+        if (window.location.hash === '#checkin') tabCheckinBtn.click();
+        if (window.location.hash === '#renew') tabRenewBtn.click();
+        if (window.location.hash === '#shift') tabShiftBtn.click();
+    }
+
+    // 2. MÔ PHỎNG ĐỘC GIẢ HỢP LỆ VS ĐỘC GIẢ BỊ KHÓA QUYỀN MƯỢN
+    const btnSimValid = document.getElementById('btnSimulateValidPatron');
+    const btnSimBlocked = document.getElementById('btnSimulateBlockedPatron');
+    const borrowBlockBanner = document.getElementById('borrowBlockBanner');
+    const patronStatusPill = document.getElementById('patronStatusPill');
+    const patronName = document.getElementById('patronName');
+    const patronId = document.getElementById('patronId');
+    const patronClass = document.getElementById('patronClass');
+    const patronAvatar = document.getElementById('patronAvatar');
+    const btnConfirmLoan = document.getElementById('btnConfirmLoan');
+
+    if (btnSimBlocked && btnSimValid) {
+        btnSimBlocked.addEventListener('click', () => {
+            btnSimBlocked.classList.add('btn-danger', 'active');
+            btnSimBlocked.classList.remove('btn-outline-danger');
+            btnSimValid.classList.remove('btn-primary', 'active');
+            btnSimValid.classList.add('btn-outline-secondary');
+
+            borrowBlockBanner.classList.remove('d-none');
+            patronStatusPill.className = 'status-pill danger mt-1';
+            patronStatusPill.innerHTML = '<i class="bi bi-x-circle"></i> Bị Khóa';
+            patronName.textContent = 'Bùi Quang Huy';
+            patronId.textContent = 'B21DCCN234';
+            patronClass.textContent = 'Lớp: D21CQCN02-B • Khoa CNTT 1';
+            patronAvatar.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80';
+
+            btnConfirmLoan.disabled = true;
+            btnConfirmLoan.title = 'Độc giả đang bị khóa mượn do nợ phạt & quá hạn!';
+        });
+
+        btnSimValid.addEventListener('click', () => {
+            btnSimValid.classList.add('btn-primary', 'active');
+            btnSimValid.classList.remove('btn-outline-secondary');
+            btnSimBlocked.classList.remove('btn-danger', 'active');
+            btnSimBlocked.classList.add('btn-outline-danger');
+
+            borrowBlockBanner.classList.add('d-none');
+            patronStatusPill.className = 'status-pill success mt-1';
+            patronStatusPill.innerHTML = 'Hợp lệ';
+            patronName.textContent = 'Phạm Minh Anh';
+            patronId.textContent = 'B22DCCN512';
+            patronClass.textContent = 'Lớp: D22CQCN01-B • Khoa CNTT 1';
+            patronAvatar.src = 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80';
+
+            btnConfirmLoan.disabled = false;
+            btnConfirmLoan.title = '';
+        });
+    }
+
+    // 3. TÍNH TIỀN PHẠT / KHAI BÁO MẤT SÁCH & THANH TOÁN
+    const selectCondition = document.getElementById('selectBookCondition');
+    const totalFineDisplay = document.getElementById('totalFineDisplay');
+    const fineTag = document.getElementById('fineTag');
+    const btnDeclareLost = document.getElementById('btnDeclareLostBook');
+    const qrAmountDisplay = document.getElementById('qrAmountDisplay');
+    const receiptAmountDisplay = document.getElementById('receiptAmountDisplay');
+    const receiptReasonDisplay = document.getElementById('receiptReasonDisplay');
+    const receiptMethodDisplay = document.getElementById('receiptMethodDisplay');
+
+    function calculateFines() {
+        let overdueFine = 10000; // 2 ngày x 5000đ
+        let conditionFine = 0;
+        let reason = 'Phạt quá hạn trả sách 02 ngày';
+
+        if (selectCondition.value === 'DAMAGED') {
+            conditionFine = 20000;
+            reason = 'Phạt quá hạn 2 ngày (10k) + Phí rách bìa/bẩn tài liệu (20k)';
+            fineTag.textContent = 'Quá hạn + Hỏng sách';
+        } else if (selectCondition.value === 'LOST') {
+            conditionFine = 190000; // Tổng bồi thường: 200k (bao gồm quá hạn)
+            reason = 'Bồi thường mất tài liệu (120k x 1.5 + phí xử lý 20k) + Quá hạn';
+            fineTag.textContent = 'Bồi thường mất sách';
+        } else {
+            fineTag.textContent = 'Vi phạm quá hạn';
+        }
+
+        let total = overdueFine + conditionFine;
+        let formattedTotal = total.toLocaleString('vi-VN') + ' VNĐ';
+        totalFineDisplay.textContent = formattedTotal;
+        qrAmountDisplay.textContent = formattedTotal;
+        receiptAmountDisplay.textContent = formattedTotal;
+        receiptReasonDisplay.textContent = reason;
+    }
+
+    if (selectCondition) {
+        selectCondition.addEventListener('change', calculateFines);
+    }
+
+    if (btnDeclareLost) {
+        btnDeclareLost.addEventListener('click', () => {
+            selectCondition.value = 'LOST';
+            calculateFines();
+            alert('Đã chuyển sang biên bản: Khai báo Mất tài liệu và áp dụng biểu phí bồi hoàn!');
+        });
+    }
+
+    // 4. MODAL VIETQR & IN BIÊN LAI
+    const vietQrModal = new bootstrap.Modal(document.getElementById('vietQrModal'));
+    const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
+    const btnOpenVietQr = document.getElementById('btnOpenVietQrModal');
+    const btnPrintReceipt = document.getElementById('btnPrintReceiptBtn');
+    const btnSimPaymentSuccess = document.getElementById('btnSimulatePaymentSuccess');
+    const btnConfirmCheckin = document.getElementById('btnConfirmCheckin');
+
+    if (btnOpenVietQr) {
+        btnOpenVietQr.addEventListener('click', () => {
+            calculateFines();
+            vietQrModal.show();
+        });
+    }
+
+    if (btnSimPaymentSuccess) {
+        btnSimPaymentSuccess.addEventListener('click', () => {
+            vietQrModal.hide();
+            receiptMethodDisplay.textContent = 'Chuyển khoản VietQR (Đã khớp lệnh)';
+            alert('Thành công! Hệ thống ngân hàng đã khớp lệnh thanh toán ' + totalFineDisplay.textContent + ' từ tài khoản sinh viên.');
+            receiptModal.show();
+        });
+    }
+
+    if (btnPrintReceipt) {
+        btnPrintReceipt.addEventListener('click', () => {
+            calculateFines();
+            receiptMethodDisplay.textContent = document.getElementById('payMethodQR').checked ? 'Chuyển khoản VietQR' : 'Tiền mặt';
+            receiptModal.show();
+        });
+    }
+
+    if (btnConfirmCheckin) {
+        btnConfirmCheckin.addEventListener('click', () => {
+            alert('Hoàn tất nhận trả sách và cập nhật trạng thái kho thành công!');
+        });
+    }
+
+    // 5. GIA HẠN SÁCH TẠI QUẦY (RENEWAL INTERACTION)
+    document.querySelectorAll('.btn-renew').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const book = this.getAttribute('data-book');
+            if (book === 'java') {
+                document.getElementById('dueJava').innerHTML = '<span class="text-success fw-bold">11/10/2026 (+14 ngày)</span>';
+            } else if (book === 'db') {
+                document.getElementById('dueDb').innerHTML = '<span class="text-success fw-bold">11/10/2026 (+14 ngày)</span>';
+            }
+            this.classList.remove('btn-outline-primary');
+            this.classList.add('btn-success');
+            this.innerHTML = '<i class="bi bi-check2"></i> Đã gia hạn';
+            this.disabled = true;
+            alert('Gia hạn thành công thêm 14 ngày cho tài liệu!');
+        });
+    });
+
+    // 6. COMMAND PALETTE (CTRL + K)
+    const commandModal = new bootstrap.Modal(document.getElementById('commandPaletteModal'));
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            commandModal.show();
+        }
+    });
+
+    document.querySelectorAll('.header-search input').forEach(input => {
+        input.addEventListener('click', () => {
+            commandModal.show();
+        });
+    });
+</script>
+<script src="src/main/resources/static/js/main.js"></script>
+</body>
+</html>

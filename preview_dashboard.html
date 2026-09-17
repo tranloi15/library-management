@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="vi" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Điều Khiển Tổng Quan - N09 Library</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons 1.11.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Custom Craft UI CSS -->
+    <link rel="stylesheet" href="src/main/resources/static/css/custom.css">
+</head>
+<body data-bs-theme="light">
+
+<div class="app-wrapper">
+    <!-- 1. SIDEBAR THƯ VIỆN ĐIỆN TỬ -->
+    <aside class="app-sidebar">
+        <a href="preview_dashboard.html" class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="bi bi-book"></i>
+            </div>
+            <div class="d-flex flex-column">
+                <span class="brand-title">N09 LIBRARY</span>
+                <span class="text-muted" style="font-size: 0.65rem; letter-spacing: 0.06em;">THƯ VIỆN ĐIỆN TỬ</span>
+            </div>
+        </a>
+
+        <ul class="sidebar-menu">
+            <li class="menu-category">TỔNG QUAN</li>
+            <li class="menu-item active">
+                <a href="preview_dashboard.html" class="menu-link">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Bảng điều khiển</span>
+                </a>
+            </li>
+
+            <li class="menu-category">NGHIỆP VỤ THỦ THƯ</li>
+            <li class="menu-item">
+                <a href="preview_circulation.html" class="menu-link">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Quầy Mượn / Trả</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="preview_index.html" class="menu-link">
+                    <i class="bi bi-bookshelf"></i>
+                    <span>Kho Sách & Tạp chí</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="preview_patrons.html" class="menu-link">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Hồ sơ Độc giả</span>
+                </a>
+            </li>
+
+            <li class="menu-category">GÓC NHÌN ĐỘC GIẢ</li>
+            <li class="menu-item">
+                <a href="preview_history.html" class="menu-link">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Sách tôi đang mượn</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Học viện Công nghệ BCVT</span>
+                <span class="badge bg-light text-muted border" style="font-size: 0.65rem;">v2.0</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 2. KHU VỰC NỘI DUNG CHÍNH (MAIN CANVAS) -->
+    <div class="app-main">
+        <!-- TOP NAVBAR (COMMAND BAR) -->
+        <header class="app-header">
+            <div class="d-flex align-items-center gap-2">
+                <button id="btnToggleSidebar" class="btn btn-sm btn-outline-secondary d-lg-none" type="button">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+                <div class="header-search d-none d-md-block">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" placeholder="Tra cứu nhanh sách, độc giả, phiếu mượn..." autocomplete="off">
+                    <kbd>Ctrl K</kbd>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <!-- CHUÔNG THÔNG BÁO -->
+                <div class="dropdown">
+                    <a href="#" class="notif-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo hệ thống">
+                        <i class="bi bi-bell fs-6"></i>
+                        <span class="notif-badge-dot"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 320px; padding: 0.5rem 0;">
+                        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                            <span class="fw-semibold small">Cảnh báo thủ thư</span>
+                            <span class="status-pill danger" style="font-size: 0.68rem;">24 quá hạn</span>
+                        </div>
+                        <div class="py-1">
+                            <a href="preview_circulation.html" class="dropdown-item px-3 py-2 d-flex gap-2 align-items-start">
+                                <i class="bi bi-exclamation-triangle-fill text-danger mt-1"></i>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium small text-danger">Quá hạn trễ 5 ngày</div>
+                                    <div class="text-muted" style="font-size: 0.76rem;">Độc giả Nguyễn Hoàng Nam (B21DCCN452)</div>
+                                </div>
+                            </a>
+                            <a href="preview_index.html" class="dropdown-item px-3 py-2 d-flex gap-2 align-items-start">
+                                <i class="bi bi-box-seam text-warning mt-1"></i>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium small text-warning">Sách sắp hết kho</div>
+                                    <div class="text-muted" style="font-size: 0.76rem;">"Cấu trúc Dữ liệu" chỉ còn 1 cuốn khả dụng.</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROFILE DROPDOWN (CÓ CHẾ ĐỘ SÁNG / TỐI) -->
+                <div class="dropdown">
+                    <a href="#" class="profile-dropdown-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80" 
+                             alt="Avatar" class="profile-avatar">
+                        <div class="d-none d-sm-flex align-items-center gap-2">
+                            <span class="profile-name">Nguyễn Văn Hưng</span>
+                            <span class="profile-role-tag">Thủ thư trưởng</span>
+                        </div>
+                    </a>
+                    
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 240px;">
+                        <li class="px-2">
+                            <!-- NỀN SÁNG / TỐI THEO YÊU CẦU -->
+                            <div class="theme-switch-wrapper">
+                                <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem; font-weight: 500;">
+                                    <i id="themeIcon" class="bi bi-sun text-muted fs-6"></i>
+                                    <span id="themeLabel">Nền sáng</span>
+                                </div>
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="themeToggleCheckbox" style="cursor: pointer;">
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-1 px-3 d-flex align-items-center gap-2 small" href="preview_circulation.html"><i class="bi bi-arrow-left-right text-muted"></i> Vào Quầy Mượn/Trả</a></li>
+                        <li><a class="dropdown-item py-1 px-3 d-flex align-items-center gap-2 small" href="preview_history.html"><i class="bi bi-journal-bookmark text-muted"></i> Trang cá nhân độc giả</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-1 px-3 d-flex align-items-center gap-2 small text-danger" href="#"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- NỘI DUNG CHÍNH CỦA BẢNG ĐIỀU KHIỂN -->
+        <main class="content-body">
+            <!-- TIÊU ĐỀ & TÁC VỤ NHANH -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                <div>
+                    <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Bảng Điều Khiển & Thống Kê Thư Viện</h4>
+                    <p class="text-secondary small m-0">Giám sát tổng quan tình trạng lưu hành sách, độc giả và cảnh báo nghiệp vụ</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="preview_circulation.html" class="btn btn-primary px-3 py-2 fw-medium small d-flex align-items-center gap-2">
+                        <i class="bi bi-upc-scan"></i> Lập phiếu mượn mới
+                    </a>
+                    <a href="preview_circulation.html#checkin" class="btn btn-outline-secondary px-3 py-2 fw-medium small d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-down-left-square"></i> Nhận trả sách
+                    </a>
+                </div>
+            </div>
+
+            <!-- HÀNG THẺ KPI TỔNG QUAN -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Tổng số đầu tài liệu</span>
+                            <div class="stat-icon"><i class="bi bi-book"></i></div>
+                        </div>
+                        <div class="stat-value">12.450</div>
+                        <div class="stat-trend positive">
+                            <i class="bi bi-arrow-up-short fs-6"></i> +128 bản sách mới tháng này
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Sách đang được mượn</span>
+                            <div class="stat-icon" style="color: #0284c7; background-color: rgba(2, 132, 199, 0.1);"><i class="bi bi-journal-arrow-up"></i></div>
+                        </div>
+                        <div class="stat-value">1.824</div>
+                        <div class="stat-trend">
+                            Tỷ lệ lưu thông: <strong class="text-dark ms-1">14.6%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Sách quá hạn chưa trả</span>
+                            <div class="stat-icon" style="color: #dc2626; background-color: rgba(220, 38, 38, 0.1);"><i class="bi bi-exclamation-octagon"></i></div>
+                        </div>
+                        <div class="stat-value text-danger">24</div>
+                        <div class="stat-trend danger">
+                            <i class="bi bi-arrow-up-short fs-6"></i> Cần xử lý thu hồi khẩn
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Độc giả đang hoạt động</span>
+                            <div class="stat-icon" style="color: #059669; background-color: rgba(5, 150, 105, 0.1);"><i class="bi bi-people"></i></div>
+                        </div>
+                        <div class="stat-value">3.412</div>
+                        <div class="stat-trend positive">
+                            <i class="bi bi-check2"></i> 98.2% thẻ sinh viên hợp lệ
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BỐ CỤC CHIA ĐÔI: HOẠT ĐỘNG MƯỢN TRẢ & CẢNH BÁO QUÁ HẠN -->
+            <div class="row g-4">
+                <!-- CỘT TRÁI (8 COLS): NHẬT KÝ LƯU HÀNH MỚI NHẤT -->
+                <div class="col-12 col-lg-8">
+                    <div class="app-card mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="fw-bold mb-0">Hoạt động Lưu hành Mượn / Trả Hôm nay</h6>
+                                <span class="text-secondary small">Cập nhật theo thời gian thực tại các quầy thủ thư</span>
+                            </div>
+                            <a href="preview_circulation.html" class="btn btn-sm btn-outline-primary" style="font-size: 0.78rem;">
+                                Xem tất cả phiếu <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="craft-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã phiếu</th>
+                                        <th>Độc giả</th>
+                                        <th>Tài liệu mượn</th>
+                                        <th>Thời gian</th>
+                                        <th>Hạn trả</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="code-col">BR-2026-0891</td>
+                                        <td>
+                                            <div class="fw-medium text-primary">Phạm Minh Anh</div>
+                                            <div class="text-muted small">B22DCCN512 • CNTT</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-medium">Cấu trúc Dữ liệu & Giải thuật</div>
+                                            <div class="text-muted small">ISBN: 978-604-589</div>
+                                        </td>
+                                        <td class="text-muted small">09:15 Hôm nay</td>
+                                        <td class="small">27/09/2026</td>
+                                        <td><span class="status-pill success"><i class="bi bi-arrow-up-right"></i> Đang mượn</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-col">BR-2026-0888</td>
+                                        <td>
+                                            <div class="fw-medium text-primary">Lê Hoàng Nam</div>
+                                            <div class="text-muted small">B21DCVT102 • Điện tử</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-medium">Lập trình Hướng đối tượng Java</div>
+                                            <div class="text-muted small">ISBN: 978-604-012</div>
+                                        </td>
+                                        <td class="text-muted small">08:42 Hôm nay</td>
+                                        <td class="small">12/09/2026</td>
+                                        <td><span class="status-pill danger"><i class="bi bi-exclamation-circle"></i> Trễ 1 ngày</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-col">BR-2026-0885</td>
+                                        <td>
+                                            <div class="fw-medium text-primary">Đỗ Thùy Linh</div>
+                                            <div class="text-muted small">B23DCAT045 • ATTT</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-medium">Mạng Máy tính và Truyền số liệu</div>
+                                            <div class="text-muted small">ISBN: 978-604-772</div>
+                                        </td>
+                                        <td class="text-muted small">08:20 Hôm nay</td>
+                                        <td class="small text-success">Đã trả</td>
+                                        <td><span class="status-pill info"><i class="bi bi-check-all"></i> Hoàn tất</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-col">BR-2026-0879</td>
+                                        <td>
+                                            <div class="fw-medium text-primary">TS. Trần Anh Tuấn</div>
+                                            <div class="text-muted small">GV-0042 • Giảng viên</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-medium">Tạp chí KHCN Thông tin số 08</div>
+                                            <div class="text-muted small">Mã: MAG-88/08</div>
+                                        </td>
+                                        <td class="text-muted small">Hôm qua</td>
+                                        <td class="small">10/10/2026</td>
+                                        <td><span class="status-pill success"><i class="bi bi-arrow-up-right"></i> Đang mượn</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MẬT ĐỘ MƯỢN SÁCH THEO KHOA/CHUYÊN NGÀNH -->
+                    <div class="app-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold mb-0">Tỷ lệ Mượn Sách Theo Khoa Đào Tạo</h6>
+                            <span class="text-muted small">Tháng 09/2026</span>
+                        </div>
+                        <div class="d-flex flex-column gap-3">
+                            <div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="fw-medium">Công nghệ Thông tin & An toàn Thông tin</span>
+                                    <span class="text-muted">742 cuốn (40.7%)</span>
+                                </div>
+                                <div class="craft-progress">
+                                    <div class="progress-bar bg-primary" style="width: 40.7%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="fw-medium">Điện tử Viễn thông</span>
+                                    <span class="text-muted">420 cuốn (23.0%)</span>
+                                </div>
+                                <div class="craft-progress">
+                                    <div class="progress-bar" style="width: 23%; background-color: #0284c7;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="fw-medium">Kinh tế Số & Quản trị Kinh doanh</span>
+                                    <span class="text-muted">365 cuốn (20.0%)</span>
+                                </div>
+                                <div class="craft-progress">
+                                    <div class="progress-bar" style="width: 20%; background-color: #059669;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="fw-medium">Công nghệ Đa phương tiện</span>
+                                    <span class="text-muted">297 cuốn (16.3%)</span>
+                                </div>
+                                <div class="craft-progress">
+                                    <div class="progress-bar" style="width: 16.3%; background-color: #f59e0b;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI (4 COLS): CẢNH BÁO QUÁ HẠN & TOP SÁCH -->
+                <div class="col-12 col-lg-4">
+                    <!-- CẢNH BÁO QUÁ HẠN CẦN THU HỒI -->
+                    <div class="app-card mb-4 border-danger-subtle">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                <h6 class="fw-bold mb-0 text-danger">Cần Thu Hồi Quá Hạn</h6>
+                            </div>
+                            <span class="badge bg-danger-subtle text-danger" style="font-size: 0.72rem;">24 độc giả</span>
+                        </div>
+                        <p class="text-secondary small mb-3">Các tài liệu trễ hạn trên 3 ngày. Cần liên hệ gửi email cảnh báo hoặc khóa thẻ tạm thời.</p>
+
+                        <div class="d-flex flex-column gap-2 mb-3">
+                            <div class="p-2 border rounded-2 bg-body-tertiary">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="fw-semibold small">Bùi Quang Huy (B21DCCN234)</div>
+                                    <span class="status-pill danger" style="font-size: 0.65rem;">Trễ 5 ngày</span>
+                                </div>
+                                <div class="text-muted small mt-1">"Thiết kế Hệ quản trị CSDL"</div>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                                    <span class="text-danger small fw-medium">Phạt: 25.000đ</span>
+                                    <a href="preview_circulation.html" class="btn btn-xs btn-outline-danger py-0 px-2" style="font-size: 0.72rem;">Xử lý ngay</a>
+                                </div>
+                            </div>
+
+                            <div class="p-2 border rounded-2 bg-body-tertiary">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="fw-semibold small">Vũ Mai Trang (B22DCMR110)</div>
+                                    <span class="status-pill danger" style="font-size: 0.65rem;">Trễ 3 ngày</span>
+                                </div>
+                                <div class="text-muted small mt-1">"Nhiếp ảnh & Thiết kế Đồ họa"</div>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                                    <span class="text-danger small fw-medium">Phạt: 15.000đ</span>
+                                    <a href="preview_circulation.html" class="btn btn-xs btn-outline-danger py-0 px-2" style="font-size: 0.72rem;">Xử lý ngay</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="preview_circulation.html#checkin" class="btn btn-sm btn-outline-danger w-100" style="font-size: 0.8rem;">
+                            Vào quầy nhận trả & thu phạt <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <!-- TOP SÁCH MƯỢN NHIỀU NHẤT THÁNG -->
+                    <div class="app-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold mb-0">Tài Liệu Mượn Nhiều</h6>
+                            <span class="text-muted small">Top 3</span>
+                        </div>
+
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="book-cover-stage stage-sm" style="width: 48px !important; height: 70px !important; min-width: 48px !important; min-height: 70px !important;">
+                                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="fw-semibold small text-truncate">Lập trình OOP với Java</div>
+                                    <div class="text-muted small">GS. Trần Nhật Nam</div>
+                                    <div class="text-primary small fw-medium mt-1"><i class="bi bi-fire text-danger"></i> 84 lượt mượn</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="book-cover-stage stage-sm" style="width: 48px !important; height: 70px !important; min-width: 48px !important; min-height: 70px !important;">
+                                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="fw-semibold small text-truncate">Cấu trúc Dữ liệu & Giải thuật</div>
+                                    <div class="text-muted small">TS. Lê Minh Nam</div>
+                                    <div class="text-primary small fw-medium mt-1"><i class="bi bi-fire text-danger"></i> 72 lượt mượn</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2 align-items-center">
+                                <div class="book-cover-stage stage-sm" style="width: 48px !important; height: 70px !important; min-width: 48px !important; min-height: 70px !important;">
+                                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=200&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="fw-semibold small text-truncate">Quản trị CSDL & Tối ưu SQL</div>
+                                    <div class="text-muted small">Vũ Thế Phong</div>
+                                    <div class="text-primary small fw-medium mt-1"><i class="bi bi-fire text-danger"></i> 58 lượt mượn</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <span>© 2026 Học viện Công nghệ Bưu chính Viễn thông (PTIT) • Hệ thống Quản lý Thư viện</span>
+            <span class="text-muted">Lập trình hướng đối tượng - Nhóm 9</span>
+        </footer>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL CHI TIẾT SÁCH & ĐỊNH VỊ KỆ THỰC TẾ (BOOK DETAIL & SHELF LOCATOR)
+     ========================================================================== -->
+<div class="modal fade" id="bookDetailModal" tabindex="-1" aria-labelledby="bookDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 840px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="ddc-badge" id="modalDDC">DDC 005.133</span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle small"><i class="bi bi-check2"></i> Còn 8 cuốn trên kệ</span>
+                    <span class="text-muted small font-monospace">ISBN: 978-604-012</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <!-- CỘT BÌA SÁCH & THÔNG SỐ -->
+                    <div class="col-12 col-md-4">
+                        <div class="book-cover-stage mb-3" style="box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&auto=format&fit=crop&q=80" 
+                                 alt="Cover" id="modalBookCover" class="book-cover-img">
+                        </div>
+
+                        <!-- THÔNG SỐ ẤN PHẨM -->
+                        <div class="p-3 bg-body-tertiary rounded-3 border small" style="font-size: 0.78rem;">
+                            <div class="d-flex justify-content-between py-1 border-bottom">
+                                <span class="text-muted">Nhà xuất bản:</span>
+                                <span class="fw-semibold">NXB Thông tin & TT</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1 border-bottom">
+                                <span class="text-muted">Năm xuất bản:</span>
+                                <span class="fw-semibold">2024 (Tái bản)</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1 border-bottom">
+                                <span class="text-muted">Số trang:</span>
+                                <span class="fw-semibold">486 trang</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1">
+                                <span class="text-muted">Khổ sách:</span>
+                                <span class="fw-semibold">16 x 24 cm</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="preview_circulation.html" class="btn btn-primary d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-arrow-left-right"></i> Mượn Tại Quầy
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- CỘT CHI TIẾT NỘI DUNG & ĐỊNH VỊ KỆ -->
+                    <div class="col-12 col-md-8">
+                        <h4 class="fw-bold mb-1" id="modalBookTitle">Lập trình Hướng đối tượng với Java & Design Patterns</h4>
+                        <div class="text-secondary small mb-3">
+                            Tác giả: <strong class="text-dark" id="modalBookAuthor">GS. Trần Nhật Nam, TS. Lê Hoài An</strong>
+                        </div>
+
+                        <!-- 1. BẢN ĐỒ ĐỊNH VỊ KỆ THỰC TẾ TRONG THƯ VIỆN -->
+                        <div class="shelf-locator-box mb-3">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="fw-bold small d-flex align-items-center gap-2 text-primary">
+                                    <i class="bi bi-geo-alt-fill"></i> Vị trí thực tế trong Thư viện:
+                                </span>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle small">Phòng Đọc 204</span>
+                            </div>
+
+                            <div class="shelf-visual-path mb-2">
+                                <span class="shelf-node"><i class="bi bi-building"></i> Tầng 2</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                                <span class="shelf-node"><i class="bi bi-door-open"></i> Phòng Đọc Chuyên Ngành</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                                <span class="shelf-node"><i class="bi bi-grid-3x3"></i> Dãy B</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                                <span class="shelf-node active"><i class="bi bi-bookshelf"></i> Kệ A2-04</span>
+                                <i class="bi bi-chevron-right text-muted small"></i>
+                                <span class="shelf-node"><i class="bi bi-layers"></i> Ngăn 3</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. TÓM TẮT NỘI DUNG -->
+                        <div class="mb-3">
+                            <h6 class="fw-bold small text-uppercase text-secondary mb-2">Tóm tắt tài liệu</h6>
+                            <p class="text-secondary small mb-0" style="line-height: 1.65;">
+                                Cung cấp kiến thức toàn diện về tư duy Lập trình Hướng đối tượng và 23 Design Patterns chuẩn mực, giải pháp kiến trúc ứng dụng thực tế.
+                            </p>
+                        </div>
+
+                        <!-- 3. BẢN SAO TRONG THƯ VIỆN -->
+                        <div class="table-responsive border rounded-2">
+                            <table class="craft-table mb-0" style="font-size: 0.78rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Mã vạch</th>
+                                        <th>Vị trí kệ</th>
+                                        <th>Tình trạng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="craft-code">BK-001928-A</span></td>
+                                        <td>Kệ A2-04 (Ngăn 3)</td>
+                                        <td><span class="status-pill success" style="font-size: 0.65rem;">Trên giá sách</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="craft-code">BK-001929-B</span></td>
+                                        <td>Kệ A2-04 (Ngăn 3)</td>
+                                        <td><span class="status-pill success" style="font-size: 0.65rem;">Trên giá sách</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL COMMAND PALETTE (CTRL + K)
+     ========================================================================== -->
+<div class="modal fade command-dialog" id="commandPaletteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 560px;">
+        <div class="modal-content">
+            <div class="command-input-wrapper">
+                <i class="bi bi-search text-muted fs-5"></i>
+                <input type="text" id="commandInput" placeholder="Tìm nhanh sách, độc giả, phiếu mượn, hoặc lệnh tác vụ..." autocomplete="off">
+                <kbd class="small text-muted" style="font-size: 0.7rem;">ESC để đóng</kbd>
+            </div>
+            <div class="command-results">
+                <div class="command-group-title">Chuyển trang nghiệp vụ</div>
+                <a href="preview_circulation.html" class="command-item active">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-arrow-left-right text-primary"></i>
+                        <span>Quầy Nghiệp Vụ Mượn / Trả Sách (Circulation Desk)</span>
+                    </div>
+                    <kbd class="small text-muted">1</kbd>
+                </a>
+                <a href="preview_index.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-bookshelf text-info"></i>
+                        <span>Kho Sách & Tạp chí Thư viện (Catalog)</span>
+                    </div>
+                    <kbd class="small text-muted">2</kbd>
+                </a>
+                <a href="preview_patrons.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-person-lines-fill text-success"></i>
+                        <span>Quản Lý Hồ Sơ Độc Giả (Patrons)</span>
+                    </div>
+                    <kbd class="small text-muted">3</kbd>
+                </a>
+                <a href="preview_history.html" class="command-item">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history text-warning"></i>
+                        <span>Cổng Độc Giả: Sách Tôi Đang Mượn</span>
+                    </div>
+                    <kbd class="small text-muted">4</kbd>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5.3.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="src/main/resources/static/js/main.js"></script>
+<script>
+    // BẬT MODAL CHI TIẾT SÁCH KHI BẤM VÀO SÁCH NỔI BẬT
+    const bookDetailModal = new bootstrap.Modal(document.getElementById('bookDetailModal'));
+    document.querySelectorAll('.app-card .d-flex.gap-2.align-items-center').forEach(el => {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', () => {
+            const title = el.querySelector('.fw-semibold')?.textContent.trim();
+            const author = el.querySelector('.text-muted.small')?.textContent.trim();
+            const img = el.querySelector('img')?.src;
+            if (title) document.getElementById('modalBookTitle').textContent = title;
+            if (author) document.getElementById('modalBookAuthor').textContent = author;
+            if (img) document.getElementById('modalBookCover').src = img;
+            bookDetailModal.show();
+        });
+    });
+
+    // COMMAND PALETTE (CTRL + K)
+    const commandModal = new bootstrap.Modal(document.getElementById('commandPaletteModal'));
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            commandModal.show();
+        }
+    });
+
+    document.querySelectorAll('.header-search input').forEach(input => {
+        input.addEventListener('click', () => {
+            commandModal.show();
+        });
+    });
+</script>
+</body>
+</html>

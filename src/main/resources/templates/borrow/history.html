@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Sách đang mượn & Lịch sử cá nhân - Quản lý Thư viện</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- HEADER TIÊU ĐỀ TRANG -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1 tracking-tight">Sách đang mượn & Lịch sử cá nhân</h4>
+            <p class="text-secondary small mb-0">Theo dõi tiến độ mượn tài liệu, gia hạn và tình trạng hoàn trả của độc giả</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i> Mượn thêm sách
+            </a>
+        </div>
+    </div>
+
+    <!-- TÓM TẮT CHỈ SỐ MƯỢN TRẢ (KPI STRIP) -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small d-block mb-1">Đang giữ mượn</span>
+                    <span class="fs-4 fw-bold font-mono" th:text="${activeBorrowCount != null ? activeBorrowCount : 2}">2</span>
+                    <span class="text-secondary small ms-1">/ 5 cuốn tối đa</span>
+                </div>
+                <div class="p-2 rounded bg-light border text-primary">
+                    <i class="bi bi-book fs-5"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small d-block mb-1">Cảnh báo quá hạn</span>
+                    <span class="fs-4 fw-bold text-danger font-mono" th:text="${overdueCount != null ? overdueCount : 1}">1</span>
+                    <span class="text-danger small ms-1">cuốn trễ hạn</span>
+                </div>
+                <div class="p-2 rounded bg-danger-subtle border border-danger-subtle text-danger">
+                    <i class="bi bi-exclamation-triangle fs-5"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small d-block mb-1">Tổng sách đã trả</span>
+                    <span class="fs-4 fw-bold font-mono" th:text="${returnedCount != null ? returnedCount : 12}">12</span>
+                    <span class="text-secondary small ms-1">lượt hoàn thành</span>
+                </div>
+                <div class="p-2 rounded bg-light border text-success">
+                    <i class="bi bi-check2-all fs-5"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-secondary small d-block mb-1">Phạt trễ hạn tạm tính</span>
+                    <span class="fs-4 fw-bold text-danger font-mono" th:text="${fineAmount != null ? fineAmount : '10.000'}">10.000</span>
+                    <span class="text-secondary small ms-1">VNĐ</span>
+                </div>
+                <div class="p-2 rounded bg-light border text-secondary">
+                    <i class="bi bi-cash-coin fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KHỐI NỘI DUNG 2 TAB CHUYỂN ĐỔI -->
+    <div class="app-card p-4">
+        <!-- Tab Headers -->
+        <ul class="nav custom-nav-tabs mb-4" id="borrowHistoryTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active d-flex align-items-center gap-2" id="current-tab" 
+                        data-bs-toggle="tab" data-bs-target="#current-tab-pane" type="button" role="tab">
+                    <i class="bi bi-journal-arrow-down"></i> 
+                    <span>Sách đang mượn</span>
+                    <span class="status-pill warning" style="font-size: 0.7rem;">2 cuốn</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link d-flex align-items-center gap-2" id="returned-tab" 
+                        data-bs-toggle="tab" data-bs-target="#returned-tab-pane" type="button" role="tab">
+                    <i class="bi bi-check2-circle"></i> 
+                    <span>Lịch sử đã trả</span>
+                    <span class="status-pill neutral" style="font-size: 0.7rem;">12 cuốn</span>
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Contents -->
+        <div class="tab-content" id="borrowHistoryTabContent">
+            <!-- TAB 1: SÁCH ĐANG MƯỢN -->
+            <div class="tab-pane fade show active" id="current-tab-pane" role="tabpanel">
+                <div class="row g-4">
+                    <!-- Cuốn 1: Đang mượn (Bình thường, còn 4 ngày) -->
+                    <div class="col-lg-6">
+                        <div class="app-card p-3 border">
+                            <div class="d-flex gap-3">
+                                <div class="book-cover-thumb" style="position: relative; width: 84px; height: 122px; min-width: 84px; max-width: 84px; overflow: hidden; flex-shrink: 0;">
+                                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80" 
+                                         alt="cover" class="book-cover-img" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                                        <h6 class="fw-semibold mb-0 text-truncate" title="Lập trình Hướng đối tượng với Java">Lập trình Hướng đối tượng với Java</h6>
+                                        <span class="status-pill info flex-shrink-0">
+                                            <span class="status-dot"></span> Còn 4 ngày
+                                        </span>
+                                    </div>
+                                    <div class="text-secondary small mb-2">Trần Nhật Nam • Mã mượn: <span class="craft-code">#BR-1049</span></div>
+                                    <div class="d-flex justify-content-between small text-secondary mb-2">
+                                        <span>Ngày mượn: <strong class="font-mono">01/09/2026</strong></span>
+                                        <span>Hạn trả: <strong class="font-mono text-dark">15/09/2026</strong></span>
+                                    </div>
+                                    
+                                    <!-- Progress bar -->
+                                    <div class="mb-2">
+                                        <div class="d-flex justify-content-between text-muted" style="font-size: 0.7rem; margin-bottom: 2px;">
+                                            <span>Thời hạn: 10/14 ngày</span>
+                                            <span>71%</span>
+                                        </div>
+                                        <div class="progress" style="height: 4px; background: var(--bg-subtle);">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 71%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                                        <button class="btn btn-sm btn-outline-secondary" type="button" style="font-size: 0.76rem;">
+                                            <i class="bi bi-arrow-repeat"></i> Xin gia hạn
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cuốn 2: Quá hạn mượn (Báo động đỏ) -->
+                    <div class="col-lg-6">
+                        <div class="app-card p-3 border border-danger-subtle" style="background: rgba(239, 68, 68, 0.02);">
+                            <div class="d-flex gap-3">
+                                <div class="book-cover-thumb" style="position: relative; width: 84px; height: 122px; min-width: 84px; max-width: 84px; overflow: hidden; flex-shrink: 0;">
+                                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80" 
+                                         alt="cover" class="book-cover-img" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                                        <h6 class="fw-semibold mb-0 text-truncate text-danger" title="Cấu trúc Dữ liệu & Giải thuật">Cấu trúc Dữ liệu & Giải thuật</h6>
+                                        <span class="status-pill danger flex-shrink-0">
+                                            <span class="status-dot"></span> Trễ 2 ngày
+                                        </span>
+                                    </div>
+                                    <div class="text-secondary small mb-2">Lê Minh Nam • Mã mượn: <span class="craft-code">#BR-0992</span></div>
+                                    <div class="d-flex justify-content-between small text-secondary mb-2">
+                                        <span>Ngày mượn: <strong class="font-mono">28/08/2026</strong></span>
+                                        <span>Hạn trả: <strong class="font-mono text-danger">11/09/2026</strong></span>
+                                    </div>
+
+                                    <!-- Progress bar đỏ -->
+                                    <div class="mb-2">
+                                        <div class="d-flex justify-content-between text-danger fw-medium" style="font-size: 0.7rem; margin-bottom: 2px;">
+                                            <span>Quá hạn quy định</span>
+                                            <span>+14%</span>
+                                        </div>
+                                        <div class="progress" style="height: 4px; background: rgba(239, 68, 68, 0.15);">
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-danger-subtle">
+                                        <span class="small text-danger fw-semibold" style="font-size: 0.76rem;">
+                                            <i class="bi bi-cash-coin me-1"></i> Phạt: 10.000 VNĐ
+                                        </span>
+                                        <span class="badge bg-danger" style="font-size: 0.72rem;">Yêu cầu trả tại quầy</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: LỊCH SỬ ĐÃ TRẢ -->
+            <div class="tab-pane fade" id="returned-tab-pane" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="craft-table">
+                        <thead>
+                            <tr>
+                                <th>MÃ PHIẾU</th>
+                                <th>TỰA ĐẦU SÁCH</th>
+                                <th>NGÀY MƯỢN</th>
+                                <th>HẠN TRẢ</th>
+                                <th>NGÀY TRẢ THỰC TẾ</th>
+                                <th>TRẠNG THÁI</th>
+                                <th class="text-end">PHÍ PHẠT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="craft-code">#BR-0821</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-book text-muted"></i>
+                                        <span class="fw-medium">Thiết kế Hệ thống Thông tin Doanh nghiệp</span>
+                                    </div>
+                                </td>
+                                <td class="font-mono text-secondary">10/08/2026</td>
+                                <td class="font-mono text-secondary">24/08/2026</td>
+                                <td class="font-mono fw-medium">22/08/2026</td>
+                                <td>
+                                    <span class="status-pill success">
+                                        <span class="status-dot"></span> Đúng hạn
+                                    </span>
+                                </td>
+                                <td class="text-end font-mono text-muted">0 VNĐ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="craft-code">#BR-0755</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-book text-muted"></i>
+                                        <span class="fw-medium">Nhập môn Trí tuệ Nhân tạo & Machine Learning</span>
+                                    </div>
+                                </td>
+                                <td class="font-mono text-secondary">15/07/2026</td>
+                                <td class="font-mono text-secondary">29/07/2026</td>
+                                <td class="font-mono fw-medium text-danger">31/07/2026</td>
+                                <td>
+                                    <span class="status-pill danger">
+                                        <span class="status-dot"></span> Trễ 2 ngày
+                                    </span>
+                                </td>
+                                <td class="text-end font-mono text-danger fw-bold">10.000 VNĐ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="craft-code">#BR-0612</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-book text-muted"></i>
+                                        <span class="fw-medium">Mạng Máy tính và Truyền số liệu</span>
+                                    </div>
+                                </td>
+                                <td class="font-mono text-secondary">01/06/2026</td>
+                                <td class="font-mono text-secondary">15/06/2026</td>
+                                <td class="font-mono fw-medium">14/06/2026</td>
+                                <td>
+                                    <span class="status-pill success">
+                                        <span class="status-dot"></span> Đúng hạn
+                                    </span>
+                                </td>
+                                <td class="text-end font-mono text-muted">0 VNĐ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
