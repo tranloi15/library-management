@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kho Tài Liệu & Ấn Phẩm - Thư Viện Số</title>
+
+    <!-- SCRIPT KHỞI TẠO THEME SỚM (Chống giật chớp màn hình khi F5) -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('library_theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        })();
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #36A4F7;
+            --primary-hover: #178DE5;
+            --primary-light: #F0F8FF;
+            --primary-border: #BAE0FD;
+            --bg-app: #F8F9FA;
+            --surface: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+            --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+            --shadow-book-spine: inset 4px 0 8px rgba(0, 0, 0, 0.15), 0 8px 20px -4px rgba(15, 23, 42, 0.15);
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navbar */
+        .site-navbar {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.025em;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 10px rgba(54, 164, 247, 0.35);
+        }
+
+        .nav-btn {
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.45rem 1rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+        }
+
+        .nav-btn-ghost {
+            color: var(--text-main);
+            background: transparent;
+            border: 1px solid var(--border-color);
+        }
+        .nav-btn-ghost:hover {
+            background: #F1F5F9;
+            color: var(--primary);
+            border-color: var(--primary-border);
+        }
+
+        .nav-btn-primary {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(54, 164, 247, 0.25);
+        }
+        .nav-btn-primary:hover {
+            background: var(--primary-hover);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(54, 164, 247, 0.35);
+        }
+
+        .user-pill {
+            background: #F1F5F9;
+            border: 1px solid var(--border-color);
+            padding: 0.35rem 0.85rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .catalog-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .page-header-box {
+            margin-bottom: 2rem;
+        }
+        .page-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+            margin-bottom: 0.35rem;
+        }
+        .page-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        /* Filter Toolbar Card trong trang */
+        .filter-toolbar {
+            background: var(--bg-surface, #FFFFFF);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem 1.35rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-subtle);
+            transition: opacity 0.2s ease;
+        }
+
+        .catalog-badge {
+            background: var(--bg-surface, #FFFFFF);
+            color: var(--text-main);
+            border-color: var(--border-color);
+        }
+
+        .view-switch-wrapper {
+            background: #F8FAFC;
+            border-color: var(--border-color);
+        }
+
+        /* Công cụ tìm kiếm & bộ lọc chìm vào giữa Navbar trên cùng khi cuộn (Giống hệt Trang chủ) */
+        .nav-middle-tools {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex: 1;
+            max-width: 780px;
+            margin: 0 1.25rem;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+        }
+
+        .nav-middle-tools.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .nav-search-wrap {
+            background: #F1F5F9;
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 0.35rem 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 360px;
+            transition: width 0.25s ease, border-color 0.2s, background 0.2s;
+        }
+
+        .nav-search-wrap:focus-within {
+            width: 460px;
+            background: #FFFFFF;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(54, 164, 247, 0.15);
+        }
+
+        @media (min-width: 1400px) {
+            .nav-search-wrap {
+                width: 420px;
+            }
+            .nav-search-wrap:focus-within {
+                width: 520px;
+            }
+        }
+
+        .nav-search-input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: var(--text-main);
+            width: 100%;
+        }
+
+        .nav-filter-chips {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .nav-filter-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-chip {
+            border: 1px solid var(--border-color);
+            background: #FFFFFF;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.28rem 0.75rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-chip:hover {
+            color: var(--text-main);
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+        }
+
+        .nav-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 6px rgba(54, 164, 247, 0.25);
+        }
+
+        .nav-view-btn {
+            border: 1px solid var(--border-color);
+            background: #FFFFFF;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .nav-view-btn:hover {
+            background: #F1F5F9;
+            color: var(--primary);
+        }
+        .nav-view-btn.active {
+            background: var(--primary-light);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+
+        @media (max-width: 991.98px) {
+            .nav-middle-tools {
+                display: none !important;
+            }
+            .nav-filter-chips {
+                display: none;
+            }
+            .brand-logo {
+                font-size: 1.1rem;
+                gap: 0.5rem;
+            }
+            .brand-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+            .nav-btn {
+                padding: 0.35rem 0.75rem;
+                font-size: 0.8rem;
+            }
+            .user-pill {
+                padding: 0.3rem 0.65rem;
+                font-size: 0.78rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .catalog-container {
+                padding: 1.25rem 1rem 3rem;
+            }
+            .page-header-box {
+                margin-bottom: 1.25rem;
+            }
+            .page-title {
+                font-size: 1.45rem !important;
+            }
+            .page-desc {
+                font-size: 0.88rem;
+            }
+            .filter-toolbar {
+                padding: 0.85rem;
+                margin-bottom: 1.25rem;
+                border-radius: 12px;
+            }
+            .search-wrap {
+                min-width: 100%;
+                width: 100%;
+            }
+            .pub-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .pub-card {
+                padding: 1rem;
+            }
+            .book-cover-stage {
+                height: 150px;
+            }
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 260px;
+        }
+        .search-wrap i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.5rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-surface, #FFFFFF);
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(54, 164, 247, 0.15);
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-chip {
+            border: 1px solid var(--border-color);
+            background: var(--bg-surface, #FFFFFF);
+            color: var(--text-muted);
+            font-size: 0.825rem;
+            font-weight: 600;
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .filter-chip:hover {
+            color: var(--text-main);
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+        }
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 6px rgba(54, 164, 247, 0.25);
+        }
+
+        /* View Switcher */
+        .view-switch-btn {
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-muted);
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .view-switch-btn:hover {
+            color: var(--text-main);
+        }
+        .view-switch-btn.active {
+            background: #FFFFFF;
+            border-color: var(--border-color);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Cards Grid */
+        .pub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .pub-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--shadow-subtle);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .pub-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-card);
+            border-color: var(--primary-border);
+        }
+
+        /* Khung bìa sách đứng căn giữa tuyệt đối */
+        .book-cover-stage {
+            width: 100%;
+            height: 160px;
+            border-radius: 12px;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .book-cover-img {
+            max-height: 142px;
+            max-width: 88%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            margin: auto;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pub-card:hover .book-cover-img {
+            transform: scale(1.05);
+        }
+
+        .book-cover-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            color: white;
+            box-shadow: var(--shadow-book-spine);
+        }
+        .book-cover-preview.magazine-cover {
+            background: linear-gradient(135deg, #0F766E 0%, #115E59 100%);
+        }
+        .book-spine-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 12px;
+            background: linear-gradient(to right, rgba(0,0,0,0.4), rgba(0,0,0,0.1) 60%, transparent);
+            border-right: 1px solid rgba(255,255,255,0.15);
+        }
+        .cover-content {
+            padding: 1rem 1.5rem 1rem 2rem;
+            text-align: left;
+            width: 100%;
+        }
+        .cover-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 0.4rem;
+        }
+        .cover-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .pub-type-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .type-book {
+            background: var(--primary-light);
+            color: #0E73BD;
+            border: 1px solid var(--primary-border);
+        }
+        .type-magazine {
+            background: #FEF3C7;
+            color: #92400E;
+            border: 1px solid #FDE68A;
+        }
+
+        .pub-title {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.35rem;
+            line-height: 1.35;
+        }
+        .pub-meta {
+            font-size: 0.825rem;
+            color: var(--text-muted);
+            margin-bottom: 0.65rem;
+        }
+        .pub-details-snippet {
+            font-size: 0.82rem;
+            color: #475569;
+            background: #F8FAFC;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            line-height: 1.45;
+        }
+
+        .pub-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.85rem;
+            margin-top: auto;
+        }
+        .stock-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.825rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .stock-in {
+            color: #15803D;
+        }
+        .stock-in .stock-dot {
+            background: #22C55E;
+            box-shadow: 0 0 0 2px #DCFCE7;
+        }
+        .stock-out {
+            color: #94A3B8;
+        }
+        .stock-out .stock-dot {
+            background: #94A3B8;
+        }
+
+        .btn-view-detail {
+            border: 1px solid var(--border-color);
+            background: var(--bg-surface, #FFFFFF);
+            color: var(--text-main);
+            font-size: 0.825rem;
+            font-weight: 600;
+            padding: 0.4rem 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+        .btn-view-detail:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+
+        /* Table View */
+        .catalog-table-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-subtle);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            background: #F8FAFC;
+            padding: 0.95rem 1.25rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+        td {
+            padding: 1rem 1.25rem;
+            font-size: 0.885rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: #F8FAFC; }
+
+        .site-footer {
+            background: #FFFFFF;
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: auto;
+        }
+
+        /* --- DARK MODE OVERRIDES FOR CATALOG --- */
+        [data-bs-theme="dark"] {
+            --bg-app: #0F172A;
+            --surface: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: #334155;
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+        }
+
+        [data-bs-theme="dark"] body {
+            background-color: var(--bg-app) !important;
+            color: var(--text-main) !important;
+        }
+
+        [data-bs-theme="dark"] .site-navbar {
+            background: rgba(15, 23, 42, 0.96) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .brand-logo {
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .nav-search-wrap,
+        [data-bs-theme="dark"] .nav-search-input {
+            background: #1E293B !important;
+            color: #F8FAFC !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .nav-chip,
+        [data-bs-theme="dark"] .nav-view-btn {
+            background: #1E293B !important;
+            color: #F8FAFC !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .user-pill {
+            background: #1E293B !important;
+            color: #F8FAFC !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .user-pill:hover {
+            background: #334155 !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-menu {
+            background-color: #1E293B !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-item {
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-item:hover {
+            background-color: #334155 !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-user-header {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-user-name {
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-user-header .text-secondary {
+            color: #94A3B8 !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-user-header strong.text-primary {
+            color: #38BDF8 !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-user-header .badge.bg-primary-subtle {
+            background-color: rgba(56, 189, 248, 0.15) !important;
+            color: #38BDF8 !important;
+            border-color: rgba(56, 189, 248, 0.3) !important;
+        }
+
+        [data-bs-theme="dark"] .dropdown-user-header .badge.bg-secondary-subtle {
+            background-color: rgba(148, 163, 184, 0.15) !important;
+            color: #CBD5E1 !important;
+            border-color: rgba(148, 163, 184, 0.3) !important;
+        }
+
+        [data-bs-theme="dark"] .theme-switch-wrapper {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .pub-card,
+        [data-bs-theme="dark"] .table-card {
+            background: #1E293B !important;
+            border-color: var(--border-color) !important;
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .filter-toolbar {
+            background: #1E293B !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        [data-bs-theme="dark"] .search-input {
+            background: #0F172A !important;
+            color: #F8FAFC !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        [data-bs-theme="dark"] .search-input::placeholder {
+            color: #94A3B8 !important;
+        }
+
+        [data-bs-theme="dark"] .search-wrap i {
+            color: #94A3B8 !important;
+        }
+
+        [data-bs-theme="dark"] .filter-chip {
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #CBD5E1 !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        [data-bs-theme="dark"] .filter-chip:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+
+        [data-bs-theme="dark"] .filter-chip.active {
+            background: var(--primary) !important;
+            color: #FFFFFF !important;
+            border-color: var(--primary) !important;
+        }
+
+        [data-bs-theme="dark"] .view-switch-btn {
+            background: transparent !important;
+            color: #94A3B8 !important;
+            border-color: transparent !important;
+        }
+
+        [data-bs-theme="dark"] .view-switch-btn:hover {
+            color: #FFFFFF !important;
+        }
+
+        [data-bs-theme="dark"] .view-switch-btn.active {
+            background: rgba(54, 164, 247, 0.2) !important;
+            color: #38BDF8 !important;
+            border-color: rgba(54, 164, 247, 0.3) !important;
+            box-shadow: none !important;
+        }
+
+        [data-bs-theme="dark"] .view-switch-wrapper,
+        [data-bs-theme="dark"] .bg-light {
+            background: #0F172A !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        [data-bs-theme="dark"] .catalog-badge,
+        [data-bs-theme="dark"] .bg-white {
+            background: #1E293B !important;
+            color: #F8FAFC !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        [data-bs-theme="dark"] .text-dark {
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .book-cover-stage {
+            background: #0F172A !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        [data-bs-theme="dark"] .btn-view-detail {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.14) !important;
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .btn-view-detail:hover {
+            background: rgba(54, 164, 247, 0.2) !important;
+            border-color: var(--primary) !important;
+            color: #38BDF8 !important;
+        }
+
+        [data-bs-theme="dark"] .profile-avatar-circle {
+            background: rgba(56, 189, 248, 0.15) !important;
+            border-color: rgba(56, 189, 248, 0.3) !important;
+            color: #38BDF8 !important;
+        }
+
+        [data-bs-theme="dark"] .pub-title {
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .pub-details-snippet {
+            background: #0F172A !important;
+            color: #CBD5E1 !important;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .catalog-table th {
+            background: #1E293B !important;
+            color: #94A3B8 !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .catalog-table td {
+            background: #1E293B !important;
+            color: #F8FAFC !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .catalog-table tr:hover td {
+            background: #334155 !important;
+        }
+
+        [data-bs-theme="dark"] .site-footer {
+            background: #0F172A !important;
+            border-color: var(--border-color) !important;
+            color: #94A3B8 !important;
+        }
+
+        [data-bs-theme="dark"] .modal-content {
+            background: #1E293B !important;
+            color: #F8FAFC !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .modal-content .text-dark {
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .modal-content .bg-light {
+            background: #0F172A !important;
+            color: #CBD5E1 !important;
+        }
+
+        /* Ẩn dấu caret mũi tên thứ hai trên user-pill */
+        .user-pill::after,
+        .user-pill.dropdown-toggle::after {
+            display: none !important;
+            content: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. NAVBAR -->
+    <header class="site-navbar">
+        <div class="container-fluid px-lg-5 py-2 d-flex justify-content-between align-items-center">
+            <a href="/" class="brand-logo flex-shrink-0">
+                <div class="brand-icon">
+                    <i class="bi bi-book-half"></i>
+                </div>
+                <span>Thư Viện Số</span>
+            </a>
+
+            <!-- THANH TÌM KIẾM & BỘ LỌC CHÌM LÊN NAVBAR TRÊN CÙNG KHI CUỘN -->
+            <div class="nav-middle-tools" id="navMiddleTools">
+                <form action="/catalog" method="get" class="m-0" id="navSearchForm">
+                    <div class="nav-search-wrap">
+                        <i class="bi bi-search text-muted"></i>
+                        <input type="text" name="keyword" id="navSearchInput" class="nav-search-input" 
+                               th:value="${keyword}" 
+                               placeholder="Tìm nhanh tài liệu...">
+                    </div>
+                </form>
+
+                <!-- Dropdown lọc thể loại gọn gàng theo yêu cầu người dùng -->
+                <div class="dropdown">
+                    <button class="nav-chip dropdown-toggle" type="button" id="navCategoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel text-primary"></i>
+                        <span th:text="${selectedType == 'BOOK' ? 'Sách chuyên ngành' : (selectedType == 'MAGAZINE' ? 'Tạp chí & Ấn phẩm' : 'Tất cả')}">Tất cả</span>
+                    </button>
+                    <ul class="dropdown-menu shadow-sm" aria-labelledby="navCategoryDropdown" style="border-radius: 12px; border: 1px solid var(--border-color);">
+                        <li><a class="dropdown-item" th:classappend="${selectedType == 'ALL' or selectedType == null} ? 'active' : ''" th:href="@{/catalog(keyword=${keyword})}"><i class="bi bi-grid-fill me-2 text-muted"></i> Tất cả</a></li>
+                        <li><a class="dropdown-item" th:classappend="${selectedType == 'BOOK'} ? 'active' : ''" th:href="@{/catalog(type='BOOK', keyword=${keyword})}"><i class="bi bi-book me-2 text-muted"></i> Sách chuyên ngành</a></li>
+                        <li><a class="dropdown-item" th:classappend="${selectedType == 'MAGAZINE'} ? 'active' : ''" th:href="@{/catalog(type='MAGAZINE', keyword=${keyword})}"><i class="bi bi-newspaper me-2 text-muted"></i> Tạp chí & Ấn phẩm</a></li>
+                    </ul>
+                </div>
+
+                <!-- Nút chuyển chế độ hiển thị (Lưới / Bảng) kèm tooltip chú thích khi trỏ vào -->
+                <div class="d-none d-xl-flex align-items-center ms-1">
+                    <button type="button" class="nav-view-btn" id="navViewToggleBtn" onclick="toggleCatalogView()" 
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Chuyển sang chế độ xem dạng Bảng">
+                        <i class="bi bi-table" id="navViewToggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Links: Không rớt dòng (nowrap) -->
+            <div class="d-flex align-items-center flex-shrink-0" style="white-space: nowrap; gap: 0.85rem;">
+                <!-- Nút Trang chủ kèm icon -->
+                <a href="/" class="nav-btn nav-btn-primary">
+                    <i class="bi bi-house-door-fill"></i>
+                    <span>Trang chủ</span>
+                </a>
+
+                <!-- Khi CHƯA đăng nhập -->
+                <div sec:authorize="isAnonymous()" class="d-flex align-items-center gap-1.5 ms-1">
+                    <a href="/login" class="nav-btn nav-btn-ghost">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span class="d-none d-sm-inline">Đăng nhập</span>
+                    </a>
+                </div>
+
+                <!-- Khi ĐÃ đăng nhập: Chỉ hiện ảnh mặt người dùng và mũi tên nhỏ trên mobile -->
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center ms-1">
+                    <div class="dropdown">
+                        <a href="#" class="user-pill text-decoration-none d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.35rem 0.75rem; gap: 0.55rem;">
+                            <div class="profile-avatar-circle" style="width: 28px; height: 28px; border-radius: 50%; background: #EFF6FF; color: #36A4F7; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; border: 1px solid #BAE0FD; flex-shrink: 0;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <span class="d-none d-md-inline fw-semibold" style="font-size: 0.85rem;" th:text="${#authentication.principal instanceof T(com.library.config.CustomUserDetails) ? #authentication.principal.fullName : #authentication.name}">admin</span>
+                            <i class="bi bi-chevron-down text-muted" style="font-size: 0.65rem;"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="min-width: 240px; border-radius: 12px; border: 1px solid var(--border-color); padding: 0.5rem 0;">
+                            <li class="px-3 py-2 mb-1 dropdown-user-header">
+                                <div class="fw-bold small dropdown-user-name" th:text="${#authentication.principal instanceof T(com.library.config.CustomUserDetails) ? #authentication.principal.fullName : #authentication.name}">admin</div>
+                                <div class="d-flex align-items-center justify-content-between mt-1" style="font-size: 0.76rem;">
+                                    <span class="text-secondary">Mã: <strong class="text-primary font-mono" th:text="${#authentication.principal instanceof T(com.library.config.CustomUserDetails) ? #authentication.principal.readerCode : 'DG-0001'}">DG-0001</strong></span>
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle" sec:authorize="hasRole('READER')">Độc giả</span>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle" sec:authorize="hasRole('ADMIN')">Quản lý</span>
+                                </div>
+                            </li>
+                            <li class="px-2">
+                                <div class="theme-switch-wrapper d-flex align-items-center justify-content-between p-2 rounded-2">
+                                    <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem; font-weight: 500;">
+                                        <i id="themeIcon" class="bi bi-sun text-muted fs-6"></i>
+                                        <span id="themeLabel">Nền sáng</span>
+                                    </div>
+                                    <div class="form-check form-switch m-0">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="themeToggleCheckbox" style="cursor: pointer;">
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item py-1.5 px-3 small d-flex align-items-center gap-2" href="/dashboard">
+                                    <i class="bi bi-speedometer2 text-primary"></i>
+                                    <span>Bảng điều khiển</span>
+                                </a>
+                            </li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item py-1.5 px-3 small d-flex align-items-center gap-2" href="/documents">
+                                    <i class="bi bi-bookshelf text-primary"></i>
+                                    <span>Quản lý kho tài liệu</span>
+                                </a>
+                            </li>
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item py-1.5 px-3 small d-flex align-items-center gap-2" href="/users">
+                                    <i class="bi bi-people text-primary"></i>
+                                    <span>Quản lý độc giả</span>
+                                </a>
+                            </li>
+                            <li sec:authorize="hasRole('READER')">
+                                <a class="dropdown-item py-1.5 px-3 small d-flex align-items-center gap-2" href="/borrow/history">
+                                    <i class="bi bi-journal-check text-primary"></i>
+                                    <span>Lịch sử mượn trả</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-1.5 px-3 small d-flex align-items-center gap-2" href="/profile">
+                                    <i class="bi bi-gear text-secondary"></i>
+                                    <span>Cài đặt tài khoản</span>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="dropdown-item py-1.5 px-3 small text-danger d-flex align-items-center gap-2 border-0 bg-transparent w-100 text-start">
+                                        <i class="bi bi-power"></i>
+                                        <span>Đăng xuất</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. MAIN CATALOG CONTAINER -->
+    <main class="catalog-container">
+        <div class="page-header-box d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h1 class="page-title">Kho Tài Liệu & Ấn Phẩm Thư Viện</h1>
+                <p class="page-desc">Khám phá và tra cứu toàn bộ sách chuyên ngành, tạp chí học thuật và tài liệu nghiên cứu hiện có.</p>
+            </div>
+            <div>
+                <span class="badge catalog-badge px-3 py-2 rounded-pill fw-bold border shadow-sm">
+                    <i class="bi bi-collection text-primary me-1"></i>
+                    Tổng cộng <strong th:text="${#lists.size(documents)}">0</strong> tài liệu
+                </span>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-toolbar">
+            <form action="/catalog" method="GET" class="m-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div class="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
+                        <div class="search-wrap">
+                            <i class="bi bi-search"></i>
+                            <input type="text" name="keyword" th:value="${keyword}" class="search-input" placeholder="Lọc nhanh tên sách, tác giả, nhà xuất bản...">
+                        </div>
+
+                        <div class="filter-chips">
+                            <a th:href="@{/catalog(keyword=${keyword})}" 
+                               th:class="'filter-chip ' + (${selectedType == 'ALL' or selectedType == null} ? 'active' : '')">
+                                <i class="bi bi-grid-fill"></i> Tất cả
+                            </a>
+                            <a th:href="@{/catalog(type='BOOK', keyword=${keyword})}" 
+                               th:class="'filter-chip ' + (${selectedType == 'BOOK'} ? 'active' : '')">
+                                <i class="bi bi-book"></i> Sách chuyên ngành
+                            </a>
+                            <a th:href="@{/catalog(type='MAGAZINE', keyword=${keyword})}" 
+                               th:class="'filter-chip ' + (${selectedType == 'MAGAZINE'} ? 'active' : '')">
+                                <i class="bi bi-newspaper"></i> Tạp chí & Ấn phẩm
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Switch Views -->
+                    <div class="d-flex align-items-center gap-1 border p-1 rounded-2 view-switch-wrapper">
+                        <button type="button" id="btnViewGrid" class="view-switch-btn active" onclick="switchView('grid')" title="Dạng Lưới Thẻ Sách">
+                            <i class="bi bi-grid-fill me-1"></i> Lưới
+                        </button>
+                        <button type="button" id="btnViewTable" class="view-switch-btn" onclick="switchView('table')" title="Dạng Bảng Danh Mục">
+                            <i class="bi bi-table me-1"></i> Bảng
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- 1. GRID VIEW -->
+        <div id="catalogGridView" class="pub-grid">
+            <div th:each="doc : ${documents}" 
+                 class="pub-card" 
+                 th:data-type="${doc.documentType.name().toLowerCase()}"
+                 th:data-available="${doc.isAvailable()}"
+                 onclick="handleCardClick(this, event)">
+                
+                <div>
+                    <!-- Khung bìa sách đứng căn giữa tuyệt đối -->
+                    <div class="book-cover-stage">
+                        <!-- Ảnh bìa dọc nếu có -->
+                        <img th:if="${doc.imageUrl != null and !doc.imageUrl.isEmpty()}" 
+                             th:src="${doc.imageUrl}" 
+                             th:alt="${doc.title}" 
+                             class="book-cover-img" 
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <!-- 3D Tactile Cover Spine Metaphor (Dự phòng khi ảnh lỗi hoặc không có ảnh) -->
+                        <div th:class="'book-cover-preview ' + (${doc.documentType.name() == 'MAGAZINE'} ? 'magazine-cover' : '')"
+                             th:style="${doc.imageUrl != null and !doc.imageUrl.isEmpty()} ? 'display: none;' : 'display: flex;'">
+                            <div class="book-spine-line"></div>
+                            <div class="cover-content">
+                                <span class="cover-badge" th:text="${doc.documentType.name() == 'BOOK' ? 'SÁCH' : 'TẠP CHÍ'}"></span>
+                                <div class="cover-title" th:text="${doc.title}">Tên tài liệu</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meta & Details -->
+                    <span th:class="'pub-type-badge ' + (${doc.documentType.name() == 'BOOK'} ? 'type-book' : 'type-magazine')"
+                          th:text="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"></span>
+
+                    <h3 class="pub-title" th:text="${doc.title}">Tên ấn phẩm</h3>
+                    <p class="pub-meta">
+                        <i class="bi bi-building"></i> <span th:text="${doc.publisher}">NXB</span> • 
+                        <span th:text="${doc.publishYear}">2026</span>
+                    </p>
+                    <p class="pub-details-snippet" th:text="${doc.getDocumentDetails()}">Thông tin chi tiết</p>
+                </div>
+
+                <!-- Footer & Actions -->
+                <div class="pub-footer">
+                    <div th:class="'stock-indicator ' + (${doc.isAvailable()} ? 'stock-in' : 'stock-out')">
+                        <span class="stock-dot"></span>
+                        <span th:text="${doc.isAvailable()} ? ('Còn ' + ${doc.quantity} + ' cuốn') : 'Tạm hết'"></span>
+                    </div>
+
+                    <button type="button" class="btn-view-detail" 
+                            th:data-title="${doc.title}"
+                            th:data-type="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"
+                            th:data-publisher="${doc.publisher}"
+                            th:data-year="${doc.publishYear}"
+                            th:data-quantity="${doc.quantity}"
+                            th:data-details="${doc.getDocumentDetails()}"
+                            th:data-code="${doc.getIdentifierCode()}"
+                            th:data-image="${doc.imageUrl}"
+                            th:data-summary="${doc.getSummary()}"
+                            onclick="openDocModal(this)">
+                        Chi tiết
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 2. TABLE VIEW -->
+        <div id="catalogTableView" class="catalog-table-card d-none">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tài liệu</th>
+                            <th>Thể loại</th>
+                            <th>Mã định danh</th>
+                            <th>Nhà xuất bản</th>
+                            <th>Năm XB</th>
+                            <th>Tồn kho</th>
+                            <th>Trạng thái</th>
+                            <th style="text-align: right;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(documents)}">
+                            <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+                                Không tìm thấy tài liệu phù hợp.
+                            </td>
+                        </tr>
+                        <tr th:each="doc : ${documents}">
+                            <td>
+                                <strong th:text="${doc.title}" style="color: var(--text-main);">Tên tài liệu</strong>
+                                <div class="text-secondary small" th:text="${doc.getDocumentDetails()}">Chi tiết</div>
+                            </td>
+                            <td>
+                                <span th:class="'pub-type-badge ' + (${doc.documentType.name() == 'BOOK'} ? 'type-book' : 'type-magazine')"
+                                      th:text="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"></span>
+                            </td>
+                            <td>
+                                <code class="text-dark small px-1.5 py-0.5 rounded bg-light border" th:text="${doc.getIdentifierCode()}">ISBN</code>
+                            </td>
+                            <td th:text="${doc.publisher}">NXB</td>
+                            <td th:text="${doc.publishYear}">2026</td>
+                            <td><strong th:text="${doc.quantity}">5</strong> cuốn</td>
+                            <td>
+                                <span th:class="'stock-indicator ' + (${doc.isAvailable()} ? 'stock-in' : 'stock-out')">
+                                    <span class="stock-dot"></span>
+                                    <span th:text="${doc.isAvailable()} ? 'Sẵn sàng' : 'Tạm hết'"></span>
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <button type="button" class="btn-view-detail" 
+                                        th:data-title="${doc.title}"
+                                        th:data-type="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"
+                                        th:data-publisher="${doc.publisher}"
+                                        th:data-year="${doc.publishYear}"
+                                        th:data-quantity="${doc.quantity}"
+                                        th:data-details="${doc.getDocumentDetails()}"
+                                        th:data-code="${doc.getIdentifierCode()}"
+                                        th:data-image="${doc.imageUrl}"
+                                        th:data-summary="${doc.getSummary()}"
+                                        onclick="openDocModal(this)">
+                                    Xem chi tiết
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${documents == null or documents.isEmpty()}" class="text-center py-5">
+            <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
+            <h4>Không tìm thấy tài liệu nào!</h4>
+            <p class="text-muted">Thử tìm kiếm với từ khóa khác hoặc quay lại danh sách toàn bộ.</p>
+            <a href="/catalog" class="nav-btn nav-btn-primary mt-2">Xem tất cả tài liệu</a>
+        </div>
+    </main>
+
+    <!-- Modal Chi Tiết Tài Liệu (Bao gồm ảnh bìa và đoạn preview tóm tắt nội dung) -->
+    <div class="modal fade" id="docDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius: 18px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                <div class="modal-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span id="modalTypeBadge" class="pub-type-badge type-book">Sách</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Cột Trái: Ảnh bìa sách & Trạng thái tồn kho -->
+                        <div class="col-12 col-md-4 text-center">
+                            <div class="position-relative mx-auto" style="max-width: 220px;">
+                                <img id="modalCoverImg" src="" alt="Bìa sách" 
+                                     class="img-fluid rounded-3 shadow-sm" 
+                                     style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border: 1px solid var(--border-color); background: #f8fafc; display: block;" 
+                                     onerror="this.src='/images/clean_code.jpg'" />
+                            </div>
+
+                            <div class="mt-3 p-2.5 bg-light rounded-3 border text-start">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-muted small">Mã định danh:</span>
+                                    <strong id="modalCode" class="text-dark small fw-bold"></strong>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small">Tồn kho khả dụng:</span>
+                                    <strong id="modalQuantity" class="text-primary small fw-bold"></strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cột Phải: Thông tin chi tiết, Đoạn Preview tóm tắt và Thông số -->
+                        <div class="col-12 col-md-8">
+                            <h4 id="modalTitle" class="fw-bold mb-1 text-dark" style="letter-spacing: -0.01em; line-height: 1.3;">Tên tài liệu</h4>
+                            <p class="text-muted small mb-3">
+                                <span id="modalPublisher"></span> • Năm xuất bản: <span id="modalYear"></span>
+                            </p>
+
+                            <!-- PHẦN NỘI DUNG CƠ BẢN (PREVIEW TÓM TẮT SÁCH NÓI VỀ GÌ) THEO YÊU CẦU -->
+                            <div class="p-3 rounded-3 mb-3" style="background: #F8FAFC; border: 1px solid #E2E8F0; border-left: 4px solid var(--primary);">
+                                <div class="d-flex align-items-center gap-1.5 text-primary fw-bold small mb-1.5">
+                                    <i class="bi bi-card-text fs-6"></i>
+                                    <span>Tóm tắt & Giới thiệu nội dung:</span>
+                                </div>
+                                <p id="modalSummary" class="text-secondary small mb-0 lh-base" style="font-size: 0.88rem; color: #334155 !important;">
+                                    <!-- Nội dung tóm tắt sách -->
+                                </p>
+                            </div>
+
+                            <!-- Thông số kỹ thuật / chi tiết -->
+                            <div class="p-2.5 bg-light rounded-3 mb-3 border">
+                                <span class="text-secondary small d-block mb-1 fw-bold">
+                                    <i class="bi bi-info-circle me-1"></i>Thông số tài liệu:
+                                </span>
+                                <p id="modalDetails" class="mb-0 text-dark small"></p>
+                            </div>
+
+                            <!-- Cảnh báo hướng dẫn mượn sách -->
+                            <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-0" style="background: #F0F8FF; border-color: var(--primary-border); color: #0E73BD;">
+                                <i class="bi bi-info-circle-fill flex-shrink-0"></i>
+                                <span>Độc giả vui lòng xuất trình thẻ thư viện hoặc mã tài liệu tại quầy quản lý để mượn sách.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top-0 pt-0 px-4 pb-3">
+                    <button type="button" class="btn btn-light btn-sm border" data-bs-dismiss="modal">Đóng</button>
+                    <a sec:authorize="isAnonymous()" href="/login" class="btn btn-primary btn-sm" style="background: var(--primary); border-color: var(--primary);">
+                        Đăng nhập để mượn sách
+                    </a>
+                    <a sec:authorize="isAuthenticated()" href="/borrow/history" class="btn btn-primary btn-sm" style="background: var(--primary); border-color: var(--primary);">
+                        Xem giỏ mượn cá nhân
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <p class="mb-1"><strong>Thư Viện Số</strong> — Nền tảng tra cứu và quản lý thư viện điện tử thông minh</p>
+            <p class="mb-0 text-secondary small">© 2026 Thư Viện Số • Lập trình hướng đối tượng - Nhóm 9</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let currentCatalogView = 'grid';
+
+        function updateToggleBtnState(view) {
+            currentCatalogView = view;
+            const toggleBtn = document.getElementById('navViewToggleBtn');
+            const toggleIcon = document.getElementById('navViewToggleIcon');
+            if (!toggleBtn || !toggleIcon) return;
+
+            const nextViewTitle = (view === 'grid') ? 'Chuyển sang chế độ xem dạng Bảng' : 'Chuyển sang chế độ xem dạng Lưới';
+            toggleBtn.setAttribute('title', nextViewTitle);
+            toggleBtn.setAttribute('data-bs-original-title', nextViewTitle);
+            
+            const tooltipInst = bootstrap.Tooltip.getInstance(toggleBtn);
+            if (tooltipInst) {
+                tooltipInst.setContent({ '.tooltip-inner': nextViewTitle });
+            }
+
+            if (view === 'grid') {
+                toggleIcon.className = 'bi bi-table';
+            } else {
+                toggleIcon.className = 'bi bi-grid-fill';
+            }
+        }
+
+        function toggleCatalogView() {
+            const newView = (currentCatalogView === 'grid') ? 'table' : 'grid';
+            switchView(newView);
+        }
+
+        function switchView(view) {
+            currentCatalogView = view;
+            localStorage.setItem('library_catalog_view', view);
+            const gridView = document.getElementById('catalogGridView');
+            const tableView = document.getElementById('catalogTableView');
+            const btnGrid = document.getElementById('btnViewGrid');
+            const btnTable = document.getElementById('btnViewTable');
+
+            if (view === 'grid') {
+                if (gridView) gridView.classList.remove('d-none');
+                if (tableView) tableView.classList.add('d-none');
+                if (btnGrid) btnGrid.classList.add('active');
+                if (btnTable) btnTable.classList.remove('active');
+            } else {
+                if (gridView) gridView.classList.add('d-none');
+                if (tableView) tableView.classList.remove('d-none');
+                if (btnGrid) btnGrid.classList.remove('active');
+                if (btnTable) btnTable.classList.add('active');
+            }
+
+            updateToggleBtnState(view);
+
+            // Đồng bộ param ?view= trên URL mà không load lại trang
+            try {
+                const url = new URL(window.location.href);
+                url.searchParams.set('view', view);
+                window.history.replaceState({}, '', url);
+
+                // Cập nhật các liên kết tab thể loại
+                document.querySelectorAll('.filter-chips a, .dropdown-menu a').forEach(a => {
+                    if (a.href && !a.href.startsWith('javascript:')) {
+                        const aUrl = new URL(a.href, window.location.origin);
+                        aUrl.searchParams.set('view', view);
+                        a.href = aUrl.pathname + aUrl.search;
+                    }
+                });
+            } catch (err) {}
+        }
+
+        // Hiện thanh công cụ tìm kiếm và bộ lọc trên Navbar khi cuộn qua phần header / filter toolbar
+        const navMiddleTools = document.getElementById('navMiddleTools');
+        const filterToolbar = document.querySelector('.filter-toolbar');
+        
+        window.addEventListener('scroll', () => {
+            if (!filterToolbar || !navMiddleTools) return;
+            const filterBottom = filterToolbar.getBoundingClientRect().bottom;
+            if (filterBottom < 65) {
+                navMiddleTools.classList.add('show');
+            } else {
+                navMiddleTools.classList.remove('show');
+            }
+        }, { passive: true });
+
+        // Đồng bộ 2 chiều giữa ô tìm kiếm trong trang và trên Navbar
+        const pageSearchInput = document.querySelector('.filter-toolbar input[name="keyword"]');
+        const navSearchInput = document.getElementById('navSearchInput');
+        if (pageSearchInput && navSearchInput) {
+            pageSearchInput.addEventListener('input', (e) => {
+                navSearchInput.value = e.target.value;
+            });
+            navSearchInput.addEventListener('input', (e) => {
+                pageSearchInput.value = e.target.value;
+            });
+        }
+
+        // Tự động khôi phục chế độ xem đã lưu & khởi tạo Bootstrap Tooltips
+        document.addEventListener('DOMContentLoaded', () => {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const viewFromUrl = urlParams.get('view');
+                const savedView = viewFromUrl || localStorage.getItem('library_catalog_view') || 'grid';
+                switchView(savedView);
+            } catch (e) {
+                switchView('grid');
+            }
+        });
+
+        // Click vào thẻ để mở Modal chi tiết
+        function handleCardClick(cardElement, event) {
+            if (event.target.closest('a') || event.target.closest('button')) {
+                return;
+            }
+            const btn = cardElement.querySelector('.btn-view-detail');
+            if (btn) {
+                openDocModal(btn);
+            }
+        }
+
+        function handleModalImgError(img) {
+            img.src = '/images/clean_code.jpg';
+        }
+
+        function openDocModal(btn) {
+            document.getElementById('modalTitle').textContent = btn.getAttribute('data-title');
+            document.getElementById('modalPublisher').textContent = btn.getAttribute('data-publisher');
+            document.getElementById('modalYear').textContent = btn.getAttribute('data-year');
+            document.getElementById('modalDetails').textContent = btn.getAttribute('data-details');
+            document.getElementById('modalCode').textContent = btn.getAttribute('data-code');
+            document.getElementById('modalQuantity').textContent = btn.getAttribute('data-quantity') + ' cuốn';
+
+            const typeBadge = document.getElementById('modalTypeBadge');
+            const type = btn.getAttribute('data-type');
+            typeBadge.textContent = type;
+            if (type === 'Sách') {
+                typeBadge.className = 'pub-type-badge type-book';
+            } else {
+                typeBadge.className = 'pub-type-badge type-magazine';
+            }
+
+            // Ảnh bìa duy nhất
+            const coverImg = document.getElementById('modalCoverImg');
+            const imageUrl = btn.getAttribute('data-image');
+            coverImg.src = (imageUrl && imageUrl.trim() !== '') ? imageUrl : '/images/clean_code.jpg';
+            coverImg.style.display = 'block';
+
+            // Đoạn preview tóm tắt nội dung sách/tạp chí
+            const summary = btn.getAttribute('data-summary');
+            const modalSummary = document.getElementById('modalSummary');
+            if (summary && summary.trim() !== '') {
+                modalSummary.textContent = summary;
+            } else {
+                modalSummary.textContent = 'Tài liệu học thuật thuộc kho tài nguyên số của thư viện. Độc giả vui lòng liên hệ quầy quản lý để biết thêm thông tin mượn đọc chi tiết.';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('docDetailModal'));
+            modal.show();
+        }
+    </script>
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

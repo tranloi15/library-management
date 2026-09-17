@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Bảng Điều Khiển Tổng Quan - Thư Viện Số</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- 1. TIÊU ĐỀ & TÁC VỤ NHANH -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Bảng Điều Khiển & Thống Kê Thư Viện</h4>
+            <p class="text-secondary small m-0">Giám sát tổng quan tình trạng lưu hành sách, độc giả và cảnh báo nghiệp vụ</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/users}" class="btn btn-primary px-3 py-2 fw-medium small d-flex align-items-center gap-2">
+                <i class="bi bi-people"></i> Quản lý độc giả
+            </a>
+            <a th:href="@{/documents}" class="btn btn-outline-secondary px-3 py-2 fw-medium small d-flex align-items-center gap-2">
+                <i class="bi bi-bookshelf"></i> Kho tài liệu
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. HÀNG THẺ KPI TỔNG QUAN -->
+    <div class="row g-3 mb-4">
+        <!-- Tổng số tài liệu -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Tổng số đầu tài liệu</span>
+                    <div class="stat-icon"><i class="bi bi-book"></i></div>
+                </div>
+                <div class="stat-value" th:text="${totalDocuments}">10</div>
+                <div class="stat-trend positive">
+                    <i class="bi bi-check2"></i> <span th:text="${totalBooks} + ' Sách • ' + ${totalMagazines} + ' Tạp chí'">7 Sách • 3 Tạp chí</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sách đang được mượn -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Phiếu đang được mượn</span>
+                    <div class="stat-icon" style="color: #0284c7; background-color: rgba(2, 132, 199, 0.1);"><i class="bi bi-journal-arrow-up"></i></div>
+                </div>
+                <div class="stat-value" th:text="${activeBorrows}">2</div>
+                <div class="stat-trend">
+                    Lưu thông thời gian thực
+                </div>
+            </div>
+        </div>
+
+        <!-- Sách quá hạn chưa trả -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Sách quá hạn chưa trả</span>
+                    <div class="stat-icon" style="color: #dc2626; background-color: rgba(220, 38, 38, 0.1);"><i class="bi bi-exclamation-octagon"></i></div>
+                </div>
+                <div class="stat-value text-danger" th:text="${overdueBorrows}">1</div>
+                <div class="stat-trend danger">
+                    <i class="bi bi-exclamation-circle"></i> Cần nhắc nhở thu hồi
+                </div>
+            </div>
+        </div>
+
+        <!-- Độc giả đang hoạt động -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Độc giả thư viện</span>
+                    <div class="stat-icon" style="color: #059669; background-color: rgba(5, 150, 105, 0.1);"><i class="bi bi-people"></i></div>
+                </div>
+                <div class="stat-value" th:text="${activePatrons}">2</div>
+                <div class="stat-trend positive">
+                    <i class="bi bi-check2"></i> <span th:text="${totalPatrons} + ' hồ sơ đã kích hoạt'">Thẻ hoạt động</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. BỐ CỤC CHIA ĐÔI: HOẠT ĐỘNG MƯỢN TRẢ & CẢNH BÁO QUÁ HẠN -->
+    <div class="row g-4">
+        <!-- CỘT TRÁI (8 COLS): NHẬT KÝ LƯU HÀNH MỚI NHẤT -->
+        <div class="col-12 col-lg-8">
+            <div class="app-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="fw-bold mb-0">Hoạt động Lưu hành Mượn / Trả Gần Đây</h6>
+                        <span class="text-secondary small">Cập nhật theo thời gian thực từ cơ sở dữ liệu thư viện</span>
+                    </div>
+                    <a th:href="@{/borrow/history}" class="btn btn-sm btn-outline-primary" style="font-size: 0.78rem;">
+                        Xem lịch sử mượn <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="craft-table">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Độc giả</th>
+                                <th>Tài liệu</th>
+                                <th>Ngày mượn</th>
+                                <th>Hạn trả</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(recentRecords)}">
+                                <td colspan="6" style="text-align: center; color: var(--text-tertiary); padding: 3rem 1rem;">
+                                    Chưa có giao dịch mượn trả nào.
+                                </td>
+                            </tr>
+                            <tr th:each="rec : ${recentRecords}">
+                                <td class="code-col" th:text="'BR-' + ${rec.id}">BR-1</td>
+                                <td>
+                                    <div class="fw-medium text-primary" th:text="${rec.user != null ? rec.user.fullName : 'Độc giả'}">Nguyễn Văn An</div>
+                                    <div class="text-muted small" th:text="${rec.user != null ? rec.user.email : ''}">reader1@gmail.com</div>
+                                </td>
+                                <td>
+                                    <div class="fw-medium text-dark" th:text="${rec.document != null ? rec.document.title : 'Tài liệu'}">Clean Code</div>
+                                    <div class="text-muted small" th:text="${rec.document != null ? rec.document.publisher : ''}">Prentice Hall</div>
+                                </td>
+                                <td class="text-muted small" th:text="${rec.borrowDate != null ? #temporals.format(rec.borrowDate, 'dd/MM/yyyy') : '---'}">10/09/2026</td>
+                                <td class="small">
+                                    <span th:text="${rec.dueDate != null ? #temporals.format(rec.dueDate, 'dd/MM/yyyy') : '---'}">24/09/2026</span>
+                                    <span th:if="${rec.isOverdue()}" class="badge bg-danger-subtle text-danger ms-1" style="font-size: 0.65rem;">Quá hạn</span>
+                                </td>
+                                <td>
+                                    <span th:if="${'BORROWING'.equalsIgnoreCase(rec.status) and !rec.isOverdue()}" class="status-pill success">
+                                        <i class="bi bi-arrow-up-right"></i> Đang mượn
+                                    </span>
+                                    <span th:if="${'BORROWING'.equalsIgnoreCase(rec.status) and rec.isOverdue()}" class="status-pill danger">
+                                        <i class="bi bi-exclamation-circle"></i> Trễ hạn
+                                    </span>
+                                    <span th:if="${'RETURNED'.equalsIgnoreCase(rec.status)}" class="status-pill info">
+                                        <i class="bi bi-check-all"></i> Đã trả
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TỶ LỆ PHÂN BỔ TÀI LIỆU -->
+            <div class="app-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">Cơ Cấu Danh Mục Tài Liệu Thư Viện</h6>
+                    <span class="text-muted small" th:text="${totalDocuments} + ' tổng số đầu'">10 tổng số</span>
+                </div>
+                <div class="d-flex flex-column gap-3">
+                    <div>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="fw-medium"><i class="bi bi-book text-primary me-1"></i> Sách Giáo Trình & Tham Khảo Chuyên Ngành</span>
+                            <span class="text-muted" th:text="${totalBooks} + ' đầu sách (' + (${totalDocuments > 0 ? (totalBooks * 100 / totalDocuments) : 0}) + '%)'">7 đầu</span>
+                        </div>
+                        <div class="craft-progress">
+                            <div class="progress-bar bg-primary" th:style="'width: ' + (${totalDocuments > 0 ? (totalBooks * 100 / totalDocuments) : 70}) + '%;'"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="fw-medium"><i class="bi bi-newspaper text-warning me-1"></i> Tạp Chí & Ấn Phẩm Định Kỳ</span>
+                            <span class="text-muted" th:text="${totalMagazines} + ' tạp chí (' + (${totalDocuments > 0 ? (totalMagazines * 100 / totalDocuments) : 0}) + '%)'">3 tạp chí</span>
+                        </div>
+                        <div class="craft-progress">
+                            <div class="progress-bar" th:style="'width: ' + (${totalDocuments > 0 ? (totalMagazines * 100 / totalDocuments) : 30}) + '%; background-color: #f59e0b;'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI (4 COLS): CẢNH BÁO QUÁ HẠN & THAO TÁC NHANH -->
+        <div class="col-12 col-lg-4">
+            <!-- CẢNH BÁO QUÁ HẠN -->
+            <div class="app-card mb-4 border-danger-subtle">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                        <h6 class="fw-bold mb-0 text-danger">Cảnh Báo Quá Hạn</h6>
+                    </div>
+                    <span class="badge bg-danger-subtle text-danger" style="font-size: 0.72rem;" th:text="${overdueBorrows} + ' phiếu'">1 phiếu</span>
+                </div>
+                <p class="text-secondary small mb-3">Các tài liệu đã quá thời hạn quy định. Quản lý cần kiểm tra và gửi thông báo nhắc trả.</p>
+
+                <div class="d-flex flex-column gap-2 mb-3">
+                    <div th:if="${#lists.isEmpty(overdueRecords)}" class="p-3 text-center text-muted small bg-light rounded-2 border">
+                        <i class="bi bi-check-circle text-success fs-5 d-block mb-1"></i>
+                        Không có phiếu mượn nào bị quá hạn!
+                    </div>
+
+                    <div th:each="ov : ${overdueRecords}" class="p-2 border rounded-2 bg-body-tertiary">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="fw-semibold small" th:text="${ov.user != null ? ov.user.fullName : 'Độc giả'}">Độc giả</div>
+                            <span class="status-pill danger" style="font-size: 0.65rem;" th:text="'Trễ ' + ${ov.getOverdueDays()} + ' ngày'">Trễ ngày</span>
+                        </div>
+                        <div class="text-muted small mt-1" th:text="${ov.document != null ? ov.document.title : 'Sách'}">Tên sách</div>
+                        <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                            <span class="text-danger small fw-medium" th:text="'Hạn trả: ' + ${#temporals.format(ov.dueDate, 'dd/MM/yyyy')}">Hạn trả</span>
+                            <a th:href="@{/users}" class="btn btn-xs btn-outline-danger py-0 px-2" style="font-size: 0.72rem;">Kiểm tra hồ sơ</a>
+                        </div>
+                    </div>
+                </div>
+
+                <a th:href="@{/users}" class="btn btn-sm btn-outline-danger w-100" style="font-size: 0.8rem;">
+                    Quản lý danh sách độc giả <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <!-- THAO TÁC NHANH QUẢN LÝ -->
+            <div class="app-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">Tác Vụ Nhanh</h6>
+                    <span class="text-muted small">Phím tắt</span>
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+                    <a th:href="@{/users/new}" class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-3 p-2 bg-primary-subtle text-primary">
+                                <i class="bi bi-person-plus-fill"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold small text-dark">Cấp thẻ độc giả mới</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Tạo tài khoản và cấp quyền mượn</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                    </a>
+
+                    <a th:href="@{/catalog}" class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-3 p-2 bg-success-subtle text-success">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold small text-dark">Tra cứu kho tài liệu</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Kiểm tra số lượng và vị trí sách</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                    </a>
+
+                    <a th:href="@{/}" class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-3 p-2 bg-info-subtle text-info">
+                                <i class="bi bi-globe"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold small text-dark">Cổng thông tin bạn đọc</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">Trang chủ công cộng của thư viện</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

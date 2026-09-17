@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Quản Lý Hồ Sơ Độc Giả - Thư Viện Số</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- 1. TIÊU ĐỀ & NÚT TÁC VỤ NHANH -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Quản Lý Hồ Sơ Độc Giả (Patrons)</h4>
+            <p class="text-secondary small m-0">Cấp mới thẻ thư viện, theo dõi hạn mức mượn và kiểm soát quyền mượn sách</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-primary px-3 py-2 fw-medium small d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addPatronModal" type="button">
+                <i class="bi bi-person-plus"></i> Cấp thẻ độc giả mới
+            </button>
+            <a th:href="@{/users/new}" class="btn btn-outline-secondary px-3 py-2 fw-medium small d-flex align-items-center gap-2">
+                <i class="bi bi-box-arrow-up-right"></i> Mở trang chi tiết
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. HÀNG THỐNG KÊ KPI NHANH -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-4">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background: var(--accent-light); color: var(--accent-primary); width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Tổng số độc giả</div>
+                    <h5 class="fw-bold m-0" th:text="${#lists.size(readers)}">0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background: #ECFDF5; color: #10B981; width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Đang hoạt động</div>
+                    <h5 class="fw-bold m-0 text-success" th:text="${#lists.size(readers.?[active == true])}">0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background: #FEF2F2; color: #EF4444; width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-lock-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Bị tạm khóa</div>
+                    <h5 class="fw-bold m-0 text-danger" th:text="${#lists.size(readers.?[active == false])}">0</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. BỘ LỌC TÌM KIẾM ĐỘC GIẢ -->
+    <div class="app-card p-3 mb-4">
+        <form th:action="@{/users}" method="get" class="m-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                    <div class="position-relative" style="min-width: 260px; flex-grow: 1;">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" name="keyword" th:value="${keyword}" class="form-control form-control-sm ps-5 py-2" placeholder="Tìm theo Mã thẻ, Họ tên, Email, Số điện thoại...">
+                    </div>
+
+                    <button type="submit" class="btn btn-sm btn-primary px-3 py-2 fw-semibold">
+                        <i class="bi bi-search"></i> Tìm kiếm
+                    </button>
+                    <a th:href="@{/users}" th:if="${keyword != null and !keyword.isEmpty()}" class="btn btn-sm btn-outline-secondary px-3 py-2">
+                        <i class="bi bi-x-circle"></i> Xóa lọc
+                    </a>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 text-secondary small">
+                    <span>Hiển thị: <strong class="text-dark" th:text="${#lists.size(readers)}">0</strong> kết quả</span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 4. BẢNG DANH SÁCH ĐỘC GIẢ (CRAFT UI TABLE) -->
+    <div class="app-card p-0 overflow-hidden mb-4">
+        <div class="table-responsive">
+            <table class="craft-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Độc giả</th>
+                        <th>Tài khoản / Email</th>
+                        <th>Mã thẻ / Username</th>
+                        <th>Số điện thoại</th>
+                        <th>Ngày sinh</th>
+                        <th>Trạng thái thẻ</th>
+                        <th style="width: 140px; text-align: right;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(readers)}">
+                        <td colspan="8" style="text-align: center; color: var(--text-tertiary); padding: 3.5rem 1.5rem;">
+                            <i class="bi bi-people text-secondary fs-1 d-block mb-2"></i>
+                            <span>Chưa có độc giả nào hoặc không tìm thấy kết quả phù hợp.</span>
+                        </td>
+                    </tr>
+                    <tr th:each="r, stat : ${readers}">
+                        <td th:text="${stat.count}">1</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm flex-shrink-0"
+                                     style="width: 34px; height: 34px; background: linear-gradient(135deg, #36A4F7 0%, #0E73BD 100%); font-size: 0.85rem;"
+                                     th:text="${#strings.substring(r.fullName, 0, 1)}">N</div>
+                                <div>
+                                    <div class="fw-semibold text-primary" th:text="${r.fullName}">Nguyễn Văn An</div>
+                                    <div class="text-muted small" th:text="${r.address != null ? r.address : 'Hà Nội'}">Hà Nội</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="fw-medium text-dark small" th:text="${r.email}">reader1@gmail.com</span>
+                        </td>
+                        <td>
+                            <span class="craft-code" th:text="${r.username}">reader1@gmail.com</span>
+                        </td>
+                        <td class="small" th:text="${r.phone != null ? r.phone : '---'}">0912345678</td>
+                        <td class="small" th:text="${r.dateOfBirth != null ? #temporals.format(r.dateOfBirth, 'dd/MM/yyyy') : '---'}">20/08/1998</td>
+                        <td>
+                            <span th:class="'status-pill ' + (${r.active} ? 'success' : 'danger')">
+                                <i th:class="'bi ' + (${r.active} ? 'bi-check2' : 'bi-lock')"></i>
+                                <span th:text="${r.active ? 'Hoạt động' : 'Tạm khóa'}">Hoạt động</span>
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <div class="d-inline-flex gap-1 align-items-center">
+                                <a th:href="@{'/users/' + ${r.id} + '/edit'}" class="btn-ghost-action" title="Chỉnh sửa thông tin">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form th:action="@{'/users/' + ${r.id} + '/toggle-status'}" method="post" class="d-inline m-0"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này?');">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" 
+                                            th:class="'btn-ghost-action ' + (${r.active} ? 'text-danger' : 'text-success')"
+                                            th:title="${r.active ? 'Khóa thẻ độc giả' : 'Kích hoạt lại thẻ'}">
+                                        <i th:class="'bi ' + (${r.active} ? 'bi-lock' : 'bi-unlock')"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. MODAL CẤP THẺ ĐỘC GIẢ MỚI (TÍCH HỢP TỪ PREVIEW) -->
+    <div class="modal fade" id="addPatronModal" tabindex="-1" aria-labelledby="addPatronModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-bottom px-4 py-3">
+                    <h5 class="modal-title fw-bold" id="addPatronModalLabel">
+                        <i class="bi bi-person-plus text-primary me-1"></i> Cấp Thẻ Độc Giả Mới
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/users/new}" method="post" class="m-0">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Họ và tên độc giả <span class="text-danger">*</span></label>
+                            <input type="text" name="fullName" class="form-control" placeholder="Ví dụ: Nguyễn Văn Hoàng" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Email tài khoản <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" placeholder="Ví dụ: hoang.nv@library.com" required>
+                            <div class="form-text small">Tài khoản và mật khẩu mặc định (123456) sẽ được khởi tạo tự động.</div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Số điện thoại</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="09xxxxxxxx">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Ngày sinh</label>
+                                <input type="date" name="dateOfBirth" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Địa chỉ / Lớp / Khoa</label>
+                            <input type="text" name="address" class="form-control" placeholder="Ví dụ: Khoa CNTT - Lớp D21CNTT">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top px-4 py-3">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-sm btn-primary px-3 fw-semibold">
+                            <i class="bi bi-check-lg"></i> Cấp thẻ ngay
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

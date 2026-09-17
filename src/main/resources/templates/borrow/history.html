@@ -22,54 +22,57 @@
     </div>
 
     <!-- TÓM TẮT CHỈ SỐ MƯỢN TRẢ (KPI STRIP) -->
-    <div class="row g-3 mb-4">
-        <div class="col-sm-6 col-lg-3">
-            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+    <div class="row g-2 g-sm-3 mb-3 mb-sm-4">
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1">Đang giữ mượn</span>
-                    <span class="fs-4 fw-bold font-mono" th:text="${activeBorrowCount != null ? activeBorrowCount : 2}">2</span>
-                    <span class="text-secondary small ms-1">/ 5 cuốn tối đa</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">Đang giữ mượn</span>
+                    <span class="fs-5 fs-sm-4 fw-bold font-mono" th:text="${activeBorrowCount != null ? activeBorrowCount : 2}">2</span>
+                    <span class="text-secondary small ms-1 d-none d-sm-inline">/ 5 cuốn tối đa</span>
+                    <span class="text-secondary small ms-1 d-inline d-sm-none">/ 5</span>
                 </div>
-                <div class="p-2 rounded bg-light border text-primary">
+                <div class="p-1.5 p-sm-2 rounded bg-light border text-primary flex-shrink-0">
                     <i class="bi bi-book fs-5"></i>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-6 col-lg-3">
-            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1">Cảnh báo quá hạn</span>
-                    <span class="fs-4 fw-bold text-danger font-mono" th:text="${overdueCount != null ? overdueCount : 1}">1</span>
-                    <span class="text-danger small ms-1">cuốn trễ hạn</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">Quá hạn</span>
+                    <span class="fs-5 fs-sm-4 fw-bold text-danger font-mono" th:text="${overdueCount != null ? overdueCount : 1}">1</span>
+                    <span class="text-danger small ms-1 d-none d-sm-inline">cuốn trễ hạn</span>
+                    <span class="text-danger small ms-1 d-inline d-sm-none">cuốn trễ</span>
                 </div>
-                <div class="p-2 rounded bg-danger-subtle border border-danger-subtle text-danger">
+                <div class="p-1.5 p-sm-2 rounded bg-danger-subtle border border-danger-subtle text-danger flex-shrink-0">
                     <i class="bi bi-exclamation-triangle fs-5"></i>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-6 col-lg-3">
-            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1">Tổng sách đã trả</span>
-                    <span class="fs-4 fw-bold font-mono" th:text="${returnedCount != null ? returnedCount : 12}">12</span>
-                    <span class="text-secondary small ms-1">lượt hoàn thành</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">Đã trả</span>
+                    <span class="fs-5 fs-sm-4 fw-bold font-mono" th:text="${returnedCount != null ? returnedCount : 12}">12</span>
+                    <span class="text-secondary small ms-1 d-none d-sm-inline">lượt hoàn thành</span>
+                    <span class="text-secondary small ms-1 d-inline d-sm-none">lượt xong</span>
                 </div>
-                <div class="p-2 rounded bg-light border text-success">
+                <div class="p-1.5 p-sm-2 rounded bg-light border text-success flex-shrink-0">
                     <i class="bi bi-check2-all fs-5"></i>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-6 col-lg-3">
-            <div class="app-card p-3 d-flex align-items-center justify-content-between">
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1">Phạt trễ hạn tạm tính</span>
-                    <span class="fs-4 fw-bold text-danger font-mono" th:text="${fineAmount != null ? fineAmount : '10.000'}">10.000</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">Phạt tạm tính</span>
+                    <span class="fs-5 fs-sm-4 fw-bold text-danger font-mono" th:text="${fineAmount != null ? fineAmount : '10.000'}">10.000</span>
                     <span class="text-secondary small ms-1">VNĐ</span>
                 </div>
-                <div class="p-2 rounded bg-light border text-secondary">
+                <div class="p-1.5 p-sm-2 rounded bg-light border text-secondary flex-shrink-0">
                     <i class="bi bi-cash-coin fs-5"></i>
                 </div>
             </div>
@@ -77,19 +80,19 @@
     </div>
 
     <!-- KHỐI NỘI DUNG 2 TAB CHUYỂN ĐỔI -->
-    <div class="app-card p-4">
-        <!-- Tab Headers -->
-        <ul class="nav custom-nav-tabs mb-4" id="borrowHistoryTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active d-flex align-items-center gap-2" id="current-tab" 
+    <div class="app-card p-2 p-sm-4">
+        <!-- Tab Headers (1 dòng cuộn ngang mượt mà trên mobile) -->
+        <ul class="nav custom-nav-tabs flex-nowrap overflow-x-auto mb-3 mb-sm-4 pb-1" id="borrowHistoryTab" role="tablist" style="scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+            <li class="nav-item flex-shrink-0" role="presentation">
+                <button class="nav-link active d-flex align-items-center gap-2 text-nowrap" id="current-tab" 
                         data-bs-toggle="tab" data-bs-target="#current-tab-pane" type="button" role="tab">
                     <i class="bi bi-journal-arrow-down"></i> 
                     <span>Sách đang mượn</span>
                     <span class="status-pill warning" style="font-size: 0.7rem;">2 cuốn</span>
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link d-flex align-items-center gap-2" id="returned-tab" 
+            <li class="nav-item flex-shrink-0" role="presentation">
+                <button class="nav-link d-flex align-items-center gap-2 text-nowrap" id="returned-tab" 
                         data-bs-toggle="tab" data-bs-target="#returned-tab-pane" type="button" role="tab">
                     <i class="bi bi-check2-circle"></i> 
                     <span>Lịch sử đã trả</span>
@@ -105,23 +108,23 @@
                 <div class="row g-4">
                     <!-- Cuốn 1: Đang mượn (Bình thường, còn 4 ngày) -->
                     <div class="col-lg-6">
-                        <div class="app-card p-3 border">
-                            <div class="d-flex gap-3">
-                                <div class="book-cover-thumb" style="position: relative; width: 84px; height: 122px; min-width: 84px; max-width: 84px; overflow: hidden; flex-shrink: 0;">
+                        <div class="app-card p-2.5 p-sm-3 border">
+                            <div class="d-flex gap-2 gap-sm-3">
+                                <div class="book-cover-thumb">
                                     <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80" 
-                                         alt="cover" class="book-cover-img" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                                         alt="cover" class="book-cover-img">
                                 </div>
                                 <div class="flex-grow-1 min-w-0">
-                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
-                                        <h6 class="fw-semibold mb-0 text-truncate" title="Lập trình Hướng đối tượng với Java">Lập trình Hướng đối tượng với Java</h6>
+                                    <div class="d-flex justify-content-between align-items-start gap-1 gap-sm-2 mb-1 flex-wrap">
+                                        <h6 class="fw-semibold mb-0 text-truncate flex-grow-1" style="font-size: 0.92rem;" title="Lập trình Hướng đối tượng với Java">Lập trình Hướng đối tượng với Java</h6>
                                         <span class="status-pill info flex-shrink-0">
                                             <span class="status-dot"></span> Còn 4 ngày
                                         </span>
                                     </div>
-                                    <div class="text-secondary small mb-2">Trần Nhật Nam • Mã mượn: <span class="craft-code">#BR-1049</span></div>
-                                    <div class="d-flex justify-content-between small text-secondary mb-2">
-                                        <span>Ngày mượn: <strong class="font-mono">01/09/2026</strong></span>
-                                        <span>Hạn trả: <strong class="font-mono text-dark">15/09/2026</strong></span>
+                                    <div class="text-secondary small mb-1 mb-sm-2" style="font-size: 0.78rem;">Trần Nhật Nam • Mã: <span class="craft-code">#BR-1049</span></div>
+                                    <div class="d-flex justify-content-between small text-secondary mb-2 flex-wrap gap-1" style="font-size: 0.78rem;">
+                                        <span>Mượn: <strong class="font-mono">01/09/2026</strong></span>
+                                        <span>Hạn: <strong class="font-mono text-dark">15/09/2026</strong></span>
                                     </div>
                                     
                                     <!-- Progress bar -->
@@ -147,23 +150,23 @@
 
                     <!-- Cuốn 2: Quá hạn mượn (Báo động đỏ) -->
                     <div class="col-lg-6">
-                        <div class="app-card p-3 border border-danger-subtle" style="background: rgba(239, 68, 68, 0.02);">
-                            <div class="d-flex gap-3">
-                                <div class="book-cover-thumb" style="position: relative; width: 84px; height: 122px; min-width: 84px; max-width: 84px; overflow: hidden; flex-shrink: 0;">
+                        <div class="app-card p-2.5 p-sm-3 border border-danger-subtle" style="background: rgba(239, 68, 68, 0.02);">
+                            <div class="d-flex gap-2 gap-sm-3">
+                                <div class="book-cover-thumb">
                                     <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80" 
-                                         alt="cover" class="book-cover-img" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                                         alt="cover" class="book-cover-img">
                                 </div>
                                 <div class="flex-grow-1 min-w-0">
-                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
-                                        <h6 class="fw-semibold mb-0 text-truncate text-danger" title="Cấu trúc Dữ liệu & Giải thuật">Cấu trúc Dữ liệu & Giải thuật</h6>
+                                    <div class="d-flex justify-content-between align-items-start gap-1 gap-sm-2 mb-1 flex-wrap">
+                                        <h6 class="fw-semibold mb-0 text-truncate text-danger flex-grow-1" style="font-size: 0.92rem;" title="Cấu trúc Dữ liệu & Giải thuật">Cấu trúc Dữ liệu & Giải thuật</h6>
                                         <span class="status-pill danger flex-shrink-0">
                                             <span class="status-dot"></span> Trễ 2 ngày
                                         </span>
                                     </div>
-                                    <div class="text-secondary small mb-2">Lê Minh Nam • Mã mượn: <span class="craft-code">#BR-0992</span></div>
-                                    <div class="d-flex justify-content-between small text-secondary mb-2">
-                                        <span>Ngày mượn: <strong class="font-mono">28/08/2026</strong></span>
-                                        <span>Hạn trả: <strong class="font-mono text-danger">11/09/2026</strong></span>
+                                    <div class="text-secondary small mb-1 mb-sm-2" style="font-size: 0.78rem;">Lê Minh Nam • Mã: <span class="craft-code">#BR-0992</span></div>
+                                    <div class="d-flex justify-content-between small text-secondary mb-2 flex-wrap gap-1" style="font-size: 0.78rem;">
+                                        <span>Mượn: <strong class="font-mono">28/08/2026</strong></span>
+                                        <span>Hạn: <strong class="font-mono text-danger">11/09/2026</strong></span>
                                     </div>
 
                                     <!-- Progress bar đỏ -->
@@ -177,7 +180,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-danger-subtle">
+                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-danger-subtle flex-wrap gap-1">
                                         <span class="small text-danger fw-semibold" style="font-size: 0.76rem;">
                                             <i class="bi bi-cash-coin me-1"></i> Phạt: 10.000 VNĐ
                                         </span>

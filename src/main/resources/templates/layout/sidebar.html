@@ -1,67 +1,100 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <aside class="app-sidebar" th:fragment="sidebar">
-    <!-- Brand Title -->
-    <a th:href="@{/}" class="sidebar-brand">
-        <div class="brand-icon">
-            <i class="bi bi-book"></i>
-        </div>
-        <div class="d-flex flex-column">
-            <span class="brand-title">N09 LIBRARY</span>
-            <span class="text-muted" style="font-size: 0.65rem; letter-spacing: 0.06em;">THƯ VIỆN ĐIỆN TỬ</span>
-        </div>
-    </a>
+    <!-- Brand Title & Mobile Close -->
+    <div class="sidebar-header d-flex align-items-center justify-content-between">
+        <a th:href="@{/}" class="sidebar-brand flex-grow-1 border-0">
+            <div class="brand-icon">
+                <i class="bi bi-book-half"></i>
+            </div>
+            <div class="d-flex flex-column brand-text-wrap">
+                <span class="brand-title">Thư Viện Số</span>
+                <span class="text-muted" style="font-size: 0.65rem; letter-spacing: 0.06em;">THƯ VIỆN ĐIỆN TỬ</span>
+            </div>
+        </a>
+        <button type="button" class="btn btn-sm d-lg-none me-2 text-secondary" id="btnCloseSidebarMobile" aria-label="Đóng menu" style="border: none; background: transparent; padding: 0.35rem 0.5rem;">
+            <i class="bi bi-x-lg fs-5"></i>
+        </button>
+    </div>
 
     <!-- Menu Links -->
     <ul class="sidebar-menu">
-        <li class="menu-category">TỔNG QUAN</li>
-        <li class="menu-item" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">
-            <a th:href="@{/dashboard}" class="menu-link">
-                <i class="bi bi-grid-1x2"></i>
-                <span>Bảng điều khiển</span>
+        <!-- 1. CHỈ HIỂN THỊ VỚI ADMIN / QUẢN LÝ (ẨN VỚI ĐỘC GIẢ) -->
+        <th:block sec:authorize="hasRole('ADMIN')">
+            <li class="menu-category">TỔNG QUAN</li>
+            <li class="menu-item" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">
+                <a th:href="@{/dashboard}" class="menu-link" title="Bảng điều khiển">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Bảng điều khiển</span>
+                </a>
+            </li>
+
+            <li class="menu-category">QUẢN LÝ TÀI LIỆU</li>
+            <li class="menu-item" th:classappend="${activeMenu == 'documents' ? 'active' : ''}">
+                <a th:href="@{/documents}" class="menu-link" title="Kho Sách & Tạp chí">
+                    <i class="bi bi-bookshelf"></i>
+                    <span>Kho Sách & Tạp chí</span>
+                </a>
+            </li>
+            <li class="menu-item" th:classappend="${activeMenu == 'borrow' ? 'active' : ''}">
+                <a th:href="@{/borrow/list}" class="menu-link" title="Mượn / Trả tài liệu">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Mượn / Trả tài liệu</span>
+                </a>
+            </li>
+            <li class="menu-item" th:classappend="${activeMenu == 'users' ? 'active' : ''}">
+                <a th:href="@{/users}" class="menu-link" title="Hồ sơ Độc giả">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Hồ sơ Độc giả</span>
+                </a>
+            </li>
+
+            <li class="menu-category">PHÂN TÍCH & BÁO CÁO</li>
+            <li class="menu-item" th:classappend="${activeMenu == 'reports' ? 'active' : ''}">
+                <a th:href="@{/reports}" class="menu-link" title="Báo cáo Thống kê">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Báo cáo Thống kê</span>
+                </a>
+            </li>
+        </th:block>
+
+        <!-- 2. KHÁM PHÁ DÀNH CHO TẤT CẢ / ĐỘC GIẢ -->
+        <li class="menu-category">KHÁM PHÁ THƯ VIỆN</li>
+        <li class="menu-item" th:classappend="${activeMenu == 'catalog' ? 'active' : ''}">
+            <a th:href="@{/catalog}" class="menu-link" title="Kho tài liệu trực tuyến">
+                <i class="bi bi-grid-fill"></i>
+                <span>Kho tài liệu</span>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a th:href="@{/}" class="menu-link" title="Trang chủ">
+                <i class="bi bi-house"></i>
+                <span>Trang chủ</span>
             </a>
         </li>
 
-        <li class="menu-category">QUẢN LÝ TÀI LIỆU</li>
-        <li class="menu-item" th:classappend="${activeMenu == 'documents' ? 'active' : ''}">
-            <a th:href="@{/}" class="menu-link">
-                <i class="bi bi-bookshelf"></i>
-                <span>Kho Sách & Tạp chí</span>
-            </a>
-        </li>
-        <li class="menu-item" th:classappend="${activeMenu == 'borrow' ? 'active' : ''}">
-            <a th:href="@{/borrow/list}" class="menu-link">
-                <i class="bi bi-arrow-left-right"></i>
-                <span>Mượn / Trả tài liệu</span>
-            </a>
-        </li>
-        <li class="menu-item" th:classappend="${activeMenu == 'users' ? 'active' : ''}">
-            <a th:href="@{/users}" class="menu-link">
-                <i class="bi bi-person-lines-fill"></i>
-                <span>Hồ sơ Độc giả</span>
-            </a>
-        </li>
-
-        <li class="menu-category">PHÂN TÍCH & BÁO CÁO</li>
-        <li class="menu-item" th:classappend="${activeMenu == 'reports' ? 'active' : ''}">
-            <a th:href="@{/reports}" class="menu-link">
-                <i class="bi bi-bar-chart"></i>
-                <span>Báo cáo Thống kê</span>
-            </a>
-        </li>
+        <!-- 3. DANH MỤC CÁ NHÂN -->
+        <li class="menu-category">DANH MỤC CÁ NHÂN</li>
         <li class="menu-item" th:classappend="${activeMenu == 'history' ? 'active' : ''}">
-            <a th:href="@{/borrow/history}" class="menu-link">
+            <a th:href="@{/borrow/history}" class="menu-link" title="Sách tôi đang mượn">
                 <i class="bi bi-clock-history"></i>
                 <span>Sách tôi đang mượn</span>
+            </a>
+        </li>
+        <li class="menu-item" th:classappend="${activeMenu == 'profile' ? 'active' : ''}">
+            <a th:href="@{/profile}" class="menu-link" title="Cài đặt tài khoản">
+                <i class="bi bi-person-gear"></i>
+                <span>Cài đặt tài khoản</span>
             </a>
         </li>
     </ul>
 
     <div class="sidebar-footer">
         <div class="d-flex justify-content-between align-items-center">
-            <span>BTL OOP • Học viện PTIT</span>
-            <span class="badge bg-light text-muted border" style="font-size: 0.65rem;">v1.0</span>
+            <span class="footer-team">Thư Viện Số • Nhóm 9</span>
+            <span class="badge sidebar-version-badge" style="font-size: 0.65rem;">v1.0</span>
         </div>
     </div>
 </aside>

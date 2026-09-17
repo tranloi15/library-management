@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Quản Lý Kho Tài Liệu - Thư Viện Số</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- 1. TIÊU ĐỀ & NÚT TÁC VỤ NHANH -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Quản Lý Kho Tài Liệu (Documents & Books)</h4>
+            <p class="text-secondary small m-0">Kiểm kê danh mục, tra cứu mã định danh (ISBN/Kỳ), theo dõi tồn kho và điều chỉnh số lượng</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-primary px-3 py-2 fw-medium small d-flex align-items-center gap-2" 
+                    data-bs-toggle="modal" data-bs-target="#addDocModal" type="button">
+                <i class="bi bi-plus-lg"></i> Thêm tài liệu mới
+            </button>
+            <a th:href="@{/catalog}" target="_blank" class="btn btn-outline-secondary px-3 py-2 fw-medium small d-flex align-items-center gap-2">
+                <i class="bi bi-box-arrow-up-right"></i> Xem giao diện độc giả
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. HÀNG THẺ KPI TỒN KHO THỜI GIAN THỰC -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" 
+                     style="background: rgba(54, 164, 247, 0.12); color: #0284C7; width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-bookshelf"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Tổng đầu tài liệu</div>
+                    <h5 class="fw-bold m-0" th:text="${totalDocuments}">0</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;" th:text="${totalBooks} + ' Sách • ' + ${totalMagazines} + ' Tạp chí'">0 Sách • 0 Tạp chí</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" 
+                     style="background: #F0FDF4; color: #16A34A; width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-stack"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Tổng bản lưu kho</div>
+                    <h5 class="fw-bold m-0 text-success" th:text="${totalStockQuantity} + ' cuốn'">0 cuốn</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;">Số lượng lưu thông thực tế</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" 
+                     style="background: #EFF6FF; color: #2563EB; width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Đầu sách sẵn sàng</div>
+                    <h5 class="fw-bold m-0 text-primary" th:text="${inStockCount}">0</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;">Còn sách trong kho</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" 
+                     style="background: #FEF2F2; color: #DC2626; width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Tạm hết kho</div>
+                    <h5 class="fw-bold m-0 text-danger" th:text="${outOfStockCount}">0</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;">Cần tái nhập bản lưu</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. BỘ LỌC TÌM KIẾM NÂNG CAO CHO QUẢN LÝ -->
+    <div class="app-card p-3 mb-4">
+        <form th:action="@{/documents}" method="get" class="m-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                    <div class="position-relative" style="min-width: 280px; flex-grow: 1;">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" name="keyword" th:value="${keyword}" 
+                               class="form-control form-control-sm ps-5 py-2" 
+                               placeholder="Tìm theo Mã tài liệu, Tên sách, ISBN, Tác giả, Nhà xuất bản...">
+                    </div>
+
+                    <select name="type" class="form-select form-select-sm py-2" style="width: 170px;">
+                        <option value="ALL" th:selected="${selectedType == 'ALL'}">Tất cả phân loại</option>
+                        <option value="BOOK" th:selected="${selectedType == 'BOOK'}">Sách chuyên ngành</option>
+                        <option value="MAGAZINE" th:selected="${selectedType == 'MAGAZINE'}">Tạp chí & Ấn phẩm</option>
+                    </select>
+
+                    <select name="status" class="form-select form-select-sm py-2" style="width: 160px;">
+                        <option value="ALL" th:selected="${selectedStatus == 'ALL'}">Tất cả tình trạng</option>
+                        <option value="IN_STOCK" th:selected="${selectedStatus == 'IN_STOCK'}">Chỉ còn trong kho</option>
+                        <option value="OUT_OF_STOCK" th:selected="${selectedStatus == 'OUT_OF_STOCK'}">Tạm hết kho</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-sm btn-primary px-3 py-2 fw-semibold">
+                        <i class="bi bi-funnel"></i> Lọc
+                    </button>
+                    <a th:href="@{/documents}" th:if="${(keyword != null and !keyword.isEmpty()) or selectedType != 'ALL' or selectedStatus != 'ALL'}" 
+                       class="btn btn-sm btn-outline-secondary px-3 py-2">
+                        <i class="bi bi-x-circle"></i> Bỏ lọc
+                    </a>
+                </div>
+
+                <div class="text-secondary small">
+                    Hiển thị <strong th:text="${#lists.size(documents)}" class="text-dark">0</strong> tài liệu
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 4. BẢNG DỮ LIỆU TÀI LIỆU CHUYÊN DỤNG CHO QUẢN LÝ (HIỆN RÕ MÃ TÀI LIỆU) -->
+    <div class="app-card p-0 overflow-hidden mb-4">
+        <div class="table-responsive">
+            <table class="craft-table align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 170px;">Mã Tài Liệu</th>
+                        <th style="min-width: 280px;">Tài liệu / Tác phẩm</th>
+                        <th style="width: 120px;">Phân loại</th>
+                        <th>Thông số chi tiết</th>
+                        <th style="width: 120px;">Tồn kho</th>
+                        <th style="width: 130px;">Trạng thái</th>
+                        <th style="width: 110px; text-align: right;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="doc : ${documents}">
+                        <!-- CỘT 1: MÃ TÀI LIỆU & MÃ ĐỊNH DANH (HIỆN NỔI BẬT THEO YÊU CẦU) -->
+                        <td>
+                            <div class="d-flex flex-column gap-1">
+                                <span class="craft-code font-mono" style="font-size: 0.78rem; background: #EFF6FF; color: #1D4ED8; font-weight: 700; width: fit-content;"
+                                      th:text="'#DOC-' + ${doc.id}">#DOC-1</span>
+                                <span class="badge bg-light text-dark border font-mono text-start" style="font-size: 0.74rem;" 
+                                      th:text="${doc.getIdentifierCode()}">978-604-012</span>
+                            </div>
+                        </td>
+
+                        <!-- CỘT 2: BÌA SÁCH & TÊN TÀI LIỆU -->
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img th:src="${doc.imageUrl != null and !doc.imageUrl.isEmpty() ? doc.imageUrl : '/images/clean_code.jpg'}" 
+                                     alt="Bìa" 
+                                     class="rounded-2 border flex-shrink-0 shadow-xs" 
+                                     style="width: 44px; height: 58px; object-fit: cover; background: #f8fafc;"
+                                     onerror="this.src='/images/clean_code.jpg'" />
+                                <div>
+                                    <div class="fw-semibold text-dark mb-0.5" style="font-size: 0.92rem; line-height: 1.3;" th:text="${doc.title}">Tên sách</div>
+                                    <div class="text-secondary small" style="font-size: 0.78rem;">
+                                        <span th:text="${doc.publisher}">NXB</span> • Năm <span th:text="${doc.publishYear}">2024</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- CỘT 3: PHÂN LOẠI -->
+                        <td>
+                            <span th:if="${doc.documentType.name() == 'BOOK'}" 
+                                  class="badge px-2 py-1" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; font-size: 0.72rem;">
+                                <i class="bi bi-book me-1"></i> Sách
+                            </span>
+                            <span th:if="${doc.documentType.name() == 'MAGAZINE'}" 
+                                  class="badge px-2 py-1" style="background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; font-size: 0.72rem;">
+                                <i class="bi bi-newspaper me-1"></i> Tạp chí
+                            </span>
+                        </td>
+
+                        <!-- CỘT 4: THÔNG SỐ CHI TIẾT -->
+                        <td>
+                            <div class="small text-secondary" style="font-size: 0.8rem; line-height: 1.4;" th:text="${doc.getDocumentDetails()}">
+                                Tác giả: GS. Trần Nhật Nam | Số trang: 380 | Thể loại: CNTT
+                            </div>
+                        </td>
+
+                        <!-- CỘT 5: TỒN KHO -->
+                        <td>
+                            <span class="fw-bold font-mono" style="font-size: 0.95rem;" 
+                                  th:classappend="${doc.quantity == 0 ? 'text-danger' : (doc.quantity <= 2 ? 'text-warning' : 'text-dark')}"
+                                  th:text="${doc.quantity} + ' cuốn'">8 cuốn</span>
+                        </td>
+
+                        <!-- CỘT 6: TRẠNG THÁI -->
+                        <td>
+                            <span th:if="${doc.quantity > 2}" class="status-pill success" style="font-size: 0.72rem;">
+                                <span class="status-dot"></span> Sẵn sàng
+                            </span>
+                            <span th:if="${doc.quantity > 0 and doc.quantity <= 2}" class="status-pill warning" style="font-size: 0.72rem;">
+                                <span class="status-dot"></span> Còn ít
+                            </span>
+                            <span th:if="${doc.quantity == 0}" class="status-pill danger" style="font-size: 0.72rem;">
+                                <span class="status-dot"></span> Tạm hết
+                            </span>
+                        </td>
+
+                        <!-- CỘT 7: THAO TÁC NGHIỆP VỤ -->
+                        <td style="text-align: right;">
+                            <div class="d-inline-flex align-items-center gap-1">
+                                <!-- Nút điều chỉnh tồn kho nhanh -->
+                                <button type="button" class="btn-ghost-action text-primary btn-open-stock" 
+                                        th:data-doc-id="${doc.id}"
+                                        th:data-doc-title="${doc.title}"
+                                        th:data-doc-quantity="${doc.quantity}"
+                                        title="Điều chỉnh số lượng tồn kho">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </button>
+                                
+                                <!-- Nút xóa với Modal xác nhận an toàn -->
+                                <form th:action="@{/documents/{id}/delete(id=${doc.id})}" method="post" class="d-inline m-0">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="button" class="btn-ghost-action text-danger btn-delete-confirm" 
+                                            th:data-action="@{/documents/{id}/delete(id=${doc.id})}"
+                                            th:data-item-name="${doc.title}" 
+                                            title="Xóa tài liệu">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${documents == null or documents.isEmpty()}">
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bi bi-search fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                            <h6 class="fw-semibold text-dark">Không tìm thấy tài liệu phù hợp</h6>
+                            <p class="small text-secondary mb-3">Vui lòng thử lại với từ khóa khác hoặc xóa bộ lọc</p>
+                            <a th:href="@{/documents}" class="btn btn-sm btn-outline-primary">Xem tất cả tài liệu</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. MODAL THÊM TÀI LIỆU MỚI (TÁCH BIỆT TAB SÁCH & TẠP CHÍ) -->
+    <div class="modal fade" id="addDocModal" tabindex="-1" aria-labelledby="addDocModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius: 16px; border: 1px solid var(--border-hairline); box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header px-4 pt-4 pb-2 border-0">
+                    <div>
+                        <h5 class="modal-title fw-bold" id="addDocModalLabel">Thêm Tài Liệu Mới Vào Thư Viện</h5>
+                        <p class="text-secondary small mb-0">Nhập đầy đủ thông tin ấn phẩm để hệ thống cấp mã và quản lý lưu kho</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body px-4 py-3">
+                    <!-- Nav Tabs Chọn Loại Ấn Phẩm -->
+                    <ul class="nav nav-pills mb-3 p-1 bg-light rounded-3" id="docTypeTab" role="tablist">
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link active w-100 fw-semibold text-center small py-2" id="book-tab" 
+                                    data-bs-toggle="pill" data-bs-target="#tabBook" type="button" role="tab">
+                                <i class="bi bi-book me-1"></i> Thêm Sách Chuyên Khảo
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link w-100 fw-semibold text-center small py-2" id="magazine-tab" 
+                                    data-bs-toggle="pill" data-bs-target="#tabMagazine" type="button" role="tab">
+                                <i class="bi bi-newspaper me-1"></i> Thêm Tạp Chí & Ấn Phẩm
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="docTypeTabContent">
+                        <!-- TAB 1: THÊM SÁCH -->
+                        <div class="tab-pane fade show active" id="tabBook" role="tabpanel">
+                            <form th:action="@{/documents/add-book}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label small fw-semibold">Tên sách / Tiêu đề <span class="text-danger">*</span></label>
+                                        <input type="text" name="title" class="form-control form-control-sm" required placeholder="Nhập tên đầu sách">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-semibold">Mã ISBN <span class="text-danger">*</span></label>
+                                        <input type="text" name="isbn" class="form-control form-control-sm font-mono" required placeholder="vd: 978-604-012">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-semibold">Tác giả <span class="text-danger">*</span></label>
+                                        <input type="text" name="author" class="form-control form-control-sm" required placeholder="vd: GS. Trần Nhật Nam">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-semibold">Thể loại <span class="text-danger">*</span></label>
+                                        <input type="text" name="genre" class="form-control form-control-sm" required placeholder="vd: Công nghệ thông tin">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-semibold">Nhà xuất bản</label>
+                                        <input type="text" name="publisher" class="form-control form-control-sm" value="NXB Bưu Điện">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-semibold">Năm xuất bản</label>
+                                        <input type="number" name="publishYear" class="form-control form-control-sm" value="2024">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small fw-semibold">Số trang</label>
+                                        <input type="number" name="pageCount" class="form-control form-control-sm" value="350">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-semibold">Số lượng nhập <span class="text-danger">*</span></label>
+                                        <input type="number" name="quantity" class="form-control form-control-sm" value="5" min="1" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small fw-semibold">Đường dẫn ảnh bìa (URL)</label>
+                                        <input type="text" name="imageUrl" class="form-control form-control-sm" placeholder="https://images.unsplash.com/... hoặc để trống dùng ảnh mặc định">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small fw-semibold">Đoạn preview tóm tắt nội dung</label>
+                                        <textarea name="summary" rows="2" class="form-control form-control-sm" placeholder="Tóm tắt ngắn gọn nội dung cuốn sách nói về chủ đề gì..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="text-end mt-4 pt-3 border-top">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 me-2" data-bs-dismiss="modal">Hủy bỏ</button>
+                                    <button type="submit" class="btn btn-sm btn-primary px-4">Lưu Sách Mới</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- TAB 2: THÊM TẠP CHÍ -->
+                        <div class="tab-pane fade" id="tabMagazine" role="tabpanel">
+                            <form th:action="@{/documents/add-magazine}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label small fw-semibold">Tên tạp chí / Ấn phẩm <span class="text-danger">*</span></label>
+                                        <input type="text" name="title" class="form-control form-control-sm" required placeholder="vd: Tạp chí Khoa học & Công nghệ Thông tin">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-semibold">Nhà xuất bản</label>
+                                        <input type="text" name="publisher" class="form-control form-control-sm" value="NXB Khoa Học Tự Nhiên">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-semibold">Số phát hành <span class="text-danger">*</span></label>
+                                        <input type="number" name="issueNumber" class="form-control form-control-sm" value="1" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-semibold">Tháng phát hành (1-12)</label>
+                                        <input type="number" name="publishMonth" class="form-control form-control-sm" value="8" min="1" max="12">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-semibold">Năm phát hành</label>
+                                        <input type="number" name="publishYear" class="form-control form-control-sm" value="2026">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-semibold">Số lượng nhập <span class="text-danger">*</span></label>
+                                        <input type="number" name="quantity" class="form-control form-control-sm" value="10" min="1" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small fw-semibold">Đường dẫn ảnh bìa (URL)</label>
+                                        <input type="text" name="imageUrl" class="form-control form-control-sm" placeholder="https://... hoặc để trống">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small fw-semibold">Tóm tắt chuyên mục</label>
+                                        <textarea name="summary" rows="2" class="form-control form-control-sm" placeholder="Giới thiệu nội dung trọng tâm của số tạp chí này..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="text-end mt-4 pt-3 border-top">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary px-3 me-2" data-bs-dismiss="modal">Hủy bỏ</button>
+                                    <button type="submit" class="btn btn-sm btn-primary px-4">Lưu Tạp Chí</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. MODAL ĐIỀU CHỈNH TỒN KHO NHANH -->
+    <div class="modal fade" id="stockModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content" style="border-radius: 14px; border: 1px solid var(--border-hairline);">
+                <form id="stockForm" method="post" action="">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="modal-header py-3 px-3 border-bottom">
+                        <h6 class="modal-title fw-bold mb-0">Cập Nhật Tồn Kho</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-3">
+                        <p class="small text-secondary mb-2" id="stockDocTitle">Tên tài liệu</p>
+                        <label class="form-label small fw-semibold">Số lượng hiện có trong kho:</label>
+                        <input type="number" name="quantity" id="stockQuantityInput" class="form-control font-mono fw-bold" min="0" required>
+                    </div>
+                    <div class="modal-footer py-2 px-3 bg-light border-top">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script mở modal tồn kho -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-open-stock').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const docId = this.getAttribute('data-doc-id');
+                    const title = this.getAttribute('data-doc-title');
+                    const currentQty = this.getAttribute('data-doc-quantity');
+                    openStockModal(docId, title, currentQty);
+                });
+            });
+        });
+
+        function openStockModal(docId, title, currentQty) {
+            document.getElementById('stockDocTitle').textContent = title;
+            document.getElementById('stockQuantityInput').value = currentQty;
+            document.getElementById('stockForm').action = '/documents/' + docId + '/update-stock';
+            const modal = new bootstrap.Modal(document.getElementById('stockModal'));
+            modal.show();
+        }
+    </script>
+
+</div>
+</body>
+</html>

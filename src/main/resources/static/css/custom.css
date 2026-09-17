@@ -5,13 +5,13 @@
    Hỗ trợ: Light Theme (Mặc định) & Refined Dark Slate
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* --- 1. DESIGN TOKENS --- */
 :root {
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-heading: var(--font-sans);
-    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-mono: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
     /* Light Palette: Warm, Crisp & Editorial (Không chói, không generic) */
     --bg-app: #F8F9FA;
@@ -414,6 +414,12 @@ body {
     transition: background-color 0.2s var(--ease-standard), color 0.2s var(--ease-standard);
 }
 
+.font-mono, [class*="font-mono"] {
+    font-family: var(--font-sans) !important;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+}
+
 /* --- REFINED BUTTONS & BOOTSTRAP OVERRIDES --- */
 .btn-primary {
     background-color: var(--accent-primary) !important;
@@ -478,7 +484,12 @@ body {
     bottom: 0;
     left: 0;
     z-index: 1040;
-    transition: transform 0.25s var(--ease-standard);
+    transition: width 0.25s var(--ease-standard), transform 0.25s var(--ease-standard);
+}
+
+.sidebar-header {
+    height: 64px;
+    border-bottom: var(--border-hairline);
 }
 
 .sidebar-brand {
@@ -488,7 +499,6 @@ body {
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
-    border-bottom: var(--border-hairline);
 }
 
 .brand-icon {
@@ -586,6 +596,48 @@ body {
     color: var(--text-tertiary);
 }
 
+/* --- SIDEBAR MINI / THU NHỎ TRÊN MÀN HÌNH LỚN --- */
+body.sidebar-collapsed .app-sidebar {
+    width: 72px;
+}
+body.sidebar-collapsed .app-sidebar .brand-text-wrap,
+body.sidebar-collapsed .app-sidebar .menu-category,
+body.sidebar-collapsed .app-sidebar .menu-link span,
+body.sidebar-collapsed .app-sidebar .footer-team {
+    display: none !important;
+}
+body.sidebar-collapsed .app-sidebar .sidebar-header {
+    justify-content: center !important;
+    padding: 1.25rem 0 !important;
+}
+body.sidebar-collapsed .app-sidebar .sidebar-brand {
+    justify-content: center !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+body.sidebar-collapsed .app-sidebar .brand-icon {
+    margin: 0 auto !important;
+}
+body.sidebar-collapsed .app-sidebar .menu-link {
+    justify-content: center !important;
+    padding: 0.65rem 0 !important;
+}
+body.sidebar-collapsed .app-sidebar .menu-link i {
+    margin: 0 auto !important;
+    width: auto;
+    font-size: 1.25rem;
+}
+body.sidebar-collapsed .app-sidebar .sidebar-footer {
+    text-align: center;
+    padding: 0.85rem 0.25rem;
+}
+body.sidebar-collapsed .app-sidebar .sidebar-footer .badge {
+    display: none;
+}
+body.sidebar-collapsed .app-main {
+    margin-left: 72px;
+}
+
 /* --- 4. TOP NAVBAR (CRAFT COMMAND BAR) --- */
 .app-main {
     flex-grow: 1;
@@ -593,6 +645,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    transition: margin-left 0.25s var(--ease-standard);
 }
 
 .app-header {
@@ -743,6 +796,99 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-dropdown);
     padding: 0.4rem;
+}
+
+/* Hide default Bootstrap caret arrow on user profile pills and dropdown buttons */
+.profile-dropdown-btn::after,
+.profile-dropdown-btn.dropdown-toggle::after,
+.user-pill::after,
+.user-pill.dropdown-toggle::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* User Info Header inside Profile Dropdown */
+.dropdown-user-header {
+    background-color: var(--bg-subtle, #F8FAFC);
+    border-bottom: 1px solid var(--border-subtle, #E2E8F0);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.dropdown-user-name {
+    color: var(--text-primary, #0F172A);
+}
+
+[data-bs-theme="dark"] .dropdown-user-header {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-bs-theme="dark"] .dropdown-user-name {
+    color: #F8FAFC !important;
+}
+
+[data-bs-theme="dark"] .dropdown-user-header .text-secondary {
+    color: #94A3B8 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-user-header strong.text-primary {
+    color: #38BDF8 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-user-header .badge.bg-primary-subtle {
+    background-color: rgba(56, 189, 248, 0.15) !important;
+    color: #38BDF8 !important;
+    border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+[data-bs-theme="dark"] .dropdown-user-header .badge.bg-secondary-subtle {
+    background-color: rgba(148, 163, 184, 0.15) !important;
+    color: #CBD5E1 !important;
+    border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+/* General Dark Mode Dropdown Enhancements */
+[data-bs-theme="dark"] .dropdown-menu {
+    background-color: #121722 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item {
+    color: #CBD5E1 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover,
+[data-bs-theme="dark"] .dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    color: #FFFFFF !important;
+}
+
+[data-bs-theme="dark"] .dropdown-divider {
+    border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Fallback for any .bg-light and .text-dark inside dark mode */
+[data-bs-theme="dark"] .bg-light {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-secondary, #CBD5E1) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+    color: var(--text-primary, #F8FAFC) !important;
+}
+
+.sidebar-version-badge {
+    background-color: var(--bg-subtle, #F3F4F6);
+    color: var(--text-tertiary, #9CA3AF);
+    border: 1px solid var(--sidebar-border, #E5E7EB);
+}
+
+[data-bs-theme="dark"] .sidebar-version-badge {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    color: #64748B !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Theme Switch Segmented Control */
@@ -947,14 +1093,25 @@ body {
 /* --- CUSTOM NAV TABS (Craft UI Tabs) --- */
 .custom-nav-tabs {
     display: flex;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
     gap: 0.5rem;
     border-bottom: var(--border-hairline);
     padding-bottom: 0;
     margin-bottom: 1.5rem;
 }
 
+.custom-nav-tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge, Opera */
+}
+
 .custom-nav-tabs .nav-item {
     margin-bottom: -1px;
+    flex-shrink: 0 !important;
 }
 
 .custom-nav-tabs .nav-link {
@@ -971,6 +1128,8 @@ body {
     gap: 0.5rem;
     transition: all 0.15s ease;
     border-bottom: 2px solid transparent;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
 }
 
 .custom-nav-tabs .nav-link:hover {
@@ -1274,12 +1433,94 @@ body {
     padding: 1rem 1.5rem;
 }
 
-/* Responsive Drawer */
+/* Responsive Drawer & Mobile Overlay */
+#sidebarBackdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.5);
+    z-index: 1055;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+#sidebarBackdrop.show {
+    display: block !important;
+    opacity: 1 !important;
+}
+
 @media (max-width: 991.98px) {
-    .app-sidebar { transform: translateX(-100%); }
-    .app-sidebar.show { transform: translateX(0); }
-    .app-main { margin-left: 0; }
-    .header-search { width: 200px; }
+    .app-sidebar {
+        transform: translateX(-100%);
+        z-index: 1060;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+    }
+    .app-sidebar.show {
+        transform: translateX(0);
+    }
+    .app-main {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+    .header-search {
+        width: 200px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .content-body {
+        padding: 1rem 0.85rem;
+    }
+    .app-card {
+        padding: 1rem;
+        border-radius: var(--radius-md);
+    }
+    .app-header {
+        padding: 0 0.85rem;
+        height: 56px;
+    }
+    .header-search {
+        display: none !important;
+    }
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .stat-card {
+        padding: 0.85rem 0.95rem;
+    }
+    .stat-value {
+        font-size: 1.35rem;
+    }
+    .stat-title {
+        font-size: 0.68rem;
+    }
+    .stat-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+    }
+    .page-title {
+        font-size: 1.4rem !important;
+    }
+    .page-actions {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .page-actions .btn {
+        width: 100%;
+    }
+    .modal-dialog {
+        margin: 0.5rem;
+    }
 }
 
 /* ==========================================================================
@@ -1471,4 +1712,235 @@ body {
     border-left-color: #EF4444;
     color: #FCA5A5;
 }
+
+/* ==========================================================================
+   FAQ SECTION (CÂU HỎI THƯỜNG GẶP ACCORDION)
+   ========================================================================== */
+.faq-container {
+    max-width: 860px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+}
+.faq-item {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    margin-bottom: 14px;
+}
+.faq-item:hover {
+    border-color: #CBD5E1;
+}
+.faq-btn {
+    width: 100%;
+    background: #FFFFFF;
+    border: none;
+    padding: 1.15rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0F172A;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.faq-btn:focus,
+.faq-btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.faq-btn.collapsed {
+    color: #0F172A;
+    background: #FFFFFF;
+}
+.faq-btn.collapsed .faq-question {
+    color: #0F172A;
+}
+.faq-btn.collapsed .faq-chevron {
+    color: #94A3B8;
+    transform: rotate(0deg);
+}
+.faq-btn:not(.collapsed) {
+    background: #FFFFFF;
+    color: #2563EB;
+}
+.faq-btn:not(.collapsed) .faq-question {
+    color: #2563EB;
+}
+.faq-btn:not(.collapsed) .faq-chevron {
+    transform: rotate(180deg);
+    color: #2563EB;
+}
+.faq-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #EFF6FF;
+    color: #3B82F6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+.faq-btn:not(.collapsed) .faq-badge {
+    background: #DBEAFE;
+    color: #1D4ED8;
+}
+.faq-chevron {
+    font-size: 0.9rem;
+    color: #94A3B8;
+    transition: transform 0.25s ease, color 0.2s ease;
+    margin-left: 1rem;
+    flex-shrink: 0;
+}
+.faq-body {
+    padding: 0.25rem 1.4rem 1.35rem 3.8rem;
+    color: #475569;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    background: #FFFFFF;
+}
+.faq-body code {
+    background: #FFF1F2;
+    color: #E11D48;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+.faq-body strong {
+    color: #0F172A;
+    font-weight: 600;
+}
+@media (max-width: 576px) {
+    .faq-body {
+        padding: 0.25rem 1.25rem 1.25rem 1.25rem;
+    }
+}
+
+/* Book Cover Thumbnail in Borrow History & Circulation */
+.book-cover-thumb {
+    position: relative;
+    width: 84px;
+    min-width: 84px;
+    max-width: 84px;
+    height: 122px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+.book-cover-thumb img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 575.98px) {
+    .book-cover-thumb {
+        width: 64px !important;
+        min-width: 64px !important;
+        max-width: 64px !important;
+        height: 94px !important;
+    }
+}
+
+/* Dark Mode Book Cover Stage & View Detail Button */
+[data-bs-theme="dark"] .book-cover-stage {
+    background-color: #080B10 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-bs-theme="dark"] .btn-view-detail {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    color: #F8FAFC !important;
+}
+
+[data-bs-theme="dark"] .btn-view-detail:hover {
+    background: rgba(54, 164, 247, 0.2) !important;
+    border-color: var(--primary) !important;
+    color: #38BDF8 !important;
+}
+
+[data-bs-theme="dark"] .profile-avatar-circle {
+    background: rgba(56, 189, 248, 0.15) !important;
+    border-color: rgba(56, 189, 248, 0.3) !important;
+    color: #38BDF8 !important;
+}
+
+/* Dark Mode Catalog Filter Toolbar & Controls */
+[data-bs-theme="dark"] .filter-toolbar {
+    background-color: #1E293B !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-bs-theme="dark"] .search-input {
+    background-color: #0F172A !important;
+    color: #F8FAFC !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-bs-theme="dark"] .search-input::placeholder {
+    color: #94A3B8 !important;
+}
+
+[data-bs-theme="dark"] .filter-chip {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    color: #CBD5E1 !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-bs-theme="dark"] .filter-chip:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    color: #FFFFFF !important;
+}
+
+[data-bs-theme="dark"] .filter-chip.active {
+    background-color: var(--primary) !important;
+    color: #FFFFFF !important;
+    border-color: var(--primary) !important;
+}
+
+[data-bs-theme="dark"] .view-switch-btn {
+    background: transparent !important;
+    color: #94A3B8 !important;
+    border-color: transparent !important;
+}
+
+[data-bs-theme="dark"] .view-switch-btn:hover {
+    color: #FFFFFF !important;
+}
+
+[data-bs-theme="dark"] .view-switch-btn.active {
+    background: rgba(54, 164, 247, 0.2) !important;
+    color: #38BDF8 !important;
+    border-color: rgba(54, 164, 247, 0.3) !important;
+}
+
+[data-bs-theme="dark"] .view-switch-wrapper {
+    background-color: #0F172A !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-bs-theme="dark"] .catalog-badge {
+    background-color: #1E293B !important;
+    color: #F8FAFC !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+
+
+
 

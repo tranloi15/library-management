@@ -4,19 +4,148 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-    initThemeToggle();
-    initViewModeToggle();
-    initDeleteConfirmModal();
-    initAutoHideAlerts();
-    initMobileSidebar();
-    initKeyboardShortcuts();
+    try { initThemeToggle(); } catch (e) { console.error('Theme toggle error:', e); }
+    try { initMobileSidebar(); } catch (e) { console.error('Mobile sidebar error:', e); }
+    try { initViewModeToggle(); } catch (e) { console.error('View mode error:', e); }
+    try { initDeleteConfirmModal(); } catch (e) { console.error('Delete modal error:', e); }
+    try { initAutoHideAlerts(); } catch (e) { console.error('Alerts error:', e); }
+    try { initKeyboardShortcuts(); } catch (e) { console.error('Shortcuts error:', e); }
 
     // Dọn dẹp trạng thái bảng màu cũ nếu có, luôn giữ mặc định Sapphire Tech
     localStorage.removeItem('library_palette');
-    localStorage.removeItem('ptit_library_palette');
     document.documentElement.removeAttribute('data-theme-palette');
     document.documentElement.removeAttribute('data-theme-style');
 });
+
+/* ==========================================================================
+   1. THEME TOGGLE (LIGHT / DARK SLATE)
+   ========================================================================== */
+function initThemeToggle() {
+    const themeCheckbox = document.getElementById('themeToggleCheckbox');
+    const themeLabel = document.getElementById('themeLabel');
+    const themeIcon = document.getElementById('themeIcon');
+    const switchWrapper = document.querySelector('.theme-switch-wrapper');
+
+    // Đọc theme đã lưu, mặc định là light
+    const currentTheme = localStorage.getItem('library_theme') || 'light';
+    applyTheme(currentTheme);
+
+    if (themeCheckbox) {
+        themeCheckbox.checked = (currentTheme === 'dark');
+        themeCheckbox.addEventListener('change', function () {
+            const newTheme = this.checked ? 'dark' : 'light';
+            localStorage.setItem('library_theme', newTheme);
+            applyTheme(newTheme);
+        });
+    }
+
+    if (switchWrapper) {
+        // Ngăn sự kiện click làm đóng menu dropdown của Bootstrap
+        switchWrapper.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+    }
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        if (document.body) {
+            document.body.setAttribute('data-bs-theme', theme);
+        }
+
+        if (themeLabel) {
+            themeLabel.textContent = (theme === 'dark') ? 'Nền tối' : 'Nền sáng';
+        }
+        if (themeIcon) {
+            if (theme === 'dark') {
+                themeIcon.className = 'bi bi-moon-stars text-warning fs-6';
+            } else {
+                themeIcon.className = 'bi bi-sun text-muted fs-6';
+            }
+        }
+        if (themeCheckbox) {
+            themeCheckbox.checked = (theme === 'dark');
+        }
+    }
+}
+
+/* ==========================================================================
+   2. SIDEBAR TOGGLE (THU NHỎ TRÊN DESKTOP & MENU DRAWER TRÊN MOBILE)
+   ========================================================================== */
+function initMobileSidebar() {
+    const toggleBtn = document.getElementById('btnToggleSidebar');
+    const closeBtn = document.getElementById('btnCloseSidebarMobile');
+    const sidebar = document.querySelector('.app-sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+
+    if (!sidebar) return;
+
+    function closeMobileSidebar() {
+        sidebar.classList.remove('show');
+        if (backdrop) backdrop.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    function openMobileSidebar() {
+        sidebar.classList.add('show');
+        if (backdrop) backdrop.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Khôi phục trạng thái thu nhỏ sidebar desktop đã lưu
+    if (window.innerWidth >= 992) {
+        const isCollapsed = localStorage.getItem('library_sidebar_collapsed') === 'true';
+        if (isCollapsed) {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.innerWidth < 992) {
+                if (sidebar.classList.contains('show')) {
+                    closeMobileSidebar();
+                } else {
+                    openMobileSidebar();
+                }
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                localStorage.setItem('library_sidebar_collapsed', isCollapsed);
+            }
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            closeMobileSidebar();
+        });
+    }
+
+    if (backdrop) {
+        backdrop.addEventListener('click', function () {
+            closeMobileSidebar();
+        });
+    }
+
+    // Tự động đóng sidebar mobile khi nhấn vào bất kỳ link điều hướng nào
+    const menuLinks = sidebar.querySelectorAll('.menu-link');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            if (window.innerWidth < 992) {
+                closeMobileSidebar();
+            }
+        });
+    });
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 992) {
+            closeMobileSidebar();
+        }
+    });
+}
 
 /* ==========================================================================
    3. CHUYỂN ĐỔI CHẾ ĐỘ XEM SÁCH: THẺ LƯỚI (CARD) & BẢNG (TABLE)
@@ -57,8 +186,7 @@ function initViewModeToggle() {
 }
 
 /* ==========================================================================
-   3. MODAL XÁC NHẬN XÓA DÙNG CHUNG (SAFE CONFIRM MODAL)
-   Ngăn ngừa việc vô tình bấm xóa tài liệu hoặc độc giả
+   4. MODAL XÁC NHẬN XÓA DÙNG CHUNG (SAFE CONFIRM MODAL)
    ========================================================================== */
 function initDeleteConfirmModal() {
     const deleteModalEl = document.getElementById('deleteConfirmModal');
@@ -83,7 +211,7 @@ function initDeleteConfirmModal() {
 }
 
 /* ==========================================================================
-   4. TỰ ĐỘNG ĐÓNG THÔNG BÁO FLASH MESSAGE SAU 4.5 GIÂY
+   5. TỰ ĐỘNG ĐÓNG THÔNG BÁO FLASH MESSAGE SAU 4.5 GIÂY
    ========================================================================== */
 function initAutoHideAlerts() {
     const alerts = document.querySelectorAll('.auto-dismiss-alert');
@@ -93,29 +221,6 @@ function initAutoHideAlerts() {
             if (bsAlert) bsAlert.close();
         }, 4500);
     });
-}
-
-/* ==========================================================================
-   5. MOBILE SIDEBAR TOGGLE
-   ========================================================================== */
-function initMobileSidebar() {
-    const toggleBtn = document.getElementById('btnToggleSidebar');
-    const sidebar = document.querySelector('.app-sidebar');
-    const backdrop = document.getElementById('sidebarBackdrop');
-
-    if (!toggleBtn || !sidebar) return;
-
-    toggleBtn.addEventListener('click', function () {
-        sidebar.classList.toggle('show');
-        if (backdrop) backdrop.classList.toggle('show');
-    });
-
-    if (backdrop) {
-        backdrop.addEventListener('click', function () {
-            sidebar.classList.remove('show');
-            backdrop.classList.remove('show');
-        });
-    }
 }
 
 /* ==========================================================================
