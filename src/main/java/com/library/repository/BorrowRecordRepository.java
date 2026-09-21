@@ -27,4 +27,8 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
             ORDER BY COUNT(br.id) DESC
             """)
     List<Object[]> findTopBorrowedBooks();
+<<<<<<< HEAD
 }
+=======
+
+>>>>>>> origin/borrow-return

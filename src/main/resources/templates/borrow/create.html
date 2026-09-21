@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Lập phiếu mượn - Quản lý Thư viện</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1">
+            Lập phiếu mượn sách
+        </h4>
+
+        <p class="text-secondary small mb-0">
+            Tạo phiếu mượn tài liệu cho độc giả
+        </p>
+    </div>
+
+
+    <!-- FORM -->
+    <div class="app-card p-3 p-sm-4">
+
+        <form th:action="@{/borrow/create}"
+              method="post">
+
+            <!-- ĐỘC GIẢ -->
+            <div class="mb-3">
+
+                <label class="form-label fw-semibold">
+                    Độc giả
+                </label>
+
+                <select name="userId"
+                        class="form-select"
+                        required>
+
+                    <option value="">
+                        -- Chọn độc giả --
+                    </option>
+
+                    <option th:each="user : ${users}"
+                            th:value="${user.id}"
+                            th:text="${user.fullName}">
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SÁCH -->
+            <div class="mb-3">
+
+                <label class="form-label fw-semibold">
+                    Sách
+                </label>
+
+                <select name="bookId"
+                        class="form-select"
+                        required>
+
+                    <option value="">
+                        -- Chọn sách --
+                    </option>
+
+                    <option th:each="document : ${documents}"
+                            th:value="${document.id}"
+                            th:text="${document.title}">
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- NGÀY MƯỢN -->
+            <div class="mb-3">
+
+                <label class="form-label fw-semibold">
+                    Ngày mượn
+                </label>
+
+                <input type="date"
+                       name="borrowDate"
+                       class="form-control"
+                       th:value="${borrowDate}"
+                       required>
+
+            </div>
+
+
+            <!-- HẠN TRẢ -->
+            <div class="mb-4">
+
+                <label class="form-label fw-semibold">
+                    Hạn trả
+                </label>
+
+                <input type="date"
+                       name="dueDate"
+                       class="form-control"
+                       required>
+
+            </div>
+
+
+            <!-- BUTTON -->
+            <div class="d-flex justify-content-end gap-2">
+
+                <a th:href="@{/borrow/list}"
+                   class="btn btn-outline-secondary">
+                    Hủy
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-plus-lg"></i>
+                    Lập phiếu mượn
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

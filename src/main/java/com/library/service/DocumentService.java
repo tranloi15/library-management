@@ -1,6 +1,7 @@
 package com.library.service;
 
 import com.library.model.Book;
+import com.library.model.BorrowStatus;
 import com.library.model.Document;
 import com.library.model.DocumentType;
 import com.library.model.Magazine;
@@ -36,30 +37,38 @@ public class DocumentService {
 
     /**
      * Tìm kiếm và lọc tài liệu áp dụng đa hình OOP (Polymorphism)
-     * Tận dụng getIdentifierCode(), getDocumentDetails() và isAvailable() của các lớp con
+     * Tận dụng getIdentifierCode(), getDocumentDetails() và isAvailable() của các
+     * lớp con
      */
     public List<Document> searchDocuments(String keyword, String type, String status) {
         List<Document> allDocs = documentRepository.findAll();
 
         return allDocs.stream()
                 .filter(d -> {
-                    if (keyword == null || keyword.trim().isEmpty()) return true;
+                    if (keyword == null || keyword.trim().isEmpty())
+                        return true;
                     String k = keyword.trim().toLowerCase();
                     boolean matchTitle = d.getTitle() != null && d.getTitle().toLowerCase().contains(k);
                     boolean matchPublisher = d.getPublisher() != null && d.getPublisher().toLowerCase().contains(k);
-                    boolean matchCode = d.getIdentifierCode() != null && d.getIdentifierCode().toLowerCase().contains(k);
-                    boolean matchDetails = d.getDocumentDetails() != null && d.getDocumentDetails().toLowerCase().contains(k);
+                    boolean matchCode = d.getIdentifierCode() != null
+                            && d.getIdentifierCode().toLowerCase().contains(k);
+                    boolean matchDetails = d.getDocumentDetails() != null
+                            && d.getDocumentDetails().toLowerCase().contains(k);
                     boolean matchId = String.valueOf(d.getId()).equals(k) || ("#doc-" + d.getId()).equalsIgnoreCase(k);
                     return matchTitle || matchPublisher || matchCode || matchDetails || matchId;
                 })
                 .filter(d -> {
-                    if (type == null || type.trim().isEmpty() || "ALL".equalsIgnoreCase(type)) return true;
+                    if (type == null || type.trim().isEmpty() || "ALL".equalsIgnoreCase(type))
+                        return true;
                     return d.getDocumentType() != null && d.getDocumentType().name().equalsIgnoreCase(type.trim());
                 })
                 .filter(d -> {
-                    if (status == null || status.trim().isEmpty() || "ALL".equalsIgnoreCase(status)) return true;
-                    if ("IN_STOCK".equalsIgnoreCase(status)) return d.isAvailable();
-                    if ("OUT_OF_STOCK".equalsIgnoreCase(status)) return !d.isAvailable();
+                    if (status == null || status.trim().isEmpty() || "ALL".equalsIgnoreCase(status))
+                        return true;
+                    if ("IN_STOCK".equalsIgnoreCase(status))
+                        return d.isAvailable();
+                    if ("OUT_OF_STOCK".equalsIgnoreCase(status))
+                        return !d.isAvailable();
                     return true;
                 })
                 .toList();
@@ -110,7 +119,7 @@ public class DocumentService {
 
     @Transactional
     public void deleteDocument(Long docId) {
-        boolean isBorrowing = borrowRecordRepository.existsByBookIdAndStatus(docId, "BORROWING");
+        boolean isBorrowing = borrowRecordRepository.existsByBookIdAndStatus(docId, BorrowStatus.BORROWING);
         if (isBorrowing) {
             throw new IllegalStateException("Không thể xóa tài liệu đang có người mượn!");
         }
