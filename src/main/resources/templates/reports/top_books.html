@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Top sách - Thư Viện Số</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <a th:href="@{/reports/dashboard}"
+                   class="text-decoration-none text-muted">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+
+                <h1 class="fw-bold mb-0">
+                    Top sách được mượn nhiều nhất
+                </h1>
+            </div>
+
+            <p class="text-muted mb-0">
+                Thống kê các đầu sách có số lượt mượn cao nhất
+            </p>
+        </div>
+
+        <!-- Chọn Top 5 / Top 10 -->
+        <div class="btn-group" role="group" aria-label="Số lượng sách">
+
+            <a th:href="@{/reports/top-books(limit=5)}"
+               class="btn"
+               th:classappend="${limit == 5 ? 'btn-primary' : 'btn-outline-primary'}">
+                Top 5
+            </a>
+
+            <a th:href="@{/reports/top-books(limit=10)}"
+               class="btn"
+               th:classappend="${limit == 10 ? 'btn-primary' : 'btn-outline-primary'}">
+                Top 10
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         SUMMARY
+    ========================== -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center">
+
+                <div class="rounded-circle bg-primary bg-opacity-10
+                            text-primary d-flex align-items-center
+                            justify-content-center me-3"
+                     style="width: 52px; height: 52px;">
+
+                    <i class="bi bi-bar-chart-fill fs-4"></i>
+
+                </div>
+
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        Top
+                        <span th:text="${limit}">5</span>
+                        sách
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        Xếp theo số lượt mượn giảm dần
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         BOOK LIST
+    ========================== -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-0">
+
+            <!-- Có dữ liệu -->
+            <div th:if="${topBooks != null and !topBooks.isEmpty()}"
+                 class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                    <tr>
+
+                        <th class="text-center" style="width: 90px;">
+                            Hạng
+                        </th>
+
+                        <th>
+                            Tên sách
+                        </th>
+
+                        <th>
+                            Tác giả
+                        </th>
+
+                        <th class="text-center" style="width: 180px;">
+                            Số lượt mượn
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="book, stat : ${topBooks}">
+
+                        <!-- Hạng -->
+                        <td class="text-center">
+
+                            <span th:if="${stat.index == 0}"
+                                  class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                <i class="bi bi-trophy-fill me-1"></i>
+                                1
+                            </span>
+
+                            <span th:if="${stat.index == 1}"
+                                  class="badge bg-secondary rounded-pill px-3 py-2">
+                                2
+                            </span>
+
+                            <span th:if="${stat.index == 2}"
+                                  class="badge bg-danger rounded-pill px-3 py-2">
+                                3
+                            </span>
+
+                            <span th:if="${stat.index >= 3}"
+                                  class="badge bg-light text-dark border rounded-pill px-3 py-2"
+                                  th:text="${stat.index + 1}">
+                                4
+                            </span>
+
+                        </td>
+
+
+                        <!-- Tên sách -->
+                        <td>
+
+                            <div class="fw-semibold"
+                                 th:text="${book.title}">
+                                Clean Code
+                            </div>
+
+                            <small class="text-muted"
+                                   th:if="${book.bookId != null}"
+                                   th:text="'ID: ' + ${book.bookId}">
+                                ID: 1
+                            </small>
+
+                        </td>
+
+
+                        <!-- Tác giả -->
+                        <td>
+
+                            <span th:text="${book.author != null and !book.author.isBlank()
+                                             ? book.author
+                                             : 'Chưa cập nhật'}">
+                                Robert C. Martin
+                            </span>
+
+                        </td>
+
+
+                        <!-- Số lượt mượn -->
+                        <td class="text-center">
+
+                            <span class="badge bg-primary rounded-pill px-3 py-2"
+                                  th:text="${book.borrowCount} + ' lượt'">
+                                10 lượt
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Không có dữ liệu -->
+            <div th:if="${topBooks == null or topBooks.isEmpty()}"
+                 class="text-center py-5 px-3">
+
+                <div class="rounded-circle bg-light
+                            d-inline-flex align-items-center
+                            justify-content-center mb-3"
+                     style="width: 72px; height: 72px;">
+
+                    <i class="bi bi-bar-chart fs-2 text-muted"></i>
+
+                </div>
+
+                <h5 class="fw-bold">
+                    Chưa có dữ liệu thống kê
+                </h5>
+
+                <p class="text-muted mb-3">
+                    Chưa có lượt mượn sách nào để tạo báo cáo.
+                </p>
+
+                <a th:href="@{/reports/dashboard}"
+                   class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Quay lại Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FOOTER ACTIONS
+    ========================== -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
+
+        <a th:href="@{/reports/dashboard}"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-speedometer2 me-1"></i>
+            Dashboard
+
+        </a>
+
+        <a th:href="@{/reports/overdue}"
+           class="btn btn-outline-danger">
+
+            <i class="bi bi-clock-history me-1"></i>
+            Xem sách quá hạn
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
