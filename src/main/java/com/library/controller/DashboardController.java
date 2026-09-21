@@ -34,14 +34,18 @@ public class DashboardController {
         long totalBooks = allDocs.stream().filter(d -> d.getDocumentType() == DocumentType.BOOK).count();
         long totalMagazines = allDocs.stream().filter(d -> d.getDocumentType() == DocumentType.MAGAZINE).count();
 
-        long totalPatrons = allUsers.stream().filter(u -> u.getRole() != null && u.getRole().name().equals("ROLE_READER")).count();
-        long activePatrons = allUsers.stream().filter(u -> u.getRole() != null && u.getRole().name().equals("ROLE_READER") && u.isActive()).count();
+        long totalPatrons = allUsers.stream()
+                .filter(u -> u.getRole() != null && u.getRole().name().equals("ROLE_READER")).count();
+        long activePatrons = allUsers.stream()
+                .filter(u -> u.getRole() != null && u.getRole().name().equals("ROLE_READER") && u.isActive()).count();
 
-        long activeBorrows = allRecords.stream().filter(r -> "BORROWING".equalsIgnoreCase(r.getStatus())).count();
+        long activeBorrows = allRecords.stream().filter(r -> "BORROWING".equalsIgnoreCase(r.getStatus().name()))
+                .count();
         long overdueBorrows = allRecords.stream().filter(BorrowRecord::isOverdue).count();
 
         List<BorrowRecord> recentRecords = allRecords.stream()
-                .sorted(Comparator.comparing(BorrowRecord::getBorrowDate, Comparator.nullsLast(Comparator.reverseOrder())))
+                .sorted(Comparator.comparing(BorrowRecord::getBorrowDate,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
                 .limit(8)
                 .toList();
 

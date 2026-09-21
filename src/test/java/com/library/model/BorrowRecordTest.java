@@ -14,7 +14,7 @@ class BorrowRecordTest {
     @DisplayName("Kiểm thử sách chưa quá hạn")
     void testNotOverdue() {
         LocalDate today = LocalDate.now();
-        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(3), today.plusDays(7), "BORROWING");
+        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(3), today.plusDays(7), BorrowStatus.BORROWING);
 
         assertFalse(record.isOverdue());
         assertTrue(record.getDaysRemaining() >= 6);
@@ -25,7 +25,7 @@ class BorrowRecordTest {
     @DisplayName("Kiểm thử sách đã quá hạn")
     void testOverdue() {
         LocalDate today = LocalDate.now();
-        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(15), today.minusDays(5), "BORROWING");
+        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(15), today.minusDays(5), BorrowStatus.BORROWING);
 
         assertTrue(record.isOverdue());
         assertEquals(5, record.getOverdueDays());
@@ -35,7 +35,8 @@ class BorrowRecordTest {
     @DisplayName("Kiểm thử sách đã trả thì không tính là quá hạn")
     void testReturnedNotOverdue() {
         LocalDate today = LocalDate.now();
-        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(20), today.minusDays(5), today.minusDays(6), "RETURNED");
+        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(20), today.minusDays(5), today.minusDays(6),
+                BorrowStatus.RETURNED);
 
         assertFalse(record.isOverdue());
     }

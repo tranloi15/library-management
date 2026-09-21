@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Quản lý phiếu mượn - Quản lý Thư viện</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- HEADER -->
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between
+                align-items-start align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+
+            <h4 class="fw-bold mb-1">
+                Quản lý phiếu mượn
+            </h4>
+
+            <p class="text-secondary small mb-0">
+                Quản lý các phiếu mượn và tình trạng trả sách
+            </p>
+
+        </div>
+
+
+        <a th:href="@{/borrow/create}"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-lg"></i>
+            Lập phiếu mượn
+
+        </a>
+
+    </div>
+
+
+    <!-- TABLE -->
+    <div class="app-card p-2 p-sm-4">
+
+        <div class="table-responsive">
+
+            <table class="craft-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>MÃ PHIẾU</th>
+                    <th>ĐỘC GIẢ</th>
+                    <th>SÁCH</th>
+                    <th>NGÀY MƯỢN</th>
+                    <th>HẠN TRẢ</th>
+                    <th>TRẠNG THÁI</th>
+                    <th>NGÀY TRẢ</th>
+                    <th>THAO TÁC</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <!-- KHÔNG CÓ DỮ LIỆU -->
+
+                <tr th:if="${borrowRecords == null || borrowRecords.isEmpty()}">
+
+                    <td colspan="8"
+                        class="text-center text-secondary py-4">
+
+                        Chưa có phiếu mượn nào.
+
+                    </td>
+
+                </tr>
+
+
+                <!-- DANH SÁCH -->
+
+                <tr th:each="borrow : ${borrowRecords}">
+
+
+                    <!-- MÃ PHIẾU -->
+
+                    <td>
+
+                        <span class="craft-code"
+                              th:text="'#BR-' + ${borrow.id}">
+                            #BR-0001
+                        </span>
+
+                    </td>
+
+
+                    <!-- ĐỘC GIẢ -->
+
+                    <td>
+
+                        <span th:text="${borrow.user.fullName}">
+                            Nguyễn Văn A
+                        </span>
+
+                    </td>
+
+
+                    <!-- SÁCH -->
+
+                    <td>
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <i class="bi bi-book text-muted"></i>
+
+                            <span class="fw-medium"
+                                  th:text="${borrow.document.title}">
+                                Lập trình Java
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- NGÀY MƯỢN -->
+
+                    <td class="font-mono"
+                        th:text="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}">
+
+                        01/09/2026
+
+                    </td>
+
+
+                    <!-- HẠN TRẢ -->
+
+                    <td class="font-mono"
+                        th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">
+
+                        15/09/2026
+
+                    </td>
+
+
+                    <!-- TRẠNG THÁI -->
+
+                    <td>
+
+                        <!-- ĐANG MƯỢN -->
+
+                        <span th:if="${borrow.status.name() == 'BORROWING'}"
+                              class="status-pill warning">
+
+                            <span class="status-dot"></span>
+
+                            Đang mượn
+
+                        </span>
+
+
+                        <!-- QUÁ HẠN -->
+
+                        <span th:if="${borrow.status.name() == 'OVERDUE'}"
+                              class="status-pill danger">
+
+                            <span class="status-dot"></span>
+
+                            Quá hạn
+
+                        </span>
+
+
+                        <!-- ĐÃ TRẢ -->
+
+                        <span th:if="${borrow.status.name() == 'RETURNED'}"
+                              class="status-pill success">
+
+                            <span class="status-dot"></span>
+
+                            Đã trả
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- NGÀY TRẢ -->
+
+                    <td class="font-mono">
+
+                        <span th:if="${borrow.returnDate != null}"
+                              th:text="${#temporals.format(borrow.returnDate, 'dd/MM/yyyy')}">
+
+                            20/09/2026
+
+                        </span>
+
+                        <span th:if="${borrow.returnDate == null}"
+                              class="text-secondary">
+
+                            -
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- THAO TÁC -->
+
+                    <td>
+
+                        <!-- NÚT TRẢ SÁCH -->
+
+                        <form th:if="${borrow.status.name() != 'RETURNED'}"
+                              th:action="@{/borrow/{id}/return(id=${borrow.id})}"
+                              method="post">
+
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-success">
+
+                                <i class="bi bi-check2"></i>
+                                Trả sách
+
+                            </button>
+
+                        </form>
+
+
+                        <!-- ĐÃ TRẢ -->
+
+                        <span th:if="${borrow.status.name() == 'RETURNED'}"
+                              class="text-secondary small">
+
+                            Đã hoàn tất
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
