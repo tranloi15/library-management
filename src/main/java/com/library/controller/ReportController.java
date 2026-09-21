@@ -1,5 +1,7 @@
 package com.library.controller;
 
+import com.library.dto.DashboardStatsDto;
+import com.library.dto.TopBookDto;
 import com.library.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -8,53 +10,36 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/reports")
 @RequiredArgsConstructor
 public class ReportController {
 
-private final ReportService reportService;
+    private final ReportService reportService;
 
-@GetMapping("/dashboard")
-public String dashboard(Model model) {
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
 
-    model.addAttribute(
-            "stats",
-            reportService.getDashboardStats()
-    );
+        DashboardStatsDto stats = reportService.getDashboardStats();
 
-    return "home/dashboard";
-}
+        model.addAttribute("stats", stats);
 
-@GetMapping("/top-books")
-public String topBooks(
-        @RequestParam(defaultValue = "5") int limit,
-        Model model
-) {
-
-    if (limit != 5 && limit != 10) {
-        limit = 5;
+        return "home/dashboard";
     }
 
-    model.addAttribute(
-            "topBooks",
-            reportService.getTopBorrowedBooks(limit)
-    );
+    @GetMapping("/top-books")
+    public String topBooks(
+            @RequestParam(defaultValue = "10") int limit,
+            Model model) {
 
-    model.addAttribute("limit", limit);
+        List<TopBookDto> topBooks =
+                reportService.getTopBorrowedBooks(limit);
 
-    return "reports/top_books";
-}
+        model.addAttribute("topBooks", topBooks);
+        model.addAttribute("limit", limit);
 
-@GetMapping("/overdue")
-public String overdueBooks(Model model) {
-
-    model.addAttribute(
-            "overdueRecords",
-            reportService.getOverdueRecords()
-    );
-
-    return "reports/overdue_list";
-}
-
+        return "reports/top_books";
+    }
 }
