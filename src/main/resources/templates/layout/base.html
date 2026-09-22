@@ -34,10 +34,10 @@
     <!-- Thanh Backdrop khi mở Sidebar trên Mobile -->
     <div id="sidebarBackdrop" class="d-lg-none"></div>
 
-    <!-- 1. SIDEBAR BÊN TRÁI -->
+    <!-- SIDEBAR BÊN TRÁI -->
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-    <!-- 2. KHU VỰC NỘI DUNG CHÍNH -->
+    <!-- KHU VỰC NỘI DUNG CHÍNH -->
     <div class="app-main">
         <!-- Top Navbar -->
         <div th:replace="~{layout/navbar :: navbar}"></div>
@@ -66,5 +66,8 @@
 
 <!-- Custom JS (Hưng phụ trách) -->
 <script th:src="@{/js/main.js}" src="../../static/js/main.js"></script>
+
+<!-- Scripts động của từng trang con -->
+<th:block layout:fragment="scripts"></th:block>
 </body>
 </html>

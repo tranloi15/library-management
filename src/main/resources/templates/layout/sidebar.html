@@ -21,7 +21,7 @@
 
     <!-- Menu Links -->
     <ul class="sidebar-menu">
-        <!-- 1. CHỈ HIỂN THỊ VỚI ADMIN / QUẢN LÝ (ẨN VỚI ĐỘC GIẢ) -->
+        <!-- CHỈ HIỂN THỊ VỚI ADMIN / QUẢN LÝ (ẨN VỚI ĐỘC GIẢ) -->
         <th:block sec:authorize="hasRole('ADMIN')">
             <li class="menu-category">TỔNG QUAN</li>
             <li class="menu-item" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">
@@ -60,7 +60,7 @@
             </li>
         </th:block>
 
-        <!-- 2. KHÁM PHÁ DÀNH CHO TẤT CẢ / ĐỘC GIẢ -->
+        <!-- KHÁM PHÁ DÀNH CHO TẤT CẢ / ĐỘC GIẢ -->
         <li class="menu-category">KHÁM PHÁ THƯ VIỆN</li>
         <li class="menu-item" th:classappend="${activeMenu == 'catalog' ? 'active' : ''}">
             <a th:href="@{/catalog}" class="menu-link" title="Kho tài liệu trực tuyến">
@@ -75,7 +75,7 @@
             </a>
         </li>
 
-        <!-- 3. DANH MỤC CÁ NHÂN -->
+        <!-- DANH MỤC CÁ NHÂN -->
         <li class="menu-category">DANH MỤC CÁ NHÂN</li>
         <li class="menu-item" th:classappend="${activeMenu == 'history' ? 'active' : ''}">
             <a th:href="@{/borrow/history}" class="menu-link" title="Sách tôi đang mượn">

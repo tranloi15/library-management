@@ -5,256 +5,555 @@
       layout:decorate="~{layout/base}">
 
 <head>
-    <title>Quản lý phiếu mượn - Quản lý Thư viện</title>
+    <title>Quản lý Mượn & Trả Tài Liệu - Thư Viện Số</title>
 </head>
 
 <body>
 
 <div layout:fragment="content">
 
-    <!-- HEADER -->
-    <div class="d-flex flex-column flex-md-row
-                justify-content-between
-                align-items-start align-items-md-center
-                gap-3 mb-4">
-
+    <!-- TIÊU ĐỀ & CÁC NÚT ĐIỀU HƯỚNG NHANH -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3 mb-4">
         <div>
-
-            <h4 class="fw-bold mb-1">
-                Quản lý phiếu mượn
+            <h4 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-arrow-left-right text-primary"></i>
+                Quản lý Mượn - Trả Tài Liệu
             </h4>
-
             <p class="text-secondary small mb-0">
-                Quản lý các phiếu mượn và tình trạng trả sách
+                Theo dõi quá trình mượn, gia hạn, trả tài liệu và quản lý tiền phạt quá hạn
             </p>
-
         </div>
 
-
-        <a th:href="@{/borrow/create}"
-           class="btn btn-primary">
-
-            <i class="bi bi-plus-lg"></i>
-            Lập phiếu mượn
-
-        </a>
-
+        <div class="d-flex flex-wrap gap-2">
+            <a th:href="@{/borrow/overdue}" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>Sách quá hạn</span>
+                <span class="badge bg-danger ms-1" th:text="${stats.overdue}">0</span>
+            </a>
+            <a th:href="@{/borrow/top-books}" class="btn btn-outline-warning text-dark btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-trophy text-warning"></i>
+                <span>Top mượn nhiều</span>
+            </a>
+            <a th:href="@{/borrow/create}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i>
+                <span>Lập phiếu mượn</span>
+            </a>
+        </div>
     </div>
 
+    <!-- CÁC THẺ THỐNG KÊ TỔNG QUAN -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-badge-box stat-badge-neutral">
+                    <i class="bi bi-journal-bookmark"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Tổng phiếu mượn</div>
+                    <h5 class="fw-bold m-0" th:text="${stats.total}">0</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;">Toàn bộ lượt lưu thông</div>
+                </div>
+            </div>
+        </div>
 
-    <!-- TABLE -->
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-badge-box stat-badge-warning">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Đang mượn</div>
+                    <h5 class="fw-bold m-0 text-warning" th:text="${stats.borrowing}">0</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;">Độc giả đang giữ sách</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-badge-box stat-badge-danger">
+                    <i class="bi bi-alarm"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Đã quá hạn</div>
+                    <h5 class="fw-bold m-0 text-danger" th:text="${stats.overdue}">0</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;">Cần thu hồi & xử lý phạt</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-badge-box stat-badge-success">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Đã hoàn tất</div>
+                    <h5 class="fw-bold m-0 text-success" th:text="${stats.returned}">0</h5>
+                    <div class="text-muted" style="font-size: 0.72rem;">Đã trả lại kho thành công</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THANH TÌM KIẾM & BỘ LỌC TRẠNG THÁI -->
+    <div class="app-card p-3 mb-4">
+        <form th:action="@{/borrow/list}" method="get" class="row g-2 align-items-center">
+            <!-- Tìm kiếm -->
+            <div class="col-12 col-md-6 col-lg-5">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-transparent border-end-0">
+                        <i class="bi bi-search text-secondary"></i>
+                    </span>
+                    <input type="text" name="keyword" th:value="${keyword}"
+                           class="form-control border-start-0"
+                           placeholder="Tìm theo mã phiếu, tên độc giả, email hoặc tên sách...">
+                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                </div>
+            </div>
+
+            <!-- Tabs Lọc Trạng thái -->
+            <div class="col-12 col-md-6 col-lg-7 d-flex justify-content-md-end flex-wrap gap-1">
+                <a th:href="@{/borrow/list(status='ALL', keyword=${keyword})}"
+                   class="btn btn-sm"
+                   th:classappend="${currentStatus == 'ALL' ? 'btn-dark' : 'btn-outline-secondary'}">
+                    Tất cả (<span th:text="${stats.total}">0</span>)
+                </a>
+                <a th:href="@{/borrow/list(status='BORROWING', keyword=${keyword})}"
+                   class="btn btn-sm"
+                   th:classappend="${currentStatus == 'BORROWING' ? 'btn-warning text-dark' : 'btn-outline-secondary'}">
+                    Đang mượn (<span th:text="${stats.borrowing}">0</span>)
+                </a>
+                <a th:href="@{/borrow/list(status='OVERDUE', keyword=${keyword})}"
+                   class="btn btn-sm"
+                   th:classappend="${currentStatus == 'OVERDUE' ? 'btn-danger' : 'btn-outline-secondary'}">
+                    Quá hạn (<span th:text="${stats.overdue}">0</span>)
+                </a>
+                <a th:href="@{/borrow/list(status='RETURNED', keyword=${keyword})}"
+                   class="btn btn-sm"
+                   th:classappend="${currentStatus == 'RETURNED' ? 'btn-success' : 'btn-outline-secondary'}">
+                    Đã trả (<span th:text="${stats.returned}">0</span>)
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- BẢNG DANH SÁCH PHIẾU MƯỢN -->
     <div class="app-card p-2 p-sm-4">
-
         <div class="table-responsive">
-
             <table class="craft-table">
-
                 <thead>
-
                 <tr>
-
-                    <th>MÃ PHIẾU</th>
+                    <th style="width: 100px;">MÃ PHIẾU</th>
                     <th>ĐỘC GIẢ</th>
-                    <th>SÁCH</th>
+                    <th>TÀI LIỆU</th>
                     <th>NGÀY MƯỢN</th>
                     <th>HẠN TRẢ</th>
                     <th>TRẠNG THÁI</th>
-                    <th>NGÀY TRẢ</th>
-                    <th>THAO TÁC</th>
-
+                    <th>THANH TOÁN / NGÀY TRẢ</th>
+                    <th class="text-end" style="width: 140px;">THAO TÁC</th>
                 </tr>
-
                 </thead>
 
-
                 <tbody>
-
-                <!-- KHÔNG CÓ DỮ LIỆU -->
-
+                <!-- TRƯỜNG HỢP KHÔNG CÓ DỮ LIỆU -->
                 <tr th:if="${borrowRecords == null || borrowRecords.isEmpty()}">
-
-                    <td colspan="8"
-                        class="text-center text-secondary py-4">
-
-                        Chưa có phiếu mượn nào.
-
+                    <td colspan="8" class="text-center text-secondary py-5">
+                        <i class="bi bi-inbox fs-2 text-muted d-block mb-2"></i>
+                        Không tìm thấy phiếu mượn nào phù hợp với bộ lọc hiện tại.
                     </td>
-
                 </tr>
 
-
-                <!-- DANH SÁCH -->
-
+                <!-- DANH SÁCH PHIẾU MƯỢN -->
                 <tr th:each="borrow : ${borrowRecords}">
-
-
                     <!-- MÃ PHIẾU -->
-
                     <td>
-
-                        <span class="craft-code"
-                              th:text="'#BR-' + ${borrow.id}">
+                        <span class="craft-code font-monospace fw-semibold"
+                              th:text="'#BR-' + ${#numbers.formatInteger(borrow.id, 4)}">
                             #BR-0001
                         </span>
-
                     </td>
-
 
                     <!-- ĐỘC GIẢ -->
-
                     <td>
-
-                        <span th:text="${borrow.user.fullName}">
-                            Nguyễn Văn A
-                        </span>
-
-                    </td>
-
-
-                    <!-- SÁCH -->
-
-                    <td>
-
                         <div class="d-flex align-items-center gap-2">
-
-                            <i class="bi bi-book text-muted"></i>
-
-                            <span class="fw-medium"
-                                  th:text="${borrow.document.title}">
-                                Lập trình Java
-                            </span>
-
+                            <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center text-primary fw-bold"
+                                 style="width: 32px; height: 32px; font-size: 0.8rem;"
+                                 th:text="${borrow.user != null and borrow.user.fullName != null ? #strings.substring(borrow.user.fullName, 0, 1) : 'U'}">
+                                U
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-truncate" style="max-width: 180px;"
+                                     th:text="${borrow.user != null ? borrow.user.fullName : 'Không xác định'}">
+                                    Nguyễn Văn A
+                                </div>
+                                <div class="text-secondary small font-monospace" style="font-size: 0.75rem;"
+                                     th:text="${borrow.user != null ? borrow.user.email : ''}">
+                                    reader@gmail.com
+                                </div>
+                            </div>
                         </div>
-
                     </td>
 
+                    <!-- TÀI LIỆU -->
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img th:if="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
+                                 th:src="${borrow.document.imageUrl}"
+                                 alt="Cover" class="rounded object-fit-cover shadow-sm"
+                                 style="width: 36px; height: 48px;">
+                            <div th:unless="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
+                                 class="rounded bg-light border d-flex align-items-center justify-content-center text-muted"
+                                 style="width: 36px; height: 48px;">
+                                <i class="bi bi-book"></i>
+                            </div>
+                            <div>
+                                <div class="fw-medium text-truncate" style="max-width: 220px;"
+                                     th:text="${borrow.document != null ? borrow.document.title : 'Tài liệu không xác định'}">
+                                    Lập trình Java
+                                </div>
+                                <span class="badge bg-light text-secondary border small"
+                                      th:text="${borrow.document != null ? borrow.document.identifierCode : ''}">
+                                    #DOC-001
+                                </span>
+                            </div>
+                        </div>
+                    </td>
 
                     <!-- NGÀY MƯỢN -->
-
-                    <td class="font-mono"
+                    <td class="font-monospace text-secondary"
                         th:text="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}">
-
                         01/09/2026
-
                     </td>
-
 
                     <!-- HẠN TRẢ -->
-
-                    <td class="font-mono"
-                        th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">
-
-                        15/09/2026
-
+                    <td>
+                        <div class="font-monospace fw-medium"
+                             th:classappend="${borrow.isOverdue() and borrow.status.name() != 'RETURNED' ? 'text-danger' : 'text-secondary'}"
+                             th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">
+                            15/09/2026
+                        </div>
+                        <div th:if="${borrow.isOverdue() and borrow.status.name() != 'RETURNED'}"
+                             class="text-danger small fw-semibold" style="font-size: 0.72rem;">
+                            Trễ <span th:text="${borrow.getOverdueDays()}">0</span> ngày
+                        </div>
                     </td>
-
 
                     <!-- TRẠNG THÁI -->
-
                     <td>
-
                         <!-- ĐANG MƯỢN -->
-
-                        <span th:if="${borrow.status.name() == 'BORROWING'}"
-                              class="status-pill warning">
-
+                        <span th:if="${borrow.status.name() == 'BORROWING'}" class="status-pill warning">
                             <span class="status-dot"></span>
-
                             Đang mượn
-
                         </span>
-
 
                         <!-- QUÁ HẠN -->
-
-                        <span th:if="${borrow.status.name() == 'OVERDUE'}"
-                              class="status-pill danger">
-
+                        <span th:if="${borrow.status.name() == 'OVERDUE'}" class="status-pill danger">
                             <span class="status-dot"></span>
-
                             Quá hạn
-
                         </span>
-
 
                         <!-- ĐÃ TRẢ -->
-
-                        <span th:if="${borrow.status.name() == 'RETURNED'}"
-                              class="status-pill success">
-
+                        <span th:if="${borrow.status.name() == 'RETURNED'}" class="status-pill success">
                             <span class="status-dot"></span>
-
                             Đã trả
-
                         </span>
-
                     </td>
 
+                    <!-- THANH TOÁN / NGÀY TRẢ -->
+                    <td>
+                        <div th:if="${borrow.status.name() == 'RETURNED'}">
+                            <div class="font-monospace small" th:text="${#temporals.format(borrow.returnDate, 'dd/MM/yyyy')}">
+                                20/09/2026
+                            </div>
+                            <div th:if="${borrow.fineAmount != null and borrow.fineAmount > 0}" class="mt-1">
+                                <span th:if="${borrow.paymentMethod == 'QR_CODE'}"
+                                      class="badge bg-info-subtle text-info-emphasis border border-info-subtle small"
+                                      title="Thanh toán qua quét mã QR chuyển khoản">
+                                    <i class="bi bi-qr-code-scan"></i>
+                                    QR: <span th:text="${#numbers.formatDecimal(borrow.fineAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                                </span>
+                                <span th:unless="${borrow.paymentMethod == 'QR_CODE'}"
+                                      class="badge bg-success-subtle text-success-emphasis border border-success-subtle small"
+                                      title="Thanh toán bằng tiền mặt tại quầy">
+                                    <i class="bi bi-cash-stack"></i>
+                                    Tiền mặt: <span th:text="${#numbers.formatDecimal(borrow.fineAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                                </span>
+                            </div>
+                            <div th:if="${borrow.fineAmount == null or borrow.fineAmount == 0}" class="text-muted small">
+                                Đúng hạn (0đ)
+                            </div>
+                        </div>
 
-                    <!-- NGÀY TRẢ -->
-
-                    <td class="font-mono">
-
-                        <span th:if="${borrow.returnDate != null}"
-                              th:text="${#temporals.format(borrow.returnDate, 'dd/MM/yyyy')}">
-
-                            20/09/2026
-
-                        </span>
-
-                        <span th:if="${borrow.returnDate == null}"
-                              class="text-secondary">
-
-                            -
-
-                        </span>
-
+                        <div th:unless="${borrow.status.name() == 'RETURNED'}">
+                            <span th:if="${borrow.isOverdue()}" class="badge bg-danger-subtle text-danger border border-danger-subtle small">
+                                <i class="bi bi-exclamation-circle"></i>
+                                Phạt: <span th:text="${#numbers.formatDecimal(borrow.calculateLateFine(5000), 0, 'COMMA', 0, 'POINT')} + 'đ'">0đ</span>
+                            </span>
+                            <span th:unless="${borrow.isOverdue()}" class="text-secondary small">
+                                Còn <span th:text="${borrow.getDaysRemaining()}">0</span> ngày
+                            </span>
+                        </div>
                     </td>
-
 
                     <!-- THAO TÁC -->
+                    <td class="text-end">
+                        <!-- NÚT TRẢ SÁCH (MỞ MODAL) -->
+                        <button th:if="${borrow.status.name() != 'RETURNED'}"
+                                type="button"
+                                class="btn btn-sm btn-outline-success open-return-modal-btn d-inline-flex align-items-center gap-1"
+                                onclick="openReturnModal(this)"
+                                th:data-id="${borrow.id}"
+                                th:data-reader="${borrow.user != null ? borrow.user.fullName : ''}"
+                                th:data-book="${borrow.document != null ? borrow.document.title : ''}"
+                                th:data-borrow-date="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}"
+                                th:data-due-date="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}"
+                                th:data-is-overdue="${borrow.isOverdue()}"
+                                th:data-overdue-days="${borrow.getOverdueDays()}"
+                                th:data-fine="${borrow.calculateLateFine(5000)}">
+                            <i class="bi bi-check2"></i>
+                            <span>Trả sách</span>
+                        </button>
 
-                    <td>
-
-                        <!-- NÚT TRẢ SÁCH -->
-
-                        <form th:if="${borrow.status.name() != 'RETURNED'}"
-                              th:action="@{/borrow/{id}/return(id=${borrow.id})}"
-                              method="post">
-
-                            <button type="submit"
-                                    class="btn btn-sm btn-outline-success">
-
-                                <i class="bi bi-check2"></i>
-                                Trả sách
-
-                            </button>
-
-                        </form>
-
-
-                        <!-- ĐÃ TRẢ -->
-
-                        <span th:if="${borrow.status.name() == 'RETURNED'}"
-                              class="text-secondary small">
-
-                            Đã hoàn tất
-
+                        <!-- ĐÃ HOÀN TẤT -->
+                        <span th:if="${borrow.status.name() == 'RETURNED'}" class="text-muted small">
+                            <i class="bi bi-check-circle-fill text-success me-1"></i>Hoàn tất
                         </span>
-
                     </td>
-
                 </tr>
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
 
+    <!-- MODAL TRẢ SÁCH VÀ THANH TOÁN TIỀN PHẠT THÔNG MINH -->
+    <div class="modal fade" id="returnBookModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <form id="returnBookForm" method="post" action="">
+                    <!-- CSRF Token -->
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="modal-header border-bottom pb-3">
+                        <h5 class="modal-title fw-bold" id="returnModalLabel">
+                            <i class="bi bi-journal-check text-success me-2"></i>
+                            Xác Nhận Trả Sách & Thu Phí
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body py-4">
+                        <!-- Thông tin phiếu mượn tóm tắt -->
+                        <div class="app-card p-3 mb-3 bg-light border">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-secondary small">Mã phiếu mượn:</span>
+                                <span class="fw-bold font-monospace" id="modalBrId">#BR-0000</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-secondary small">Độc giả:</span>
+                                <span class="fw-semibold text-dark" id="modalReaderName">Nguyễn Văn A</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-secondary small">Tài liệu:</span>
+                                <span class="fw-semibold text-dark text-truncate" style="max-width: 250px;" id="modalBookTitle">Tên sách</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-secondary small">Hạn trả quy định:</span>
+                                <span class="font-monospace text-secondary" id="modalDueDate">15/09/2026</span>
+                            </div>
+                        </div>
+
+                        <!-- KHU VỰC ĐÚNG HẠN -->
+                        <div id="modalOnTimeAlert" class="alert alert-success d-flex align-items-center gap-2 mb-3">
+                            <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+                            <div>
+                                <div class="fw-bold">Trả sách đúng hạn</div>
+                                <div class="small text-muted">Tài liệu được trả trong thời hạn cho phép. Không phát sinh phí phạt.</div>
+                            </div>
+                        </div>
+
+                        <!-- KHU VỰC QUÁ HẠN & THANH TOÁN TIỀN PHẠT -->
+                        <div id="modalOverdueSection" class="d-none">
+                            <div class="alert alert-danger d-flex align-items-start gap-2 mb-3">
+                                <i class="bi bi-exclamation-triangle-fill fs-5 text-danger mt-1"></i>
+                                <div>
+                                    <div class="fw-bold text-danger">Tài liệu đã quá hạn!</div>
+                                    <div class="small">
+                                        Đã trễ <strong id="modalOverdueDays">0</strong> ngày. Đơn giá phạt: <strong>5.000 VNĐ / ngày</strong>.
+                                    </div>
+                                    <div class="mt-1 fs-6">
+                                        Tổng tiền phạt cần thu: <strong class="text-danger" id="modalFineText">0 VNĐ</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LỰA CHỌN PHƯƠNG THỨC THANH TOÁN -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-uppercase text-secondary">
+                                    Phương thức thanh toán tiền phạt:
+                                </label>
+                                <div class="d-grid gap-2">
+                                    <!-- Tiền mặt -->
+                                    <div class="form-check form-check-card p-3 border rounded-3">
+                                        <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payMethodCash" value="CASH" checked>
+                                        <label class="form-check-label fw-medium w-100" for="payMethodCash">
+                                            <i class="bi bi-cash-stack text-success me-1"></i>
+                                            Tiền mặt (Thu tiền trực tiếp tại quầy)
+                                        </label>
+                                    </div>
+
+                                    <!-- Quét mã QR chuyển khoản -->
+                                    <div class="form-check form-check-card p-3 border rounded-3">
+                                        <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payMethodQr" value="QR_CODE">
+                                        <label class="form-check-label fw-medium w-100" for="payMethodQr">
+                                            <i class="bi bi-qr-code-scan text-primary me-1"></i>
+                                            Quét mã QR VietQR (Chuyển khoản tức thì)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KHUNG HIỂN THỊ MÃ QR CODE (Hiện khi chọn QR_CODE) -->
+                            <div id="qrCodeContainer" class="d-none text-center p-3 border rounded-3 bg-light mb-3">
+                                <div class="text-secondary small mb-2">Quét mã QR bằng App Ngân hàng hoặc Ví điện tử:</div>
+                                <div class="bg-white p-2 d-inline-block rounded border shadow-sm mb-2">
+                                    <img id="vietQrImg" src="" alt="VietQR" style="width: 180px; height: 180px; object-fit: contain;">
+                                </div>
+                                <div class="small font-monospace text-muted">
+                                    <div>Ngân hàng: <strong>MB Bank (Quân Đội)</strong></div>
+                                    <div>Số tài khoản: <strong>0345678901</strong></div>
+                                    <div>Chủ tài khoản: <strong>THƯ VIỆN SỐ</strong></div>
+                                    <div>Nội dung: <strong id="qrTransferContent">PHAT_BR_0001</strong></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ghi chú kiểm tra -->
+                        <div class="mb-2">
+                            <label for="returnNote" class="form-label small text-secondary">Ghi chú tình trạng tài liệu (nếu có):</label>
+                            <input type="text" class="form-control form-control-sm" id="returnNote" name="note"
+                                   placeholder="Ví dụ: Sách nguyên vẹn, đã thu phạt đủ...">
+                        </div>
+
+                        <!-- Hidden fields -->
+                        <input type="hidden" id="modalHiddenFine" name="fineAmount" value="0">
+                    </div>
+
+                    <div class="modal-footer border-top pt-3">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-success d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-check-lg"></i>
+                            <span id="submitBtnText">Xác nhận hoàn tất trả sách</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT XỬ LÝ MODAL TRẢ SÁCH VÀ THANH TOÁN QR / TIỀN MẶT -->
+    <script>
+    function openReturnModal(button) {
+        const returnModalEl = document.getElementById('returnBookModal');
+        if (!returnModalEl) return;
+        const returnModal = bootstrap.Modal.getOrCreateInstance(returnModalEl);
+
+        const form = document.getElementById('returnBookForm');
+        const modalBrId = document.getElementById('modalBrId');
+        const modalReader = document.getElementById('modalReaderName');
+        const modalBook = document.getElementById('modalBookTitle');
+        const modalDueDate = document.getElementById('modalDueDate');
+        const onTimeAlert = document.getElementById('modalOnTimeAlert');
+        const overdueSection = document.getElementById('modalOverdueSection');
+        const overdueDaysSpan = document.getElementById('modalOverdueDays');
+        const fineTextSpan = document.getElementById('modalFineText');
+        const hiddenFine = document.getElementById('modalHiddenFine');
+        const qrContainer = document.getElementById('qrCodeContainer');
+        const vietQrImg = document.getElementById('vietQrImg');
+        const qrTransferContent = document.getElementById('qrTransferContent');
+        const payMethodCash = document.getElementById('payMethodCash');
+        const payMethodQr = document.getElementById('payMethodQr');
+        const submitBtnText = document.getElementById('submitBtnText');
+
+        const id = button.getAttribute('data-id');
+        const reader = button.getAttribute('data-reader');
+        const book = button.getAttribute('data-book');
+        const dueDate = button.getAttribute('data-due-date');
+        const isOverdue = button.getAttribute('data-is-overdue') === 'true';
+        const overdueDays = parseInt(button.getAttribute('data-overdue-days') || '0', 10);
+        const fine = parseInt(button.getAttribute('data-fine') || '0', 10);
+
+        // Cập nhật action form
+        form.action = '/borrow/' + id + '/return';
+        modalBrId.textContent = '#BR-' + String(id).padStart(4, '0');
+        modalReader.textContent = reader || 'Độc giả';
+        modalBook.textContent = book || 'Tài liệu';
+        modalDueDate.textContent = dueDate || '-';
+
+        if (isOverdue && fine > 0) {
+            onTimeAlert.classList.add('d-none');
+            overdueSection.classList.remove('d-none');
+            overdueDaysSpan.textContent = overdueDays;
+            fineTextSpan.textContent = new Intl.NumberFormat('vi-VN').format(fine) + ' VNĐ';
+            hiddenFine.value = fine;
+
+            // Mặc định chọn tiền mặt
+            if (payMethodCash) payMethodCash.checked = true;
+            if (qrContainer) qrContainer.classList.add('d-none');
+
+            // Cập nhật text nút submit
+            if (submitBtnText) submitBtnText.textContent = 'Xác nhận thu phạt & Trả sách';
+
+            // Tạo link VietQR động
+            const transferNote = 'PHAT_BR_' + id;
+            if (qrTransferContent) qrTransferContent.textContent = transferNote;
+            const qrUrl = 'https://img.vietqr.io/image/MB-0345678901-compact2.png?amount=' + fine + '&addInfo=' + encodeURIComponent(transferNote) + '&accountName=THU%20VIEN%20SO';
+            if (vietQrImg) vietQrImg.src = qrUrl;
+        } else {
+            onTimeAlert.classList.remove('d-none');
+            overdueSection.classList.add('d-none');
+            hiddenFine.value = '0';
+            if (submitBtnText) submitBtnText.textContent = 'Xác nhận hoàn tất trả sách';
+        }
+
+        returnModal.show();
+    }
+    window.openReturnModal = openReturnModal;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const payMethodCash = document.getElementById('payMethodCash');
+        const payMethodQr = document.getElementById('payMethodQr');
+        const qrContainer = document.getElementById('qrCodeContainer');
+
+        if (payMethodCash && payMethodQr && qrContainer) {
+            payMethodCash.addEventListener('change', function() {
+                if (this.checked) qrContainer.classList.add('d-none');
+            });
+            payMethodQr.addEventListener('change', function() {
+                if (this.checked) qrContainer.classList.remove('d-none');
+            });
+        }
+
+        // Bổ sung lắng nghe sự kiện click cho các nút trả sách
+        document.querySelectorAll('.open-return-modal-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openReturnModal(this);
+            });
+        });
+    });
+    </script>
+
 </div>
+
+<!-- BLOCK SCRIPTS THYMELEAF -->
+<th:block layout:fragment="scripts">
+<script>
+if (typeof window.openReturnModal === 'undefined') {
+    window.openReturnModal = openReturnModal;
+}
+</script>
+</th:block>
 
 </body>
 </html>

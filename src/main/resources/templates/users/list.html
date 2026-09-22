@@ -9,7 +9,7 @@
 <body>
 <div layout:fragment="content">
 
-    <!-- 1. TIÊU ĐỀ & NÚT TÁC VỤ NHANH -->
+    <!-- TIÊU ĐỀ & NÚT TÁC VỤ NHANH -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Quản Lý Hồ Sơ Độc Giả (Patrons)</h4>
@@ -25,11 +25,11 @@
         </div>
     </div>
 
-    <!-- 2. HÀNG THỐNG KÊ KPI NHANH -->
+    <!-- HÀNG THỐNG KÊ KPI NHANH -->
     <div class="row g-3 mb-4">
         <div class="col-sm-6 col-lg-4">
             <div class="app-card p-3 d-flex align-items-center gap-3">
-                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background: var(--accent-light); color: var(--accent-primary); width: 48px; height: 48px; font-size: 1.35rem;">
+                <div class="stat-badge-box stat-badge-primary">
                     <i class="bi bi-people-fill"></i>
                 </div>
                 <div>
@@ -40,7 +40,7 @@
         </div>
         <div class="col-sm-6 col-lg-4">
             <div class="app-card p-3 d-flex align-items-center gap-3">
-                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background: #ECFDF5; color: #10B981; width: 48px; height: 48px; font-size: 1.35rem;">
+                <div class="stat-badge-box stat-badge-success">
                     <i class="bi bi-check-circle-fill"></i>
                 </div>
                 <div>
@@ -51,7 +51,7 @@
         </div>
         <div class="col-sm-6 col-lg-4">
             <div class="app-card p-3 d-flex align-items-center gap-3">
-                <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background: #FEF2F2; color: #EF4444; width: 48px; height: 48px; font-size: 1.35rem;">
+                <div class="stat-badge-box stat-badge-danger">
                     <i class="bi bi-lock-fill"></i>
                 </div>
                 <div>
@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <!-- 3. BỘ LỌC TÌM KIẾM ĐỘC GIẢ -->
+    <!-- BỘ LỌC TÌM KIẾM ĐỘC GIẢ -->
     <div class="app-card p-3 mb-4">
         <form th:action="@{/users}" method="get" class="m-0">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -87,7 +87,7 @@
         </form>
     </div>
 
-    <!-- 4. BẢNG DANH SÁCH ĐỘC GIẢ (CRAFT UI TABLE) -->
+    <!-- BẢNG DANH SÁCH ĐỘC GIẢ (CRAFT UI TABLE) -->
     <div class="app-card p-0 overflow-hidden mb-4">
         <div class="table-responsive">
             <table class="craft-table mb-0">
@@ -159,7 +159,7 @@
         </div>
     </div>
 
-    <!-- 5. MODAL CẤP THẺ ĐỘC GIẢ MỚI (TÍCH HỢP TỪ PREVIEW) -->
+    <!-- MODAL CẤP THẺ ĐỘC GIẢ MỚI (TÍCH HỢP TỪ PREVIEW) -->
     <div class="modal fade" id="addPatronModal" tabindex="-1" aria-labelledby="addPatronModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
