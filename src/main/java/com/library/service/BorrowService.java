@@ -1,28 +1,32 @@
 package com.library.service;
 
 import com.library.model.BorrowRecord;
-import com.library.model.BorrowStatus;
-import com.library.repository.BorrowRecordRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class BorrowService {
+public interface BorrowService {
 
-    private final BorrowRecordRepository borrowRecordRepository;
+    List<BorrowRecord> getAll();
 
-    public List<BorrowRecord> getActiveBorrowsByUser(Long userId) {
-        return borrowRecordRepository.findByUserIdAndStatusOrderByBorrowDateDesc(userId, BorrowStatus.BORROWING);
-    }
+    BorrowRecord create(
+            Long userId,
+            Long bookId,
+            java.time.LocalDate borrowDate,
+            java.time.LocalDate dueDate);
 
-    public List<BorrowRecord> getReturnedBorrowsByUser(Long userId) {
-        return borrowRecordRepository.findByUserIdAndStatusOrderByBorrowDateDesc(userId, BorrowStatus.RETURNED);
-    }
+    BorrowRecord returnBook(Long id);
 
-    public List<BorrowRecord> getBorrowHistoryByUser(Long userId) {
-        return borrowRecordRepository.findByUserIdOrderByBorrowDateDesc(userId);
-    }
+    void updateOverdue();
+
+    List<BorrowRecord> getUserHistory(Long userId);
+
+    List<BorrowRecord> getUserBorrowing(Long userId);
+
+    List<BorrowRecord> getUserReturned(Long userId);
+
+    long calculateFine(Long id, long finePerDay);
+
+    List<BorrowRecord> getOverdueRecords();
+
+    List<Object[]> getTopBorrowedBooks();
 }
