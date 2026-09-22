@@ -3,7 +3,6 @@ package com.library.service;
 import com.library.model.Book;
 import com.library.model.BorrowStatus;
 import com.library.model.Document;
-import com.library.model.DocumentType;
 import com.library.model.Magazine;
 import com.library.repository.BookRepository;
 import com.library.repository.BorrowRecordRepository;

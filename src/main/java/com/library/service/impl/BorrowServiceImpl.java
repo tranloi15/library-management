@@ -32,6 +32,12 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
+    public BorrowRecord getById(Long id) {
+        return borrowRecordRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phiếu mượn với mã #" + id));
+    }
+
+    @Override
     @Transactional
     public BorrowRecord create(
             Long userId,
@@ -49,12 +55,17 @@ public class BorrowServiceImpl implements BorrowService {
 
         if (!user.isActive()) {
             throw new IllegalStateException(
-                    "Tài khoản độc giả đã bị khóa");
+                    "Tài khoản độc giả đã bị khóa, không thể mượn sách");
         }
 
-        if (!document.isAvailable()) {
+        if (user.getRole() != null && user.getRole() != com.library.model.RoleName.ROLE_READER) {
+            throw new IllegalArgumentException(
+                    "Chỉ tài khoản độc giả mới có thể lập phiếu mượn!");
+        }
+
+        if (document.getQuantity() <= 0 || !document.isAvailable()) {
             throw new IllegalStateException(
-                    "Tài liệu đã hết");
+                    "Tài liệu '" + document.getTitle() + "' hiện đã hết số lượng trong kho");
         }
 
         if (borrowDate == null) {
@@ -63,7 +74,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         if (dueDate == null || !dueDate.isAfter(borrowDate)) {
             throw new IllegalArgumentException(
-                    "Ngày trả phải sau ngày mượn");
+                    "Ngày hẹn trả phải sau ngày mượn ít nhất 1 ngày");
         }
 
         BorrowRecord borrowRecord = new BorrowRecord(
@@ -82,19 +93,27 @@ public class BorrowServiceImpl implements BorrowService {
     @Override
     @Transactional
     public BorrowRecord returnBook(Long id) {
+        return returnBook(id, 0L, "NONE", null);
+    }
 
+    @Override
+    @Transactional
+    public BorrowRecord returnBook(Long id, Long fineAmount, String paymentMethod, String note) {
         BorrowRecord borrowRecord = borrowRecordRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Không tìm thấy phiếu mượn"));
+                        "Không tìm thấy phiếu mượn với mã #" + id));
 
         if (borrowRecord.getStatus() == BorrowStatus.RETURNED) {
             throw new IllegalStateException(
-                    "Sách này đã được trả");
+                    "Phiếu mượn này đã được hoàn tất trả sách trước đó!");
         }
 
         Document document = borrowRecord.getDocument();
+        if (document == null && borrowRecord.getBookId() != null) {
+            document = documentRepository.findById(borrowRecord.getBookId()).orElse(null);
+        }
 
-        borrowRecord.returnDocument();
+        borrowRecord.returnDocument(fineAmount, paymentMethod, note);
 
         if (document != null) {
             document.adjustQuantity(1);
@@ -102,6 +121,31 @@ public class BorrowServiceImpl implements BorrowService {
         }
 
         return borrowRecordRepository.save(borrowRecord);
+    }
+
+    @Override
+    @Transactional
+    public BorrowRecord renewBorrow(Long id, Long userId, boolean isAdmin) {
+        BorrowRecord record = borrowRecordRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phiếu mượn với mã #" + id));
+
+        // Kiểm tra quyền sở hữu phiếu mượn
+        if (!isAdmin && (record.getUser() == null || !record.getUser().getId().equals(userId))) {
+            throw new org.springframework.security.access.AccessDeniedException("Bạn không có quyền gia hạn phiếu mượn này!");
+        }
+
+        if (record.getStatus() == BorrowStatus.RETURNED) {
+            throw new IllegalStateException("Không thể gia hạn sách đã hoàn tất trả!");
+        }
+
+        if (record.isOverdue() || record.getStatus() == BorrowStatus.OVERDUE) {
+            throw new IllegalStateException("Sách đã quá hạn, không thể gia hạn. Vui lòng mang sách đến quầy để hoàn trả!");
+        }
+
+        // Gia hạn thêm 7 ngày vào ngày hẹn trả
+        LocalDate currentDueDate = record.getDueDate() != null ? record.getDueDate() : LocalDate.now();
+        record.setDueDate(currentDueDate.plusDays(7));
+        return borrowRecordRepository.save(record);
     }
 
     @Override
@@ -135,9 +179,9 @@ public class BorrowServiceImpl implements BorrowService {
         updateOverdue();
 
         return borrowRecordRepository
-                .findByUserIdAndStatusOrderByBorrowDateDesc(
+                .findByUserIdAndStatusInOrderByBorrowDateDesc(
                         userId,
-                        BorrowStatus.BORROWING);
+                        List.of(BorrowStatus.BORROWING, BorrowStatus.OVERDUE));
     }
 
     @Override
