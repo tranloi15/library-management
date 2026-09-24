@@ -1,11 +1,597 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Phiếu Mượn Quá Hạn - Thư Viện Số</title>
 </head>
+
 <body>
-    
+
+<div layout:fragment="content">
+
+    <!-- CHỨC NĂNG CHUYỂN ĐỔI BÁO CÁO -->
+    <div class="d-flex gap-2 mb-4">
+        <a th:href="@{/reports/top-books}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-trophy me-1"></i> Top Sách Mượn
+        </a>
+        <a th:href="@{/reports/overdue-list}" class="btn btn-danger btn-sm">
+            <i class="bi bi-exclamation-triangle me-1"></i> Phiếu Quá Hạn
+        </a>
+    </div>
+
+    <!-- HEADER -->
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between
+                align-items-start align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+
+            <h4 class="fw-bold mb-1">
+                Phiếu Mượn Quá Hạn & Tiền Phạt
+            </h4>
+
+            <p class="text-secondary small mb-0">
+                Danh sách các phiếu mượn đã quá hạn và tiền phạt tạm tính
+            </p>
+
+        </div>
+
+        <a th:href="@{/borrow}"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Quản lý phiếu mượn
+
+        </a>
+
+    </div>
+
+
+    <!-- THỐNG KÊ -->
+    <div class="row g-3 mb-4">
+
+        <!-- SỐ PHIẾU QUÁ HẠN -->
+        <div class="col-12 col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Phiếu quá hạn
+                    </span>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value text-danger"
+                     th:text="${#lists.size(overdueRecords)}">
+
+                    0
+
+                </div>
+
+
+                <div class="stat-trend">
+
+                    <i class="bi bi-clock-history"></i>
+
+                    Phiếu cần xử lý
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MỨC PHẠT -->
+        <div class="col-12 col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Mức phạt mỗi ngày
+                    </span>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value"
+                     style="font-size: 1.45rem;">
+
+                    <span th:text="${#numbers.formatInteger(
+                            finePerDay, 0, 'COMMA')} + ' đ'">
+
+                        5,000 đ
+
+                    </span>
+
+                </div>
+
+
+                <div class="stat-trend">
+
+                    Tiền phạt theo ngày quá hạn
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TỔNG TIỀN PHẠT -->
+        <div class="col-12 col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Tổng tiền phạt tạm tính
+                    </span>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-wallet2"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value text-danger"
+                     style="font-size: 1.45rem;">
+
+                    <span th:text="${#numbers.formatInteger(
+                            totalFine, 0, 'COMMA')} + ' đ'">
+
+                        0 đ
+
+                    </span>
+
+                </div>
+
+
+                <div class="stat-trend">
+
+                    Tính đến hiện tại
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CẢNH BÁO -->
+    <div class="app-card mb-4 border-danger-subtle">
+
+        <div class="d-flex
+                    justify-content-between
+                    align-items-center
+                    gap-3">
+
+            <div class="d-flex
+                        align-items-center
+                        gap-3">
+
+                <div class="rounded-3 p-2
+                            bg-danger-subtle text-danger">
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h6 class="fw-bold mb-1 text-danger">
+                        Cảnh báo quá hạn
+                    </h6>
+
+                    <p class="text-secondary small mb-0">
+
+                        Các phiếu dưới đây đã vượt quá hạn trả
+                        và chưa được hoàn tất.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <span class="status-pill danger"
+                  th:if="${!#lists.isEmpty(overdueRecords)}">
+
+                <span class="status-dot"></span>
+
+                Có phiếu quá hạn
+
+            </span>
+
+
+            <span class="status-pill success"
+                  th:if="${#lists.isEmpty(overdueRecords)}">
+
+                <span class="status-dot"></span>
+
+                Không có phiếu quá hạn
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- BẢNG -->
+    <div class="app-card p-2 p-sm-4">
+
+        <div class="d-flex flex-column flex-md-row
+                    justify-content-between
+                    align-items-start
+                    align-items-md-center
+                    gap-2 mb-3">
+
+            <div>
+
+                <h6 class="fw-bold mb-1">
+                    Danh sách phiếu quá hạn
+                </h6>
+
+                <p class="text-secondary small mb-0">
+                    Chi tiết độc giả, tài liệu, thời gian quá hạn và tiền phạt
+                </p>
+
+            </div>
+
+
+            <span class="craft-code"
+                  th:text="${#lists.size(overdueRecords)} + ' phiếu'">
+
+                0 phiếu
+
+            </span>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="craft-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        MÃ PHIẾU
+                    </th>
+
+                    <th>
+                        ĐỘC GIẢ
+                    </th>
+
+                    <th>
+                        SÁCH
+                    </th>
+
+                    <th>
+                        NGÀY MƯỢN
+                    </th>
+
+                    <th>
+                        HẠN TRẢ
+                    </th>
+
+                    <th>
+                        QUÁ HẠN
+                    </th>
+
+                    <th>
+                        TIỀN PHẠT
+                    </th>
+
+                    <th>
+                        TRẠNG THÁI
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <!-- KHÔNG CÓ DỮ LIỆU -->
+                <tr th:if="${overdueRecords == null
+                            || overdueRecords.isEmpty()}">
+
+                    <td colspan="8"
+                        class="text-center text-secondary py-5">
+
+                        <i class="bi bi-check-circle
+                                  text-success fs-2
+                                  d-block mb-2"></i>
+
+                        <div class="fw-semibold text-dark mb-1">
+
+                            Không có phiếu mượn quá hạn
+
+                        </div>
+
+                        <div class="small">
+
+                            Hiện tại tất cả phiếu mượn
+                            đều đang trong thời hạn hoặc đã trả.
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- DANH SÁCH -->
+                <tr th:each="borrow : ${overdueRecords}">
+
+                    <!-- MÃ PHIẾU -->
+                    <td>
+
+                        <span class="craft-code"
+                              th:text="'#BR-' + ${borrow.id}">
+
+                            #BR-0001
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- ĐỘC GIẢ -->
+                    <td>
+
+                        <div class="fw-medium"
+                             th:if="${borrow.user != null}"
+                             th:text="${borrow.user.fullName}">
+
+                            Nguyễn Văn A
+
+                        </div>
+
+                        <div class="text-secondary small"
+                             th:if="${borrow.user != null
+                                      && borrow.user.email != null}"
+                             th:text="${borrow.user.email}">
+
+                            email@example.com
+
+                        </div>
+
+                        <span class="text-secondary"
+                              th:if="${borrow.user == null}">
+
+                            Không xác định
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- SÁCH -->
+                    <td>
+
+                        <div class="d-flex
+                                    align-items-center
+                                    gap-2">
+
+                            <i class="bi bi-book
+                                      text-primary"></i>
+
+                            <span class="fw-medium"
+                                  th:if="${borrow.document != null}"
+                                  th:text="${borrow.document.title}">
+
+                                Clean Code
+
+                            </span>
+
+                            <span class="text-secondary"
+                                  th:if="${borrow.document == null}">
+
+                                Không xác định
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- NGÀY MƯỢN -->
+                    <td class="font-mono">
+
+                        <span th:if="${borrow.borrowDate != null}"
+                              th:text="${#temporals.format(
+                                      borrow.borrowDate,
+                                      'dd/MM/yyyy')}">
+
+                            01/09/2026
+
+                        </span>
+
+                        <span th:if="${borrow.borrowDate == null}">
+                            -
+                        </span>
+
+                    </td>
+
+
+                    <!-- HẠN TRẢ -->
+                    <td class="font-mono">
+
+                        <span class="text-danger fw-medium"
+                              th:if="${borrow.dueDate != null}"
+                              th:text="${#temporals.format(
+                                      borrow.dueDate,
+                                      'dd/MM/yyyy')}">
+
+                            15/09/2026
+
+                        </span>
+
+                        <span th:if="${borrow.dueDate == null}">
+                            -
+                        </span>
+
+                    </td>
+
+
+                    <!-- SỐ NGÀY QUÁ HẠN -->
+                    <td>
+
+                        <span class="status-pill danger">
+
+                            <span class="status-dot"></span>
+
+                            <span th:text="${borrow.overdueDays}
+                                  + ' ngày'">
+
+                                5 ngày
+
+                            </span>
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- TIỀN PHẠT -->
+                    <td>
+
+                        <div class="fw-bold text-danger">
+
+                            <span th:text="${#numbers.formatInteger(
+                                    borrow.calculateLateFine(finePerDay),
+                                    0,
+                                    'COMMA')} + ' đ'">
+
+                                25,000 đ
+
+                            </span>
+
+                        </div>
+
+                        <div class="text-secondary small">
+
+                            <span th:text="${#numbers.formatInteger(
+                                    finePerDay,
+                                    0,
+                                    'COMMA')} + ' đ/ngày'">
+
+                                5,000 đ/ngày
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- TRẠNG THÁI -->
+                    <td>
+
+                        <span class="status-pill danger">
+
+                            <span class="status-dot"></span>
+
+                            Quá hạn
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- GHI CHÚ -->
+    <div class="app-card mt-4">
+
+        <div class="d-flex
+                    align-items-start
+                    gap-3">
+
+            <div class="rounded-3 p-2
+                        bg-info-subtle text-info">
+
+                <i class="bi bi-info-circle"></i>
+
+            </div>
+
+
+            <div>
+
+                <h6 class="fw-bold mb-1">
+                    Quy tắc tính tiền phạt
+                </h6>
+
+                <p class="text-secondary small mb-0">
+
+                    Tiền phạt được tính bằng số ngày quá hạn
+                    nhân với mức phạt mỗi ngày.
+
+                    Mức phạt hiện tại là
+
+                    <strong
+                        th:text="${#numbers.formatInteger(
+                                finePerDay,
+                                0,
+                                'COMMA')} + ' đ/ngày'">
+
+                        5,000 đ/ngày
+
+                    </strong>.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>

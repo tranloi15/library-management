@@ -54,24 +54,31 @@ public class ReportServiceImpl implements ReportService {
 
         return borrowRecordRepository.findTopBorrowedBooks()
                 .stream()
+                .filter(row -> row[0] instanceof Book)
                 .limit(limit)
                 .map(row -> {
-                    Document document = (Document) row[0];
-                    Long borrowCount = ((Number) row[1]).longValue();
 
-                    String author = "";
+                    Book book = (Book) row[0];
 
-                    if (document instanceof Book book) {
-                        author = book.getAuthor();
-                    }
+                    Long borrowCount =
+                            ((Number) row[1]).longValue();
 
                     return new TopBookDto(
-                            document.getId(),
-                            document.getTitle(),
-                            author,
+                            book.getId(),
+                            book.getTitle(),
+                            book.getAuthor(),
                             borrowCount
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BorrowRecord> getOverdueRecords() {
+
+        borrowService.updateOverdue();
+
+        return borrowRecordRepository
+                .findByStatus(BorrowStatus.OVERDUE);
     }
 }
