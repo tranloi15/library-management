@@ -108,7 +108,7 @@
                                 <th>Tài liệu</th>
                                 <th>Ngày mượn</th>
                                 <th>Hạn trả</th>
-                                <th>Trạng thái</th>
+                                <th class="text-nowrap">Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -132,7 +132,7 @@
                                     <span th:text="${rec.dueDate != null ? #temporals.format(rec.dueDate, 'dd/MM/yyyy') : '---'}">--/--/----</span>
                                     <span th:if="${rec.isOverdue()}" class="badge bg-danger-subtle text-danger ms-1" style="font-size: 0.65rem;">Quá hạn</span>
                                 </td>
-                                <td>
+                                <td class="text-nowrap">
                                     <span th:if="${rec.status != null and rec.status.name() == 'BORROWING' and !rec.isOverdue()}" class="status-pill warning">
                                         <i class="bi bi-clock"></i> Đang mượn
                                     </span>
@@ -213,55 +213,6 @@
                 <a th:href="@{/users}" class="btn btn-sm btn-outline-danger w-100" style="font-size: 0.8rem;">
                     Quản lý danh sách độc giả <i class="bi bi-arrow-right ms-1"></i>
                 </a>
-            </div>
-
-            <!-- THAO TÁC NHANH QUẢN LÝ -->
-            <div class="app-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold mb-0">Tác Vụ Nhanh</h6>
-                    <span class="text-muted small">Phím tắt</span>
-                </div>
-
-                <div class="d-flex flex-column gap-2">
-                    <a th:href="@{/users/new}" class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-3 p-2 bg-primary-subtle text-primary">
-                                <i class="bi bi-person-plus-fill"></i>
-                            </div>
-                            <div>
-                                <div class="fw-semibold small text-dark">Cấp thẻ độc giả mới</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Tạo tài khoản và cấp quyền mượn</div>
-                            </div>
-                        </div>
-                        <i class="bi bi-chevron-right text-muted small"></i>
-                    </a>
-
-                    <a th:href="@{/catalog}" class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-3 p-2 bg-success-subtle text-success">
-                                <i class="bi bi-search"></i>
-                            </div>
-                            <div>
-                                <div class="fw-semibold small text-dark">Tra cứu kho tài liệu</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Kiểm tra số lượng và vị trí sách</div>
-                            </div>
-                        </div>
-                        <i class="bi bi-chevron-right text-muted small"></i>
-                    </a>
-
-                    <a th:href="@{/}" class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-3 p-2 bg-info-subtle text-info">
-                                <i class="bi bi-globe"></i>
-                            </div>
-                            <div>
-                                <div class="fw-semibold small text-dark">Cổng thông tin bạn đọc</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Trang chủ công cộng của thư viện</div>
-                            </div>
-                        </div>
-                        <i class="bi bi-chevron-right text-muted small"></i>
-                    </a>
-                </div>
             </div>
         </div>
     </div>

@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     try { initThemeToggle(); } catch (e) { console.error('Theme toggle error:', e); }
     try { initMobileSidebar(); } catch (e) { console.error('Mobile sidebar error:', e); }
+    try { initSidebarActiveState(); } catch (e) { console.error('Sidebar active state error:', e); }
     try { initViewModeToggle(); } catch (e) { console.error('View mode error:', e); }
     try { initDeleteConfirmModal(); } catch (e) { console.error('Delete modal error:', e); }
     try { initAutoHideAlerts(); } catch (e) { console.error('Alerts error:', e); }
@@ -243,4 +244,21 @@ function initKeyboardShortcuts() {
             }
         }
     });
+}
+
+/* ==========================================================================
+   SIDEBAR ACTIVE STATE HIGHLIGHT (CLIENT-SIDE BACKUP)
+   ========================================================================== */
+function initSidebarActiveState() {
+    const path = window.location.pathname;
+    const sidebar = document.querySelector('.app-sidebar');
+    if (!sidebar) return;
+
+    if (path.indexOf('/reports') !== -1) {
+        sidebar.querySelectorAll('.menu-item.active').forEach(item => item.classList.remove('active'));
+        const reportLink = sidebar.querySelector('a[href*="/reports"]');
+        if (reportLink && reportLink.parentElement) {
+            reportLink.parentElement.classList.add('active');
+        }
+    }
 }

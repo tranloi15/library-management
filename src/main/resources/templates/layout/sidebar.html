@@ -52,28 +52,13 @@
             </li>
 
             <li class="menu-category">PHÂN TÍCH & BÁO CÁO</li>
-            <li class="menu-item" th:classappend="${activeMenu == 'reports' ? 'active' : ''}">
+            <li class="menu-item" id="menuItemReports" th:classappend="${activeMenu == 'reports' ? 'active' : ''}">
                 <a th:href="@{/reports}" class="menu-link" title="Báo cáo Thống kê">
                     <i class="bi bi-bar-chart"></i>
                     <span>Báo cáo Thống kê</span>
                 </a>
             </li>
         </th:block>
-
-        <!-- KHÁM PHÁ DÀNH CHO TẤT CẢ / ĐỘC GIẢ -->
-        <li class="menu-category">KHÁM PHÁ THƯ VIỆN</li>
-        <li class="menu-item" th:classappend="${activeMenu == 'catalog' ? 'active' : ''}">
-            <a th:href="@{/catalog}" class="menu-link" title="Kho tài liệu trực tuyến">
-                <i class="bi bi-grid-fill"></i>
-                <span>Kho tài liệu</span>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a th:href="@{/}" class="menu-link" title="Trang chủ">
-                <i class="bi bi-house"></i>
-                <span>Trang chủ</span>
-            </a>
-        </li>
 
         <!-- DANH MỤC CÁ NHÂN -->
         <li class="menu-category">DANH MỤC CÁ NHÂN</li>
@@ -97,6 +82,26 @@
             <span class="badge sidebar-version-badge" style="font-size: 0.65rem;">v1.0</span>
         </div>
     </div>
+
+    <!-- Script tự động nhận diện active cho menu kể cả khi hot-reload server chưa restart -->
+    <script>
+        (function() {
+            try {
+                var p = window.location.pathname;
+                if (p.indexOf('/reports') !== -1) {
+                    var reportsItem = document.getElementById('menuItemReports');
+                    if (reportsItem) {
+                        var sidebar = reportsItem.closest('.app-sidebar');
+                        if (sidebar) {
+                            var actives = sidebar.querySelectorAll('.menu-item.active');
+                            actives.forEach(function(el) { el.classList.remove('active'); });
+                        }
+                        reportsItem.classList.add('active');
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
 </aside>
 </body>
 </html>

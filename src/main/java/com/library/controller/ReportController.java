@@ -31,6 +31,7 @@ public class ReportController {
         DashboardStatsDto stats =
                 reportService.getDashboardStats();
 
+        model.addAttribute("activeMenu", "reports");
         model.addAttribute("stats", stats);
 
         return "home/dashboard";
@@ -48,6 +49,7 @@ public class ReportController {
         List<TopBookDto> topBooks =
                 reportService.getTopBorrowedBooks(limit);
 
+        model.addAttribute("activeMenu", "reports");
         model.addAttribute("topBooks", topBooks);
         model.addAttribute("limit", limit);
 
@@ -67,6 +69,7 @@ public class ReportController {
                         record.getOverdueDays() * finePerDay)
                 .sum();
 
+        model.addAttribute("activeMenu", "reports");
         model.addAttribute("overdueRecords", overdueRecords);
         model.addAttribute("finePerDay", finePerDay);
         model.addAttribute("totalFine", totalFine);
