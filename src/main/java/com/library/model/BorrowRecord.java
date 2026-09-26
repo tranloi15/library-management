@@ -36,14 +36,19 @@ public class BorrowRecord extends BaseEntity {
     private User user;
 
     private LocalDate borrowDate;
-
     private LocalDate dueDate;
-
     private LocalDate returnDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BorrowStatus status; // "BORROWING", "RETURNED", "OVERDUE"
+    private BorrowStatus status;
+
+    public BorrowRecord(
+            Long bookId,
+            Long userId,
+            LocalDate borrowDate,
+            LocalDate dueDate,
+            BorrowStatus status) {
 
     private Long fineAmount = 0L;
 
@@ -60,49 +65,85 @@ public class BorrowRecord extends BaseEntity {
         this.status = status;
     }
 
-    public BorrowRecord(Long bookId, Long userId, LocalDate borrowDate, LocalDate dueDate, LocalDate returnDate,
+    public BorrowRecord(
+            Long bookId,
+            Long userId,
+            LocalDate borrowDate,
+            LocalDate dueDate,
+            LocalDate returnDate,
             BorrowStatus status) {
+
         this(bookId, userId, borrowDate, dueDate, status);
         this.returnDate = returnDate;
     }
 
-    public BorrowRecord(Document document, User user, LocalDate borrowDate, LocalDate dueDate, BorrowStatus status) {
+    public BorrowRecord(
+            Document document,
+            User user,
+            LocalDate borrowDate,
+            LocalDate dueDate,
+            BorrowStatus status) {
+
         this.document = document;
         this.user = user;
+
         if (document != null) {
             this.bookId = document.getId();
         }
+
         if (user != null) {
             this.userId = user.getId();
         }
+
         this.borrowDate = borrowDate;
         this.dueDate = dueDate;
         this.status = status;
     }
 
-    public BorrowRecord(Document document, User user, LocalDate borrowDate, LocalDate dueDate, LocalDate returnDate,
+    public BorrowRecord(
+            Document document,
+            User user,
+            LocalDate borrowDate,
+            LocalDate dueDate,
+            LocalDate returnDate,
             BorrowStatus status) {
+
         this(document, user, borrowDate, dueDate, status);
         this.returnDate = returnDate;
     }
 
     public long getDaysRemaining() {
-        if (dueDate == null)
+
+        if (dueDate == null) {
             return 0;
-        return ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
+        }
+
+        return ChronoUnit.DAYS.between(
+                LocalDate.now(),
+                dueDate);
     }
 
     public boolean isOverdue() {
         if ((status != BorrowStatus.BORROWING && status != BorrowStatus.OVERDUE) || dueDate == null) {
             return false;
         }
+
         return LocalDate.now().isAfter(dueDate);
     }
 
     public long getOverdueDays() {
-        if (!isOverdue())
+
+        if (status == BorrowStatus.RETURNED || dueDate == null) {
             return 0;
-        return ChronoUnit.DAYS.between(dueDate, LocalDate.now());
+        }
+
+        if (!LocalDate.now().isAfter(dueDate)) {
+            return 0;
+        }
+
+        return ChronoUnit.DAYS.between(
+                dueDate,
+                LocalDate.now());
     }
 
     public void returnDocument(Long fineAmount, String paymentMethod, String note) {
@@ -118,7 +159,13 @@ public class BorrowRecord extends BaseEntity {
     }
 
     public long calculateLateFine(long finePerDay) {
+
         long overdueDays = getOverdueDays();
-        return overdueDays > 0 ? overdueDays * finePerDay : 0;
+
+        if (overdueDays <= 0 || finePerDay <= 0) {
+            return 0;
+        }
+
+        return overdueDays * finePerDay;
     }
 }
