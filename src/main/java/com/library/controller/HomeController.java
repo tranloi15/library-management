@@ -56,4 +56,9 @@ public class HomeController {
         }
         return "login";
     }
+
+    @GetMapping("/register")
+    public String register() {
+        return "redirect:/login?action=register";
+    }
 }

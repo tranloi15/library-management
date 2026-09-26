@@ -18,7 +18,12 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     List<BorrowRecord> findByUserIdAndStatusOrderByBorrowDateDesc(
             Long userId, BorrowStatus status);
 
+    List<BorrowRecord> findByUserIdAndStatusInOrderByBorrowDateDesc(
+            Long userId, List<BorrowStatus> statuses);
+
     List<BorrowRecord> findByStatus(BorrowStatus status);
+
+    List<BorrowRecord> findByStatusIn(List<BorrowStatus> statuses);
 
     @Query("""
             SELECT br.document, COUNT(br.id)

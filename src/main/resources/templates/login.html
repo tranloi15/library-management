@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Nhập & Đăng Ký - Thư Viện Số</title>
+    
+    <!-- Script khởi tạo Theme sớm (Chống giật chớp màn hình khi tải trang) -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('library_theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        })();
+    </script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -482,26 +490,208 @@
                 align-self: flex-start;
             }
 
+            .theme-toggle-btn {
+                position: static;
+                margin-bottom: 1rem;
+                align-self: flex-end;
+            }
+
+            .top-nav-bar {
+                position: static;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
             .auth-footer {
                 margin-top: 3.5rem;
                 padding-bottom: 2.5rem;
             }
         }
+
+        /* Nút Chuyển đổi Theme Sáng / Tối góc trên phải */
+        .top-nav-bar {
+            position: fixed;
+            top: 1.5rem;
+            left: 2rem;
+            right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .top-nav-bar > * {
+            pointer-events: auto;
+        }
+
+        .theme-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 0.5rem 0.95rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary-border);
+            transform: translateY(-1px);
+        }
+
+        /* ==========================================================================
+           CHẾ ĐỘ TỐI (DARK THEME) CHO ĐĂNG NHẬP & ĐĂNG KÝ
+           ========================================================================== */
+        [data-bs-theme="dark"] {
+            --primary: #38BDF8;
+            --primary-hover: #0EA5E9;
+            --primary-light: rgba(56, 189, 248, 0.12);
+            --primary-border: rgba(56, 189, 248, 0.25);
+            --bg-body: #0B0E14;
+            --card-bg: #121722;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --shadow-book: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+        }
+
+        [data-bs-theme="dark"] body {
+            background-color: #0B0E14;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            color: #F8FAFC;
+        }
+
+        [data-bs-theme="dark"] .back-home,
+        [data-bs-theme="dark"] .theme-toggle-btn {
+            background: rgba(18, 23, 34, 0.85);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #CBD5E1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-bs-theme="dark"] .back-home:hover,
+        [data-bs-theme="dark"] .theme-toggle-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: rgba(24, 32, 48, 0.95);
+        }
+
+        [data-bs-theme="dark"] .book-face {
+            background: #121722;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        [data-bs-theme="dark"] .banner-col {
+            background: linear-gradient(145deg, #182030 0%, #121722 100%);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        [data-bs-theme="dark"] .banner-col.reversed {
+            background: linear-gradient(215deg, #182030 0%, #121722 100%);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        [data-bs-theme="dark"] .form-col {
+            background: #121722;
+        }
+
+        [data-bs-theme="dark"] .form-control {
+            background: #0B0E14;
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #F8FAFC;
+        }
+
+        [data-bs-theme="dark"] .form-control:focus {
+            background: #0E131C;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        [data-bs-theme="dark"] .form-control::placeholder {
+            color: #64748B;
+        }
+
+        [data-bs-theme="dark"] .input-icon {
+            color: #64748B;
+        }
+
+        [data-bs-theme="dark"] .checkbox-label {
+            color: #94A3B8;
+        }
+
+        [data-bs-theme="dark"] .forgot-link {
+            color: #94A3B8;
+        }
+
+        [data-bs-theme="dark"] .switch-flip {
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #94A3B8;
+        }
+
+        [data-bs-theme="dark"] .spine-decor-left {
+            background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.15) 60%, transparent);
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        [data-bs-theme="dark"] .spine-decor-right {
+            background: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0,0,0,0.15) 60%, transparent);
+            border-left: 1px solid rgba(255,255,255,0.05);
+        }
+
+        [data-bs-theme="dark"] .alert-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #FCA5A5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        [data-bs-theme="dark"] .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6EE7B7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        [data-bs-theme="dark"] .badge-dev {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38BDF8;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        [data-bs-theme="dark"] .auth-footer {
+            color: #64748B;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Nút quay lại trang chủ -->
-    <a href="/" class="back-home">
-        <i class="bi bi-arrow-left"></i> Quay lại trang chủ
-    </a>
+    <!-- Nút điều hướng đầu trang (Quay lại & Chuyển đổi Theme) -->
+    <div class="top-nav-bar">
+        <a href="/" class="back-home">
+            <i class="bi bi-arrow-left"></i> Quay lại trang chủ
+        </a>
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="Chuyển đổi giao diện sáng / tối">
+            <i id="themeToggleIcon" class="bi bi-moon-stars"></i>
+            <span id="themeToggleText">Chế độ tối</span>
+        </button>
+    </div>
 
     <!-- KHỐI 3D BOOK FLIP STAGE -->
     <div class="book-stage">
         <div class="book-wrapper" id="authBook">
 
             <!-- ========================================== -->
-            <!-- 1. MẶT TRƯỚC: ĐĂNG NHẬP                   -->
+            <!-- MẶT TRƯỚC: ĐĂNG NHẬP                   -->
             <!-- ========================================== -->
             <div class="book-face face-front">
                 <div class="spine-decor-left"></div>
@@ -597,7 +787,7 @@
             </div>
 
             <!-- ========================================== -->
-            <!-- 2. MẶT SAU: ĐĂNG KÝ (ĐẢO NGƯỢC CHIỀU)       -->
+            <!-- MẶT SAU: ĐĂNG KÝ (ĐẢO NGƯỢC CHIỀU)       -->
             <!-- ========================================== -->
             <div class="book-face face-back">
                 <div class="spine-decor-right"></div>
@@ -715,12 +905,45 @@
         btnGoRegister.addEventListener('click', flipToRegister);
         btnGoLogin.addEventListener('click', flipToLogin);
 
-        // Tự động lật nếu truy cập URL có ?action=register (Không bị giật chuyển cảnh khi vừa tải trang)
+        // Tự động lật nếu truy cập URL có ?action=register
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('action') === 'register') {
             authBook.style.transition = 'none';
             authBook.classList.add('flipped');
             setTimeout(() => { authBook.style.transition = ''; }, 60);
+        }
+
+        // Điều khiển chuyển đổi Theme Sáng / Tối
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeToggleIcon = document.getElementById('themeToggleIcon');
+        const themeToggleText = document.getElementById('themeToggleText');
+
+        function updateThemeUI(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            if (document.body) {
+                document.body.setAttribute('data-bs-theme', theme);
+            }
+            if (themeToggleIcon && themeToggleText) {
+                if (theme === 'dark') {
+                    themeToggleIcon.className = 'bi bi-sun text-warning';
+                    themeToggleText.textContent = 'Nền sáng';
+                } else {
+                    themeToggleIcon.className = 'bi bi-moon-stars text-secondary';
+                    themeToggleText.textContent = 'Nền tối';
+                }
+            }
+        }
+
+        // Đọc theme hiện tại và cập nhật nút bấm
+        const currentTheme = localStorage.getItem('library_theme') || 'light';
+        updateThemeUI(currentTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function () {
+                const activeTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('library_theme', activeTheme);
+                updateThemeUI(activeTheme);
+            });
         }
     </script>
 </body>

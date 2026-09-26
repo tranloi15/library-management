@@ -50,6 +50,14 @@ public class BorrowRecord extends BaseEntity {
             LocalDate dueDate,
             BorrowStatus status) {
 
+    private Long fineAmount = 0L;
+
+    private String paymentMethod; // "CASH", "QR_CODE", "NONE"
+
+    @Column(length = 500)
+    private String note;
+
+    public BorrowRecord(Long bookId, Long userId, LocalDate borrowDate, LocalDate dueDate, BorrowStatus status) {
         this.bookId = bookId;
         this.userId = userId;
         this.borrowDate = borrowDate;
@@ -116,8 +124,7 @@ public class BorrowRecord extends BaseEntity {
     }
 
     public boolean isOverdue() {
-
-        if (status == BorrowStatus.RETURNED || dueDate == null) {
+        if ((status != BorrowStatus.BORROWING && status != BorrowStatus.OVERDUE) || dueDate == null) {
             return false;
         }
 
@@ -139,10 +146,16 @@ public class BorrowRecord extends BaseEntity {
                 LocalDate.now());
     }
 
-    public void returnDocument() {
-
+    public void returnDocument(Long fineAmount, String paymentMethod, String note) {
         this.returnDate = LocalDate.now();
         this.status = BorrowStatus.RETURNED;
+        this.fineAmount = fineAmount != null ? Math.max(0, fineAmount) : 0L;
+        this.paymentMethod = (paymentMethod != null && !paymentMethod.trim().isEmpty()) ? paymentMethod : "NONE";
+        this.note = note;
+    }
+
+    public void returnDocument() {
+        returnDocument(0L, "NONE", null);
     }
 
     public long calculateLateFine(long finePerDay) {

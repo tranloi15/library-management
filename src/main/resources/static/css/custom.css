@@ -135,7 +135,7 @@
    MULTI-PALETTE ARCHITECTURE (5 PHONG CÁCH & BẢNG MÀU CHUYÊN NGHIỆP)
    ========================================================================== */
 
-/* 1. NORDIC WARM AMBER & CEDAR (Thư viện Bắc Âu / Gỗ sồi & Hổ phách) */
+/* NORDIC WARM AMBER & CEDAR (Thư viện Bắc Âu / Gỗ sồi & Hổ phách) */
 [data-theme-palette="nordic"] {
     --bg-app: #FAF8F5;
     --bg-surface: #FFFFFF;
@@ -193,7 +193,7 @@
     --border-subtle: 1px solid #201C19;
 }
 
-/* 2. TOKYO CRIMSON & SUMI INK (Tạp chí Monocle & Phong cách Đỏ Son) */
+/* TOKYO CRIMSON & SUMI INK (Tạp chí Monocle & Phong cách Đỏ Son) */
 [data-theme-palette="crimson"] {
     --bg-app: #F6F6F9;
     --bg-surface: #FFFFFF;
@@ -251,7 +251,7 @@
     --border-subtle: 1px solid #191920;
 }
 
-/* 3. OXFORD FOREST EMERALD (Di sản Hàn lâm Xanh Ngọc Lục Bảo) */
+/* OXFORD FOREST EMERALD (Di sản Hàn lâm Xanh Ngọc Lục Bảo) */
 [data-theme-palette="emerald"], [data-theme-style="editorial"] {
     --bg-app: #F8FAFC;
     --bg-surface: #FFFFFF;
@@ -311,7 +311,7 @@
     --border-subtle: 1px solid #14221C;
 }
 
-/* 4. SWISS TITANIUM & ELECTRIC CYAN (Tối giản Công nghệ cao / Linear-Vercel) */
+/* SWISS TITANIUM & ELECTRIC CYAN (Tối giản Công nghệ cao / Linear-Vercel) */
 [data-theme-palette="obsidian"] {
     --bg-app: #F4F5F7;
     --bg-surface: #FFFFFF;
@@ -1939,6 +1939,74 @@ body.sidebar-collapsed .app-main {
     color: #F8FAFC !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
+
+/* Stat Icon Badges - Thích ứng hoàn hảo giữa giao diện Sáng & Tối */
+.stat-badge-box {
+    width: 48px;
+    height: 48px;
+    font-size: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.stat-badge-neutral {
+    background-color: #F8FAFC;
+    color: #475569;
+}
+[data-bs-theme="dark"] .stat-badge-neutral {
+    background-color: rgba(148, 163, 184, 0.15) !important;
+    color: #CBD5E1 !important;
+}
+
+.stat-badge-warning {
+    background-color: #FEF3C7;
+    color: #D97706;
+}
+[data-bs-theme="dark"] .stat-badge-warning {
+    background-color: rgba(245, 158, 11, 0.18) !important;
+    color: #FBBF24 !important;
+}
+
+.stat-badge-danger {
+    background-color: #FEE2E2;
+    color: #DC2626;
+}
+[data-bs-theme="dark"] .stat-badge-danger {
+    background-color: rgba(239, 68, 68, 0.18) !important;
+    color: #F87171 !important;
+}
+
+.stat-badge-success {
+    background-color: #ECFDF5;
+    color: #059669;
+}
+[data-bs-theme="dark"] .stat-badge-success {
+    background-color: rgba(16, 185, 129, 0.18) !important;
+    color: #34D399 !important;
+}
+
+.stat-badge-primary {
+    background-color: #EFF6FF;
+    color: #2563EB;
+}
+[data-bs-theme="dark"] .stat-badge-primary {
+    background-color: rgba(56, 189, 248, 0.18) !important;
+    color: #38BDF8 !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+    color: #F8FAFC !important;
+}
+
+[data-bs-theme="dark"] .bg-light {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+
 
 
 

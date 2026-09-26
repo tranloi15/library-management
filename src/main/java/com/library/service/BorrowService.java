@@ -14,7 +14,13 @@ public interface BorrowService {
             java.time.LocalDate borrowDate,
             java.time.LocalDate dueDate);
 
+    BorrowRecord getById(Long id);
+
     BorrowRecord returnBook(Long id);
+
+    BorrowRecord returnBook(Long id, Long fineAmount, String paymentMethod, String note);
+ 
+    BorrowRecord renewBorrow(Long id, Long userId, boolean isAdmin);
 
     void updateOverdue();
 

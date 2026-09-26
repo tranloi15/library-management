@@ -39,7 +39,8 @@ public class DashboardController {
         long activePatrons = allUsers.stream()
                 .filter(u -> u.getRole() != null && u.getRole().name().equals("ROLE_READER") && u.isActive()).count();
 
-        long activeBorrows = allRecords.stream().filter(r -> "BORROWING".equalsIgnoreCase(r.getStatus().name()))
+        long activeBorrows = allRecords.stream()
+                .filter(r -> r.getStatus() != null && r.getStatus() != com.library.model.BorrowStatus.RETURNED)
                 .count();
         long overdueBorrows = allRecords.stream().filter(BorrowRecord::isOverdue).count();
 

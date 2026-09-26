@@ -9,7 +9,7 @@
 <body>
 <div layout:fragment="content">
 
-    <!-- 1. TIÊU ĐỀ & TÁC VỤ NHANH -->
+    <!-- TIÊU ĐỀ & TÁC VỤ NHANH -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Bảng Điều Khiển & Thống Kê Thư Viện</h4>
@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <!-- 2. HÀNG THẺ KPI TỔNG QUAN -->
+    <!-- HÀNG THẺ KPI TỔNG QUAN -->
     <div class="row g-3 mb-4">
         <!-- Tổng số tài liệu -->
         <div class="col-12 col-sm-6 col-xl-3">
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <!-- 3. BỐ CỤC CHIA ĐÔI: HOẠT ĐỘNG MƯỢN TRẢ & CẢNH BÁO QUÁ HẠN -->
+    <!-- BỐ CỤC CHIA ĐÔI: HOẠT ĐỘNG MƯỢN TRẢ & CẢNH BÁO QUÁ HẠN -->
     <div class="row g-4">
         <!-- CỘT TRÁI (8 COLS): NHẬT KÝ LƯU HÀNH MỚI NHẤT -->
         <div class="col-12 col-lg-8">
@@ -127,20 +127,20 @@
                                     <div class="fw-medium text-dark" th:text="${rec.document != null ? rec.document.title : 'Tài liệu'}">Clean Code</div>
                                     <div class="text-muted small" th:text="${rec.document != null ? rec.document.publisher : ''}">Prentice Hall</div>
                                 </td>
-                                <td class="text-muted small" th:text="${rec.borrowDate != null ? #temporals.format(rec.borrowDate, 'dd/MM/yyyy') : '---'}">10/09/2026</td>
+                                <td class="text-muted small" th:text="${rec.borrowDate != null ? #temporals.format(rec.borrowDate, 'dd/MM/yyyy') : '---'}">--/--/----</td>
                                 <td class="small">
-                                    <span th:text="${rec.dueDate != null ? #temporals.format(rec.dueDate, 'dd/MM/yyyy') : '---'}">24/09/2026</span>
+                                    <span th:text="${rec.dueDate != null ? #temporals.format(rec.dueDate, 'dd/MM/yyyy') : '---'}">--/--/----</span>
                                     <span th:if="${rec.isOverdue()}" class="badge bg-danger-subtle text-danger ms-1" style="font-size: 0.65rem;">Quá hạn</span>
                                 </td>
                                 <td>
-                                    <span th:if="${'BORROWING'.equalsIgnoreCase(rec.status) and !rec.isOverdue()}" class="status-pill success">
-                                        <i class="bi bi-arrow-up-right"></i> Đang mượn
+                                    <span th:if="${rec.status != null and rec.status.name() == 'BORROWING' and !rec.isOverdue()}" class="status-pill warning">
+                                        <i class="bi bi-clock"></i> Đang mượn
                                     </span>
-                                    <span th:if="${'BORROWING'.equalsIgnoreCase(rec.status) and rec.isOverdue()}" class="status-pill danger">
+                                    <span th:if="${rec.status != null and (rec.status.name() == 'OVERDUE' or (rec.isOverdue() and rec.status.name() != 'RETURNED'))}" class="status-pill danger">
                                         <i class="bi bi-exclamation-circle"></i> Trễ hạn
                                     </span>
-                                    <span th:if="${'RETURNED'.equalsIgnoreCase(rec.status)}" class="status-pill info">
-                                        <i class="bi bi-check-all"></i> Đã trả
+                                    <span th:if="${rec.status != null and rec.status.name() == 'RETURNED'}" class="status-pill success">
+                                        <i class="bi bi-check2"></i> Đã trả
                                     </span>
                                 </td>
                             </tr>

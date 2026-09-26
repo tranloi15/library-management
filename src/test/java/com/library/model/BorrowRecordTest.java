@@ -40,4 +40,31 @@ class BorrowRecordTest {
 
         assertFalse(record.isOverdue());
     }
+
+    @Test
+    @DisplayName("Kiểm thử sách có trạng thái OVERDUE vẫn giữ đúng số ngày quá hạn và tiền phạt")
+    void testOverdueWithStatusOverdue() {
+        LocalDate today = LocalDate.now();
+        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(18), today.minusDays(8), BorrowStatus.OVERDUE);
+
+        assertTrue(record.isOverdue());
+        assertEquals(8, record.getOverdueDays());
+        assertEquals(40000L, record.calculateLateFine(5000L));
+    }
+
+    @Test
+    @DisplayName("Kiểm thử quy trình hoàn tất trả sách kèm ghi nhận tiền phạt và phương thức thanh toán")
+    void testReturnDocumentWithFineAndPaymentMethod() {
+        LocalDate today = LocalDate.now();
+        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(10), today.minusDays(2), BorrowStatus.OVERDUE);
+
+        record.returnDocument(10000L, "QR_CODE", "Thanh toán qua VietQR");
+
+        assertEquals(BorrowStatus.RETURNED, record.getStatus());
+        assertEquals(today, record.getReturnDate());
+        assertEquals(10000L, record.getFineAmount());
+        assertEquals("QR_CODE", record.getPaymentMethod());
+        assertEquals("Thanh toán qua VietQR", record.getNote());
+        assertFalse(record.isOverdue());
+    }
 }
