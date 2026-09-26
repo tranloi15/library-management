@@ -7,10 +7,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
+
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
+
+       @Lock(LockModeType.PESSIMISTIC_WRITE)
+       @Query("SELECT d FROM Document d WHERE d.id = :id")
+       Optional<Document> findByIdForUpdate(@Param("id") Long id);
 
        @Query("SELECT d FROM Document d WHERE " +
                      "(:keyword IS NULL OR LOWER(d.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +

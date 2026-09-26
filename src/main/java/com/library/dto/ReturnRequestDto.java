@@ -1,5 +1,7 @@
 package com.library.dto;
 
+import com.library.model.BookCondition;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReturnRequestDto {
+
     private Long id;
+
     private Long fineAmount = 0L;
-    private String paymentMethod = "NONE"; // "CASH", "QR_CODE", "NONE"
+
+    private Long damageFee = 0L;
+
+    private BookCondition bookCondition = BookCondition.GOOD;
+
+    private String paymentMethod = "NONE";
+
     private String note;
 }

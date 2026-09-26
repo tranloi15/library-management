@@ -1,11 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
+
 <head>
     <title>Sách Đang Mượn & Lịch Sử Cá Nhân - Thư Viện Số</title>
 </head>
+
 <body>
+
 <div layout:fragment="content">
 
     <!-- HEADER TIÊU ĐỀ TRANG -->
@@ -15,25 +19,44 @@
                 <i class="bi bi-journal-bookmark text-primary"></i>
                 Sách Tôi Đang Mượn & Lịch Sử Cá Nhân
             </h4>
-            <p class="text-secondary small mb-0">Theo dõi tiến độ mượn tài liệu, xin gia hạn trực tuyến và tình trạng hoàn trả</p>
+            <p class="text-secondary small mb-0">
+                Theo dõi tiến độ mượn tài liệu, xin gia hạn trực tuyến và tình trạng hoàn trả
+            </p>
         </div>
+
         <div class="d-flex gap-2">
-            <a th:href="@{/catalog}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
-                <i class="bi bi-plus-lg"></i> Khám phá mượn thêm sách
+            <a th:href="@{/catalog}"
+               class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i>
+                Khám phá mượn thêm sách
             </a>
         </div>
     </div>
 
-    <!-- TÓM TẮT CHỈ SỐ MƯỢN TRẢ (KPI STRIP) -->
+    <!-- TÓM TẮT CHỈ SỐ MƯỢN TRẢ -->
     <div class="row g-2 g-sm-3 mb-3 mb-sm-4">
+
         <div class="col-6 col-lg-3">
             <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1 text-truncate">Đang giữ mượn</span>
-                    <span class="fs-5 fs-sm-4 fw-bold font-mono text-primary" th:text="${activeBorrowCount != null ? activeBorrowCount : 0}">0</span>
-                    <span class="text-secondary small ms-1 d-none d-sm-inline">/ 5 cuốn tối đa</span>
-                    <span class="text-secondary small ms-1 d-inline d-sm-none">/ 5</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">
+                        Đang giữ mượn
+                    </span>
+
+                    <span class="fs-5 fs-sm-4 fw-bold font-mono text-primary"
+                          th:text="${activeBorrowCount != null ? activeBorrowCount : 0}">
+                        0
+                    </span>
+
+                    <span class="text-secondary small ms-1 d-none d-sm-inline">
+                        / 5 cuốn tối đa
+                    </span>
+
+                    <span class="text-secondary small ms-1 d-inline d-sm-none">
+                        / 5
+                    </span>
                 </div>
+
                 <div class="p-1.5 p-sm-2 rounded bg-light border text-primary flex-shrink-0">
                     <i class="bi bi-book fs-5"></i>
                 </div>
@@ -43,15 +66,27 @@
         <div class="col-6 col-lg-3">
             <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1 text-truncate">Quá hạn</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">
+                        Quá hạn
+                    </span>
+
                     <span class="fs-5 fs-sm-4 fw-bold font-mono"
                           th:classappend="${overdueCount != null and overdueCount > 0 ? 'text-danger' : 'text-secondary'}"
-                          th:text="${overdueCount != null ? overdueCount : 0}">0</span>
+                          th:text="${overdueCount != null ? overdueCount : 0}">
+                        0
+                    </span>
+
                     <span class="small ms-1 d-none d-sm-inline"
-                          th:classappend="${overdueCount != null and overdueCount > 0 ? 'text-danger' : 'text-secondary'}">cuốn trễ hạn</span>
+                          th:classappend="${overdueCount != null and overdueCount > 0 ? 'text-danger' : 'text-secondary'}">
+                        cuốn trễ hạn
+                    </span>
+
                     <span class="small ms-1 d-inline d-sm-none"
-                          th:classappend="${overdueCount != null and overdueCount > 0 ? 'text-danger' : 'text-secondary'}">trễ</span>
+                          th:classappend="${overdueCount != null and overdueCount > 0 ? 'text-danger' : 'text-secondary'}">
+                        trễ
+                    </span>
                 </div>
+
                 <div class="p-1.5 p-sm-2 rounded border flex-shrink-0"
                      th:classappend="${overdueCount != null and overdueCount > 0 ? 'bg-danger-subtle border-danger-subtle text-danger' : 'bg-light text-secondary'}">
                     <i class="bi bi-exclamation-triangle fs-5"></i>
@@ -62,11 +97,24 @@
         <div class="col-6 col-lg-3">
             <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1 text-truncate">Đã trả</span>
-                    <span class="fs-5 fs-sm-4 fw-bold font-mono text-success" th:text="${returnedCount != null ? returnedCount : 0}">0</span>
-                    <span class="text-secondary small ms-1 d-none d-sm-inline">lượt hoàn thành</span>
-                    <span class="text-secondary small ms-1 d-inline d-sm-none">lượt</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">
+                        Đã trả
+                    </span>
+
+                    <span class="fs-5 fs-sm-4 fw-bold font-mono text-success"
+                          th:text="${returnedCount != null ? returnedCount : 0}">
+                        0
+                    </span>
+
+                    <span class="text-secondary small ms-1 d-none d-sm-inline">
+                        lượt hoàn thành
+                    </span>
+
+                    <span class="text-secondary small ms-1 d-inline d-sm-none">
+                        lượt
+                    </span>
                 </div>
+
                 <div class="p-1.5 p-sm-2 rounded bg-light border text-success flex-shrink-0">
                     <i class="bi bi-check2-all fs-5"></i>
                 </div>
@@ -76,243 +124,564 @@
         <div class="col-6 col-lg-3">
             <div class="app-card p-2 p-sm-3 d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-secondary small d-block mb-1 text-truncate">Phạt tạm tính</span>
+                    <span class="text-secondary small d-block mb-1 text-truncate">
+                        Phạt tạm tính
+                    </span>
+
                     <span class="fs-5 fs-sm-4 fw-bold font-mono"
                           th:classappend="${fineAmount != null and fineAmount > 0 ? 'text-danger' : 'text-secondary'}"
-                          th:text="${fineAmount != null ? #numbers.formatDecimal(fineAmount, 0, 'COMMA', 0, 'POINT') : '0'}">0</span>
-                    <span class="text-secondary small ms-1">VNĐ</span>
+                          th:text="${fineAmount != null ? #numbers.formatDecimal(fineAmount, 0, 'COMMA', 0, 'POINT') : '0'}">
+                        0
+                    </span>
+
+                    <span class="text-secondary small ms-1">
+                        VNĐ
+                    </span>
                 </div>
+
                 <div class="p-1.5 p-sm-2 rounded bg-light border flex-shrink-0"
                      th:classappend="${fineAmount != null and fineAmount > 0 ? 'text-danger' : 'text-secondary'}">
                     <i class="bi bi-cash-coin fs-5"></i>
                 </div>
             </div>
         </div>
+
     </div>
 
-    <!-- KHỐI NỘI DUNG 2 TAB CHUYỂN ĐỔI -->
+    <!-- KHỐI NỘI DUNG 2 TAB -->
     <div class="app-card p-2 p-sm-4">
+
         <!-- Tab Headers -->
-        <ul class="nav custom-nav-tabs flex-nowrap overflow-x-auto mb-3 mb-sm-4 pb-1" id="borrowHistoryTab" role="tablist" style="scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+        <ul class="nav custom-nav-tabs flex-nowrap overflow-x-auto mb-3 mb-sm-4 pb-1"
+            id="borrowHistoryTab"
+            role="tablist"
+            style="scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+
             <li class="nav-item flex-shrink-0" role="presentation">
-                <button class="nav-link active d-flex align-items-center gap-2 text-nowrap" id="current-tab" 
-                        data-bs-toggle="tab" data-bs-target="#current-tab-pane" type="button" role="tab">
-                    <i class="bi bi-journal-arrow-down"></i> 
+                <button class="nav-link active d-flex align-items-center gap-2 text-nowrap"
+                        id="current-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#current-tab-pane"
+                        type="button"
+                        role="tab">
+
+                    <i class="bi bi-journal-arrow-down"></i>
+
                     <span>Sách đang mượn</span>
-                    <span class="status-pill warning" style="font-size: 0.7rem;" th:text="${activeBorrowCount != null ? activeBorrowCount : 0} + ' cuốn'">0 cuốn</span>
+
+                    <span class="status-pill warning"
+                          style="font-size: 0.7rem;"
+                          th:text="${activeBorrowCount != null ? activeBorrowCount : 0} + ' cuốn'">
+                        0 cuốn
+                    </span>
                 </button>
             </li>
+
             <li class="nav-item flex-shrink-0" role="presentation">
-                <button class="nav-link d-flex align-items-center gap-2 text-nowrap" id="returned-tab" 
-                        data-bs-toggle="tab" data-bs-target="#returned-tab-pane" type="button" role="tab">
-                    <i class="bi bi-check2-circle"></i> 
+                <button class="nav-link d-flex align-items-center gap-2 text-nowrap"
+                        id="returned-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#returned-tab-pane"
+                        type="button"
+                        role="tab">
+
+                    <i class="bi bi-check2-circle"></i>
+
                     <span>Lịch sử đã trả</span>
-                    <span class="status-pill neutral" style="font-size: 0.7rem;" th:text="${returnedCount != null ? returnedCount : 0} + ' cuốn'">0 cuốn</span>
+
+                    <span class="status-pill neutral"
+                          style="font-size: 0.7rem;"
+                          th:text="${returnedCount != null ? returnedCount : 0} + ' cuốn'">
+                        0 cuốn
+                    </span>
                 </button>
             </li>
+
         </ul>
 
         <!-- Tab Contents -->
         <div class="tab-content" id="borrowHistoryTabContent">
+
             <!-- TAB SÁCH ĐANG MƯỢN -->
-            <div class="tab-pane fade show active" id="current-tab-pane" role="tabpanel">
-                <!-- Trường hợp không có sách nào đang mượn -->
-                <div th:if="${activeBorrows == null || activeBorrows.isEmpty()}" class="text-center py-5">
+            <div class="tab-pane fade show active"
+                 id="current-tab-pane"
+                 role="tabpanel">
+
+                <!-- Không có sách -->
+                <div th:if="${activeBorrows == null || activeBorrows.isEmpty()}"
+                     class="text-center py-5">
+
                     <i class="bi bi-journal-check fs-1 text-success d-block mb-2"></i>
-                    <h6 class="fw-bold">Bạn hiện không giữ tài liệu nào!</h6>
-                    <p class="text-secondary small mb-3">Hãy ghé thăm kho tài liệu để tìm đọc những cuốn sách hấp dẫn mới.</p>
-                    <a th:href="@{/catalog}" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-grid-fill me-1"></i> Khám phá kho tài liệu
+
+                    <h6 class="fw-bold">
+                        Bạn hiện không giữ tài liệu nào!
+                    </h6>
+
+                    <p class="text-secondary small mb-3">
+                        Hãy ghé thăm kho tài liệu để tìm đọc những cuốn sách hấp dẫn mới.
+                    </p>
+
+                    <a th:href="@{/catalog}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-grid-fill me-1"></i>
+                        Khám phá kho tài liệu
                     </a>
                 </div>
 
                 <!-- Danh sách sách đang mượn -->
-                <div th:if="${activeBorrows != null and !activeBorrows.isEmpty()}" class="row g-4">
-                    <div class="col-12 col-lg-6" th:each="borrow : ${activeBorrows}">
+                <div th:if="${activeBorrows != null and !activeBorrows.isEmpty()}"
+                     class="row g-4">
+
+                    <div class="col-12 col-lg-6"
+                         th:each="borrow : ${activeBorrows}">
+
                         <div class="app-card p-3 border"
                              th:classappend="${borrow.isOverdue() ? 'border-danger-subtle bg-danger-subtle-light' : ''}">
+
                             <div class="d-flex gap-3">
+
                                 <!-- Bìa sách -->
                                 <div class="book-cover-thumb flex-shrink-0">
+
                                     <img th:if="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
-                                         th:src="${borrow.document.imageUrl}" 
-                                         alt="cover" class="rounded object-fit-cover shadow-sm" style="width: 72px; height: 98px;">
+                                         th:src="${borrow.document.imageUrl}"
+                                         alt="cover"
+                                         class="rounded object-fit-cover shadow-sm"
+                                         style="width: 72px; height: 98px;">
+
                                     <div th:unless="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
                                          class="rounded bg-light border d-flex align-items-center justify-content-center text-muted"
                                          style="width: 72px; height: 98px;">
+
                                         <i class="bi bi-book fs-3"></i>
                                     </div>
+
                                 </div>
 
-                                <!-- Nội dung chi tiết -->
+                                <!-- Nội dung -->
                                 <div class="flex-grow-1 min-w-0">
+
                                     <div class="d-flex justify-content-between align-items-start gap-2 mb-1 flex-wrap">
-                                        <h6 class="fw-bold mb-0 text-truncate flex-grow-1" style="font-size: 0.95rem;"
+
+                                        <h6 class="fw-bold mb-0 text-truncate flex-grow-1"
+                                            style="font-size: 0.95rem;"
                                             th:text="${borrow.document != null ? borrow.document.title : 'Tài liệu'}"
                                             th:title="${borrow.document != null ? borrow.document.title : ''}">
                                             Tên tài liệu
                                         </h6>
 
                                         <!-- Badge hạn trả -->
-                                        <span th:if="${borrow.isOverdue()}" class="status-pill danger flex-shrink-0">
-                                            <span class="status-dot"></span> Trễ <span th:text="${borrow.getOverdueDays()}">0</span> ngày
+                                        <span th:if="${borrow.isOverdue()}"
+                                              class="status-pill danger flex-shrink-0">
+
+                                            <span class="status-dot"></span>
+                                            Trễ
+                                            <span th:text="${borrow.getOverdueDays()}">0</span>
+                                            ngày
                                         </span>
-                                        <span th:unless="${borrow.isOverdue()}" class="status-pill info flex-shrink-0">
-                                            <span class="status-dot"></span> Còn <span th:text="${borrow.getDaysRemaining()}">0</span> ngày
+
+                                        <span th:unless="${borrow.isOverdue()}"
+                                              class="status-pill info flex-shrink-0">
+
+                                            <span class="status-dot"></span>
+                                            Còn
+                                            <span th:text="${borrow.getDaysRemaining()}">0</span>
+                                            ngày
                                         </span>
+
                                     </div>
 
-                                    <div class="text-secondary small mb-2" style="font-size: 0.8rem;">
-                                        <span th:text="${borrow.document != null ? borrow.document.publisher : ''}">NXB</span>
-                                        • Mã phiếu: <span class="craft-code" th:text="'#BR-' + ${#numbers.formatInteger(borrow.id, 4)}">#BR-0001</span>
+                                    <div class="text-secondary small mb-2"
+                                         style="font-size: 0.8rem;">
+
+                                        <span th:text="${borrow.document != null ? borrow.document.publisher : ''}">
+                                            NXB
+                                        </span>
+
+                                        • Mã phiếu:
+
+                                        <span class="craft-code"
+                                              th:text="'#BR-' + ${#numbers.formatInteger(borrow.id, 4)}">
+                                            #BR-0001
+                                        </span>
+
                                     </div>
 
-                                    <div class="d-flex justify-content-between small text-secondary mb-2 flex-wrap gap-1" style="font-size: 0.8rem;">
-                                        <span>Ngày mượn: <strong class="font-monospace" th:text="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}">01/09/2026</strong></span>
-                                        <span>Hạn trả: <strong class="font-monospace"
-                                                              th:classappend="${borrow.isOverdue() ? 'text-danger' : 'text-dark'}"
-                                                              th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">15/09/2026</strong></span>
+                                    <div class="d-flex justify-content-between small text-secondary mb-2 flex-wrap gap-1"
+                                         style="font-size: 0.8rem;">
+
+                                        <span>
+                                            Ngày mượn:
+                                            <strong class="font-monospace"
+                                                    th:text="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}">
+                                                01/09/2026
+                                            </strong>
+                                        </span>
+
+                                        <span>
+                                            Hạn trả:
+                                            <strong class="font-monospace"
+                                                    th:classappend="${borrow.isOverdue() ? 'text-danger' : 'text-dark'}"
+                                                    th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">
+                                                15/09/2026
+                                            </strong>
+                                        </span>
+
                                     </div>
 
-                                    <!-- Tiến trình mượn sách -->
+                                    <!-- Tiến trình mượn -->
                                     <div class="mb-2">
-                                        <div th:if="${borrow.isOverdue()}" class="d-flex justify-content-between text-danger fw-semibold" style="font-size: 0.72rem; margin-bottom: 2px;">
+
+                                        <div th:if="${borrow.isOverdue()}"
+                                             class="d-flex justify-content-between text-danger fw-semibold"
+                                             style="font-size: 0.72rem; margin-bottom: 2px;">
+
                                             <span>Quá hạn quy định</span>
-                                            <span>+<span th:text="${borrow.getOverdueDays()}">0</span> ngày</span>
+
+                                            <span>
+                                                +
+                                                <span th:text="${borrow.getOverdueDays()}">
+                                                    0
+                                                </span>
+                                                ngày
+                                            </span>
                                         </div>
-                                        <div th:unless="${borrow.isOverdue()}" class="d-flex justify-content-between text-muted" style="font-size: 0.72rem; margin-bottom: 2px;">
+
+                                        <div th:unless="${borrow.isOverdue()}"
+                                             class="d-flex justify-content-between text-muted"
+                                             style="font-size: 0.72rem; margin-bottom: 2px;">
+
                                             <span>Thời hạn còn lại</span>
-                                            <span><span th:text="${borrow.getDaysRemaining()}">0</span> ngày nữa</span>
+
+                                            <span>
+                                                <span th:text="${borrow.getDaysRemaining()}">
+                                                    0
+                                                </span>
+                                                ngày nữa
+                                            </span>
                                         </div>
+
                                         <div class="progress" style="height: 5px;">
-                                            <div th:if="${borrow.isOverdue()}" class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
-                                            <div th:unless="${borrow.isOverdue()}" class="progress-bar bg-primary" role="progressbar"
-                                                 th:style="'width: ' + (${(14 - borrow.getDaysRemaining()) * 100 / 14 > 100 ? 100 : ((14 - borrow.getDaysRemaining()) * 100 / 14 < 15 ? 15 : (14 - borrow.getDaysRemaining()) * 100 / 14)}) + '%;'"></div>
+
+                                            <div th:if="${borrow.isOverdue()}"
+                                                 class="progress-bar bg-danger"
+                                                 role="progressbar"
+                                                 style="width: 100%;">
+                                            </div>
+
+                                            <div
+                                                th:if="${!borrow.isOverdue()}"
+                                                class="progress-bar"
+                                                th:style="'width: ' +
+                                                    ${T(java.lang.Math).min(
+                                                        100,
+                                                        T(java.lang.Math).max(
+                                                            15,
+                                                            ((14 - borrow.getDaysRemaining()) * 100) / 14
+                                                        )
+                                                    )} + '%'">
+                                            </div>
+
                                         </div>
                                     </div>
 
-                                    <!-- Nút thao tác gia hạn hoặc cảnh báo phạt -->
+                                    <!-- Nút thao tác -->
                                     <div class="d-flex justify-content-between align-items-center pt-2 border-top flex-wrap gap-2">
-                                        <!-- Trường hợp quá hạn -->
-                                        <div th:if="${borrow.isOverdue()}" class="w-100 d-flex justify-content-between align-items-center">
+
+                                        <!-- Quá hạn -->
+                                        <div th:if="${borrow.isOverdue()}"
+                                             class="w-100 d-flex justify-content-between align-items-center">
+
                                             <span class="small text-danger fw-bold">
-                                                <i class="bi bi-cash-coin me-1"></i> Phạt: <span th:text="${#numbers.formatDecimal(borrow.calculateLateFine(5000), 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">30.000 VNĐ</span>
+
+                                                <i class="bi bi-cash-coin me-1"></i>
+
+                                                Phạt:
+
+                                                <span th:text="${#numbers.formatDecimal(borrow.calculateLateFine(5000), 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                                                    30.000 VNĐ
+                                                </span>
+
                                             </span>
-                                            <span class="badge bg-danger">Vui lòng trả sách tại quầy</span>
+
+                                            <span class="badge bg-danger">
+                                                Vui lòng trả sách tại quầy
+                                            </span>
+
                                         </div>
 
-                                        <!-- Trường hợp còn hạn: Cho phép xin gia hạn thêm 7 ngày -->
-                                        <div th:unless="${borrow.isOverdue()}" class="w-100 d-flex justify-content-between align-items-center">
-                                            <span class="text-muted small">Quy định: gia hạn +7 ngày/lần</span>
-                                            <form th:action="@{'/borrow/' + ${borrow.id} + '/renew'}" method="post" class="m-0">
+                                        <!-- Còn hạn -->
+                                        <div th:unless="${borrow.isOverdue()}"
+                                             class="w-100 d-flex justify-content-between align-items-center">
+
+                                            <span class="text-muted small">
+                                                Quy định: gia hạn +7 ngày/lần
+                                            </span>
+
+                                            <form th:action="@{'/borrow/' + ${borrow.id} + '/renew'}"
+                                                  method="post"
+                                                  class="m-0">
+
                                                 <button class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
                                                         type="submit"
                                                         onclick="return confirm('Bạn có chắc chắn muốn gia hạn thêm 7 ngày cho cuốn sách này?');">
-                                                    <i class="bi bi-arrow-repeat"></i> Xin gia hạn (+7 ngày)
+
+                                                    <i class="bi bi-arrow-repeat"></i>
+                                                    Xin gia hạn (+7 ngày)
+
                                                 </button>
+
                                             </form>
+
                                         </div>
+
                                     </div>
+
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
+
             </div>
 
             <!-- TAB LỊCH SỬ ĐÃ TRẢ -->
-            <div class="tab-pane fade" id="returned-tab-pane" role="tabpanel">
+            <div class="tab-pane fade"
+                 id="returned-tab-pane"
+                 role="tabpanel">
+
                 <!-- Không có lịch sử -->
-                <div th:if="${returnedBorrows == null || returnedBorrows.isEmpty()}" class="text-center py-5">
+                <div th:if="${returnedBorrows == null || returnedBorrows.isEmpty()}"
+                     class="text-center py-5">
+
                     <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
-                    <p class="text-secondary small mb-0">Bạn chưa có lịch sử trả sách nào được ghi nhận.</p>
+
+                    <p class="text-secondary small mb-0">
+                        Bạn chưa có lịch sử trả sách nào được ghi nhận.
+                    </p>
+
                 </div>
 
                 <!-- Bảng danh sách đã trả -->
-                <div th:if="${returnedBorrows != null and !returnedBorrows.isEmpty()}" class="table-responsive">
+                <div th:if="${returnedBorrows != null and !returnedBorrows.isEmpty()}"
+                     class="table-responsive">
+
                     <table class="craft-table">
+
                         <thead>
-                            <tr>
-                                <th>MÃ PHIẾU</th>
-                                <th>TỰA ĐẦU SÁCH</th>
-                                <th>NGÀY MƯỢN</th>
-                                <th>HẠN TRẢ</th>
-                                <th>NGÀY TRẢ THỰC TẾ</th>
-                                <th>TRẠNG THÁI</th>
-                                <th>THANH TOÁN / GHI CHÚ</th>
-                                <th class="text-end">PHÍ PHẠT</th>
-                            </tr>
+                        <tr>
+                            <th>MÃ PHIẾU</th>
+                            <th>TỰA ĐẦU SÁCH</th>
+                            <th>NGÀY MƯỢN</th>
+                            <th>HẠN TRẢ</th>
+                            <th>NGÀY TRẢ THỰC TẾ</th>
+                            <th>TRẠNG THÁI</th>
+                            <th>THANH TOÁN / GHI CHÚ</th>
+                            <th class="text-end">PHÍ PHẠT</th>
+                        </tr>
                         </thead>
+
                         <tbody>
-                            <tr th:each="borrow : ${returnedBorrows}">
-                                <td>
-                                    <span class="craft-code font-monospace fw-semibold"
-                                          th:text="'#BR-' + ${#numbers.formatInteger(borrow.id, 4)}">
-                                        #BR-0001
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img th:if="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
-                                             th:src="${borrow.document.imageUrl}"
-                                             alt="Cover" class="rounded object-fit-cover shadow-sm"
-                                             style="width: 32px; height: 44px;">
-                                        <div th:unless="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
-                                             class="rounded bg-light border d-flex align-items-center justify-content-center text-muted"
-                                             style="width: 32px; height: 44px;">
-                                            <i class="bi bi-book"></i>
-                                        </div>
-                                        <span class="fw-medium text-dark text-truncate" style="max-width: 250px;"
-                                              th:text="${borrow.document != null ? borrow.document.title : 'Tài liệu'}">
-                                            Tên sách
-                                        </span>
+
+                        <tr th:each="borrow : ${returnedBorrows}">
+
+                            <!-- Mã phiếu -->
+                            <td>
+                                <span class="craft-code font-monospace fw-semibold"
+                                      th:text="'#BR-' + ${#numbers.formatInteger(borrow.id, 4)}">
+                                    #BR-0001
+                                </span>
+                            </td>
+
+                            <!-- Tựa sách -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <img th:if="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
+                                         th:src="${borrow.document.imageUrl}"
+                                         alt="Cover"
+                                         class="rounded object-fit-cover shadow-sm"
+                                         style="width: 32px; height: 44px;">
+
+                                    <div th:unless="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
+                                         class="rounded bg-light border d-flex align-items-center justify-content-center text-muted"
+                                         style="width: 32px; height: 44px;">
+
+                                        <i class="bi bi-book"></i>
+
                                     </div>
-                                </td>
-                                <td class="font-monospace text-secondary"
-                                    th:text="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}">
-                                    01/09/2026
-                                </td>
-                                <td class="font-monospace text-secondary"
-                                    th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">
-                                    15/09/2026
-                                </td>
-                                <td class="font-monospace fw-medium"
-                                    th:text="${#temporals.format(borrow.returnDate, 'dd/MM/yyyy')}">
-                                    14/09/2026
-                                </td>
-                                <td>
-                                    <span th:if="${borrow.fineAmount == null or borrow.fineAmount == 0}" class="status-pill success">
-                                        <span class="status-dot"></span> Đúng hạn
+
+                                    <span class="fw-medium text-dark text-truncate"
+                                          style="max-width: 250px;"
+                                          th:text="${borrow.document != null ? borrow.document.title : 'Tài liệu'}">
+                                        Tên sách
                                     </span>
-                                    <span th:unless="${borrow.fineAmount == null or borrow.fineAmount == 0}" class="status-pill danger">
-                                        <span class="status-dot"></span> Trễ hạn
-                                    </span>
-                                </td>
-                                <td>
-                                    <span th:if="${borrow.paymentMethod == 'QR_CODE'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle small">
-                                        <i class="bi bi-qr-code-scan me-1"></i> VietQR MB
-                                    </span>
-                                    <span th:if="${borrow.paymentMethod == 'CASH'}" class="badge bg-success-subtle text-success-emphasis border border-success-subtle small">
-                                        <i class="bi bi-cash-stack me-1"></i> Tiền mặt
-                                    </span>
-                                    <span th:if="${borrow.paymentMethod == 'NONE' or borrow.paymentMethod == null}" class="text-muted small">
-                                        Miễn phí
-                                    </span>
-                                    <div th:if="${borrow.note != null and !#strings.isEmpty(borrow.note)}" class="text-secondary small fst-italic" th:text="${borrow.note}">Ghi chú</div>
-                                </td>
-                                <td class="text-end font-monospace"
-                                    th:classappend="${borrow.fineAmount != null and borrow.fineAmount > 0 ? 'text-danger fw-bold' : 'text-muted'}"
-                                    th:text="${borrow.fineAmount != null and borrow.fineAmount > 0 ? #numbers.formatDecimal(borrow.fineAmount, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">
+
+                                </div>
+                            </td>
+
+                            <!-- Ngày mượn -->
+                            <td class="font-monospace text-secondary"
+                                th:text="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}">
+                                01/09/2026
+                            </td>
+
+                            <!-- Hạn trả -->
+                            <td class="font-monospace text-secondary"
+                                th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">
+                                15/09/2026
+                            </td>
+
+                            <!-- Ngày trả -->
+                            <td class="font-monospace fw-medium"
+                                th:text="${#temporals.format(borrow.returnDate, 'dd/MM/yyyy')}">
+                                14/09/2026
+                            </td>
+
+                            <!-- TRẠNG THÁI -->
+                            <td>
+
+                                <span
+                                    th:if="${borrow.calculateOverdueDays() > 0}"
+                                    class="status status-warning">
+                                    Trả trễ
+                                </span>
+
+                                <span th:if="${(borrow.fineAmount == null or borrow.fineAmount == 0)
+                                                and borrow.damageFee != null
+                                                and borrow.damageFee > 0}"
+                                      class="status-pill warning">
+
+                                    <span class="status-dot"></span>
+                                    Có phí hư hỏng
+
+                                </span>
+
+                                <span
+                                    th:if="${borrow.calculateOverdueDays() == 0}"
+                                    class="status status-success">
+                                    Đúng hạn
+                                </span>
+
+                            </td>
+
+                            <!-- THANH TOÁN / GHI CHÚ -->
+                            <td>
+
+                                <span th:if="${borrow.paymentMethod == 'QR_CODE'}"
+                                      class="badge bg-info-subtle text-info-emphasis border border-info-subtle small">
+
+                                    <i class="bi bi-qr-code-scan me-1"></i>
+                                    VietQR MB
+
+                                </span>
+
+                                <span th:if="${borrow.paymentMethod == 'CASH'}"
+                                      class="badge bg-success-subtle text-success-emphasis border border-success-subtle small">
+
+                                    <i class="bi bi-cash-stack me-1"></i>
+                                    Tiền mặt
+
+                                </span>
+
+                                <span th:if="${borrow.paymentMethod == 'NONE' or borrow.paymentMethod == null}"
+                                      class="text-muted small">
+
+                                    Miễn phí
+
+                                </span>
+
+                                <div th:if="${borrow.note != null and !#strings.isEmpty(borrow.note)}"
+                                     class="text-secondary small fst-italic"
+                                     th:text="${borrow.note}">
+                                    Ghi chú
+                                </div>
+
+                            </td>
+
+                            <!-- PHÍ PHẠT TỔNG -->
+                            <td class="text-end font-monospace"
+                                th:classappend="${borrow.getTotalFine() > 0 ? 'text-danger fw-bold' : 'text-muted'}">
+
+                                <!-- Tổng tiền -->
+                                <div th:if="${borrow.getTotalFine() > 0}">
+
+                                    <div th:text="${#numbers.formatDecimal(
+                                            borrow.getTotalFine(),
+                                            0,
+                                            'COMMA',
+                                            0,
+                                            'POINT'
+                                        ) + ' VNĐ'}">
+                                        80.000 VNĐ
+                                    </div>
+
+                                    <!-- Chi tiết -->
+                                    <div class="small text-muted mt-1">
+
+                                        <!-- Phạt quá hạn -->
+                                        <span th:if="${borrow.fineAmount != null and borrow.fineAmount > 0}">
+
+                                            Quá hạn:
+
+                                            <span th:text="${#numbers.formatDecimal(
+                                                    borrow.fineAmount,
+                                                    0,
+                                                    'COMMA',
+                                                    0,
+                                                    'POINT'
+                                                ) + 'đ'}">
+                                                30.000đ
+                                            </span>
+
+                                        </span>
+
+                                        <!-- Phí hư hỏng -->
+                                        <span th:if="${borrow.damageFee != null and borrow.damageFee > 0}">
+
+                                            <br>
+
+                                            Tình trạng:
+
+                                            <span th:text="${#numbers.formatDecimal(
+                                                    borrow.damageFee,
+                                                    0,
+                                                    'COMMA',
+                                                    0,
+                                                    'POINT'
+                                                ) + 'đ'}">
+                                                50.000đ
+                                            </span>
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Không có phí -->
+                                <span th:if="${borrow.getTotalFine() == 0}">
                                     0 VNĐ
-                                </td>
-                            </tr>
+                                </span>
+
+                            </td>
+
+                        </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
 
 </div>
+
 </body>
 </html>

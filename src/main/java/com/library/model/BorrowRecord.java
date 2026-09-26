@@ -47,6 +47,12 @@ public class BorrowRecord extends BaseEntity {
 
     private Long fineAmount = 0L;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "book_condition")
+    private BookCondition bookCondition = BookCondition.GOOD;
+
+    private Long damageFee = 0L;
+
     private String paymentMethod; // "CASH", "QR_CODE", "NONE"
 
     @Column(length = 500)
@@ -93,32 +99,88 @@ public class BorrowRecord extends BaseEntity {
     }
 
     public boolean isOverdue() {
-        if ((status != BorrowStatus.BORROWING && status != BorrowStatus.OVERDUE) || dueDate == null) {
+        if ((status != BorrowStatus.BORROWING && status != BorrowStatus.OVERDUE)
+                || dueDate == null) {
             return false;
         }
+
         return LocalDate.now().isAfter(dueDate);
     }
 
-    public long getOverdueDays() {
-        if (!isOverdue())
+    public long calculateOverdueDays() {
+        if (dueDate == null) {
             return 0;
-        return ChronoUnit.DAYS.between(dueDate, LocalDate.now());
+        }
+
+        LocalDate endDate = returnDate != null
+                ? returnDate
+                : LocalDate.now();
+
+        if (!endDate.isAfter(dueDate)) {
+            return 0;
+        }
+
+        return ChronoUnit.DAYS.between(dueDate, endDate);
     }
 
-    public void returnDocument(Long fineAmount, String paymentMethod, String note) {
-        this.returnDate = LocalDate.now();
-        this.status = BorrowStatus.RETURNED;
-        this.fineAmount = fineAmount != null ? Math.max(0, fineAmount) : 0L;
-        this.paymentMethod = (paymentMethod != null && !paymentMethod.trim().isEmpty()) ? paymentMethod : "NONE";
-        this.note = note;
-    }
-
-    public void returnDocument() {
-        returnDocument(0L, "NONE", null);
+    public long getOverdueDays() {
+        return calculateOverdueDays();
     }
 
     public long calculateLateFine(long finePerDay) {
-        long overdueDays = getOverdueDays();
-        return overdueDays > 0 ? overdueDays * finePerDay : 0;
+        long overdueDays = calculateOverdueDays();
+
+        return overdueDays > 0
+                ? overdueDays * finePerDay
+                : 0;
+    }
+
+    public void returnDocument(
+            Long fineAmount,
+            String paymentMethod,
+            String note,
+            BookCondition bookCondition,
+            Long damageFee) {
+
+        this.returnDate = LocalDate.now();
+        this.status = BorrowStatus.RETURNED;
+
+        this.fineAmount = fineAmount != null ? Math.max(0, fineAmount) : 0L;
+
+        this.paymentMethod = (paymentMethod != null && !paymentMethod.trim().isEmpty())
+                ? paymentMethod
+                : "NONE";
+
+        this.bookCondition = bookCondition != null
+                ? bookCondition
+                : BookCondition.GOOD;
+
+        this.damageFee = damageFee != null
+                ? Math.max(0, damageFee)
+                : 0L;
+
+        this.note = note;
+    }
+
+    public void returnDocument(
+            Long fineAmount,
+            String paymentMethod,
+            String note) {
+
+        returnDocument(
+                fineAmount,
+                paymentMethod,
+                note,
+                BookCondition.GOOD,
+                0L);
+    }
+
+    public void returnDocument() {
+        returnDocument(0L, "NONE", null, BookCondition.GOOD, 0L);
+    }
+
+    public long getTotalFine() {
+        return (fineAmount != null ? fineAmount : 0L)
+                + (damageFee != null ? damageFee : 0L);
     }
 }

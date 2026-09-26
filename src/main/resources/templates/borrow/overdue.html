@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="vi"
       xmlns:th="http://www.thymeleaf.org"
@@ -12,85 +13,125 @@
 
 <div layout:fragment="content">
 
-    <!-- TIÊU ĐỀ & NÚT ĐIỀU HƯỚNG -->
+    <!-- TIÊU ĐỀ -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
-                <a th:href="@{/borrow/list}" class="btn btn-outline-secondary btn-sm rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
-                   style="width: 32px; height: 32px;" title="Quay lại danh sách mượn trả">
+                <a th:href="@{/borrow/list}"
+                   class="btn btn-outline-secondary btn-sm rounded-circle p-0 d-inline-flex align-items-center justify-content-center"
+                   style="width: 32px; height: 32px;"
+                   title="Quay lại danh sách mượn trả">
                     <i class="bi bi-arrow-left"></i>
                 </a>
+
                 <h4 class="fw-bold mb-0 text-danger d-flex align-items-center gap-2">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     Danh Sách Phiếu Mượn Quá Hạn
                 </h4>
             </div>
+
             <p class="text-secondary small mb-0 ms-4 ps-2">
                 Các đầu sách độc giả chưa hoàn trả quá hạn quy định cần được đôn đốc thu hồi và quyết toán phạt
             </p>
         </div>
 
         <div class="d-flex gap-2">
-            <a th:href="@{/borrow/list}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+            <a th:href="@{/borrow/list}"
+               class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
                 <i class="bi bi-list-ul"></i>
                 <span>Tất cả phiếu mượn</span>
             </a>
-            <a th:href="@{/borrow/create}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+
+            <a th:href="@{/borrow/create}"
+               class="btn btn-primary btn-sm d-flex align-items-center gap-1">
                 <i class="bi bi-plus-lg"></i>
                 <span>Lập phiếu mới</span>
             </a>
         </div>
     </div>
 
-    <!-- THẺ THỐNG KÊ NHANH -->
+
+    <!-- THỐNG KÊ -->
     <div class="row g-3 mb-4">
+
         <div class="col-12 col-md-4">
             <div class="app-card p-3 d-flex align-items-center gap-3 border-start border-danger border-4">
                 <div class="stat-badge-box stat-badge-danger">
                     <i class="bi bi-clock-history"></i>
                 </div>
+
                 <div>
                     <div class="text-secondary small">Số phiếu quá hạn</div>
-                    <h4 class="fw-bold m-0 text-danger" th:text="${overdueCount}">0</h4>
-                    <div class="text-muted" style="font-size: 0.72rem;">Đang lưu thông trễ hạn</div>
+
+                    <h4 class="fw-bold m-0 text-danger"
+                        th:text="${overdueCount}">
+                        0
+                    </h4>
+
+                    <div class="text-muted" style="font-size: 0.72rem;">
+                        Đang lưu thông trễ hạn
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <div class="col-12 col-md-4">
             <div class="app-card p-3 d-flex align-items-center gap-3 border-start border-warning border-4">
+
                 <div class="stat-badge-box stat-badge-warning">
                     <i class="bi bi-cash-stack"></i>
                 </div>
+
                 <div>
                     <div class="text-secondary small">Tổng tiền phạt tạm tính</div>
+
                     <h4 class="fw-bold m-0 text-warning"
-                        th:text="${#numbers.formatDecimal(totalEstimatedFine, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                        th:text="${#numbers.formatDecimal(totalEstimatedFine, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">
                         0 VNĐ
                     </h4>
-                    <div class="text-muted" style="font-size: 0.72rem;">Dự kiến thu hồi từ độc giả</div>
+
+                    <div class="text-muted" style="font-size: 0.72rem;">
+                        Dự kiến thu hồi từ độc giả
+                    </div>
                 </div>
+
             </div>
         </div>
+
 
         <div class="col-12 col-md-4">
             <div class="app-card p-3 d-flex align-items-center gap-3 border-start border-primary border-4">
+
                 <div class="stat-badge-box stat-badge-primary">
                     <i class="bi bi-receipt"></i>
                 </div>
+
                 <div>
                     <div class="text-secondary small">Mức phạt quy định</div>
-                    <h4 class="fw-bold m-0 text-primary">5.000 VNĐ / ngày</h4>
-                    <div class="text-muted" style="font-size: 0.72rem;">Tính trên mỗi ngày trễ hạn</div>
+
+                    <h4 class="fw-bold m-0 text-primary">
+                        5.000 VNĐ / ngày
+                    </h4>
+
+                    <div class="text-muted" style="font-size: 0.72rem;">
+                        Tính trên mỗi ngày trễ hạn
+                    </div>
                 </div>
+
             </div>
         </div>
+
     </div>
 
-    <!-- BẢNG DANH SÁCH QUÁ HẠN -->
+
+    <!-- BẢNG -->
     <div class="app-card p-2 p-sm-4">
+
         <div class="table-responsive">
+
             <table class="craft-table">
+
                 <thead>
                 <tr>
                     <th style="width: 100px;">MÃ PHIẾU</th>
@@ -104,294 +145,1473 @@
                 </tr>
                 </thead>
 
+
                 <tbody>
-                <!-- KHÔNG CÓ PHIẾU QUÁ HẠN -->
+
+                <!-- KHÔNG CÓ -->
                 <tr th:if="${borrowRecords == null || borrowRecords.isEmpty()}">
+
                     <td colspan="8" class="text-center text-success py-5">
+
                         <i class="bi bi-shield-check fs-1 text-success d-block mb-2"></i>
-                        <h6 class="fw-bold">Tuyệt vời! Hiện tại không có phiếu mượn nào bị quá hạn.</h6>
-                        <p class="text-secondary small mb-0">Tất cả tài liệu đều đang được lưu thông đúng hạn.</p>
+
+                        <h6 class="fw-bold">
+                            Tuyệt vời! Hiện tại không có phiếu mượn nào bị quá hạn.
+                        </h6>
+
+                        <p class="text-secondary small mb-0">
+                            Tất cả tài liệu đều đang được lưu thông đúng hạn.
+                        </p>
+
                     </td>
+
                 </tr>
 
-                <!-- DANH SÁCH PHIẾU QUÁ HẠN -->
+
+                <!-- DANH SÁCH -->
                 <tr th:each="borrow : ${borrowRecords}">
+
                     <td>
                         <span class="craft-code font-monospace fw-semibold text-danger"
-                              th:text="'#BR-' + ${#numbers.formatInteger(borrow.id, 4)}">
+                              th:text="${'#BR-' + #numbers.formatInteger(borrow.id, 4)}">
                             #BR-0001
                         </span>
                     </td>
 
-                    <td>
-                        <div class="fw-semibold text-dark" th:text="${borrow.user != null ? borrow.user.fullName : 'Độc giả'}">
-                            Nguyễn Văn A
-                        </div>
-                        <div class="small text-secondary font-monospace" th:text="${borrow.user != null ? borrow.user.email : ''}">
-                            reader@gmail.com
-                        </div>
-                        <div class="small text-muted" th:if="${borrow.user != null and borrow.user.phone != null}">
-                            <i class="bi bi-telephone text-secondary me-1"></i><span th:text="${borrow.user.phone}"></span>
-                        </div>
-                    </td>
 
                     <td>
+
+                        <div class="fw-semibold text-dark"
+                             th:text="${borrow.user != null ? borrow.user.fullName : 'Độc giả'}">
+                            Nguyễn Văn A
+                        </div>
+
+                        <div class="small text-secondary font-monospace"
+                             th:text="${borrow.user != null ? borrow.user.email : ''}">
+                            reader@gmail.com
+                        </div>
+
+                        <div class="small text-muted"
+                             th:if="${borrow.user != null and borrow.user.phone != null}">
+
+                            <i class="bi bi-telephone text-secondary me-1"></i>
+
+                            <span th:text="${borrow.user.phone}"></span>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
                         <div class="d-flex align-items-center gap-2">
-                            <img th:if="${borrow.document != null and borrow.document.imageUrl != null and !#strings.isEmpty(borrow.document.imageUrl)}"
+
+                            <img th:if="${borrow.document != null
+                                         and borrow.document.imageUrl != null
+                                         and !#strings.isEmpty(borrow.document.imageUrl)}"
                                  th:src="${borrow.document.imageUrl}"
-                                 alt="Cover" class="rounded object-fit-cover shadow-sm"
+                                 alt="Cover"
+                                 class="rounded object-fit-cover shadow-sm"
                                  style="width: 36px; height: 48px;">
+
                             <div>
-                                <div class="fw-medium text-truncate" style="max-width: 220px;"
-                                     th:text="${borrow.document != null ? borrow.document.title : 'Tài liệu'}">
+
+                                <div class="fw-medium text-truncate"
+                                     style="max-width: 220px;"
+                                     th:text="${borrow.document != null
+                                               ? borrow.document.title
+                                               : 'Tài liệu'}">
                                     Tên sách
                                 </div>
+
                                 <span class="badge bg-light text-secondary border small"
-                                      th:text="${borrow.document != null ? borrow.document.identifierCode : ''}">
+                                      th:text="${borrow.document != null
+                                                ? borrow.document.identifierCode
+                                                : ''}">
                                     #DOC-001
                                 </span>
+
                             </div>
+
                         </div>
+
                     </td>
+
 
                     <td class="font-monospace text-secondary"
                         th:text="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}">
                         01/09/2026
                     </td>
 
+
                     <td class="font-monospace fw-bold text-danger"
                         th:text="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}">
                         15/09/2026
                     </td>
 
-                    <td>
-                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
-                            <i class="bi bi-clock-history me-1"></i>
-                            Quá hạn <strong th:text="${borrow.getOverdueDays()}">0</strong> ngày
-                        </span>
-                    </td>
 
                     <td>
+
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+
+                            <i class="bi bi-clock-history me-1"></i>
+
+                            Quá hạn
+
+                            <strong th:text="${borrow.getOverdueDays()}">
+                                0
+                            </strong>
+
+                            ngày
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
                         <div class="fw-bold text-danger fs-6"
-                             th:text="${#numbers.formatDecimal(borrow.calculateLateFine(5000), 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">
+                             th:text="${#numbers.formatDecimal(
+                                         borrow.calculateLateFine(5000),
+                                         0,
+                                         'COMMA',
+                                         0,
+                                         'POINT'
+                                      ) + ' VNĐ'}">
                             30.000 VNĐ
                         </div>
-                        <span class="text-muted small">5.000đ × <span th:text="${borrow.getOverdueDays()}">6</span> ngày</span>
+
+                        <span class="text-muted small">
+
+                            5.000đ ×
+
+                            <span th:text="${borrow.getOverdueDays()}">
+                                6
+                            </span>
+
+                            ngày
+
+                        </span>
+
                     </td>
+
 
                     <td class="text-end">
+
                         <button type="button"
                                 class="btn btn-sm btn-success open-return-modal-btn d-inline-flex align-items-center gap-1 shadow-sm"
-                                onclick="openReturnModal(this)"
+
                                 th:data-id="${borrow.id}"
-                                th:data-reader="${borrow.user != null ? borrow.user.fullName : ''}"
-                                th:data-book="${borrow.document != null ? borrow.document.title : ''}"
-                                th:data-borrow-date="${#temporals.format(borrow.borrowDate, 'dd/MM/yyyy')}"
-                                th:data-due-date="${#temporals.format(borrow.dueDate, 'dd/MM/yyyy')}"
-                                th:data-is-overdue="true"
+
+                                th:data-reader="${borrow.user != null
+                                                  ? borrow.user.fullName
+                                                  : ''}"
+
+                                th:data-book="${borrow.document != null
+                                               ? borrow.document.title
+                                               : ''}"
+
+                                th:data-borrow-date="${#temporals.format(
+                                    borrow.borrowDate,
+                                    'dd/MM/yyyy'
+                                )}"
+
+                                th:data-due-date="${#temporals.format(
+                                    borrow.dueDate,
+                                    'dd/MM/yyyy'
+                                )}"
+
                                 th:data-overdue-days="${borrow.getOverdueDays()}"
+
                                 th:data-fine="${borrow.calculateLateFine(5000)}">
+
                             <i class="bi bi-check2-circle"></i>
+
                             <span>Thu hồi & Trả</span>
+
                         </button>
+
                     </td>
+
                 </tr>
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
 
-    <!-- MODAL TRẢ SÁCH VÀ THANH TOÁN TIỀN PHẠT -->
-    <div class="modal fade" id="returnBookModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+
+    <!-- ========================================================= -->
+    <!-- MODAL 1: THU HỒI / TRẢ SÁCH -->
+    <!-- ========================================================= -->
+
+    <div class="modal fade"
+         id="returnBookModal"
+         tabindex="-1"
+         aria-labelledby="returnModalLabel"
+         aria-hidden="true">
+
         <div class="modal-dialog modal-dialog-centered">
+
             <div class="modal-content border-0 shadow-lg">
-                <form id="returnBookForm" method="post" action="">
-                    <!-- CSRF Token -->
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
+                <form id="returnBookForm"
+                      method="post"
+                      action="">
+
+                    <!-- CSRF -->
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+
+                    <!-- FINE -->
+                    <input type="hidden"
+                           id="modalHiddenFine"
+                           name="fineAmount"
+                           value="0">
+
+                    <!-- DAMAGE FEE -->
+                    <input type="hidden"
+                           id="modalHiddenDamageFee"
+                           name="damageFee"
+                           value="0">
+
+                    <!-- PAYMENT METHOD -->
+                    <input type="hidden"
+                           id="modalPaymentMethod"
+                           name="paymentMethod"
+                           value="NONE">
+
+
+                    <!-- HEADER -->
                     <div class="modal-header border-bottom pb-3">
-                        <h5 class="modal-title fw-bold text-danger" id="returnModalLabel">
-                            <i class="bi bi-cash-coin text-danger me-2"></i>
-                            Thu Hồi Sách Quá Hạn & Thu Tiền Phạt
+
+                        <h5 class="modal-title fw-bold text-danger"
+                            id="returnModalLabel">
+
+                            <i class="bi bi-arrow-return-left text-danger me-2"></i>
+
+                            Thu Hồi Sách Quá Hạn
+
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
 
-                    <div class="modal-body py-4">
-                        <div class="app-card p-3 mb-3 bg-light border">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-secondary small">Mã phiếu:</span>
-                                <span class="fw-bold font-monospace text-danger" id="modalBrId">#BR-0000</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-secondary small">Độc giả:</span>
-                                <span class="fw-semibold" id="modalReaderName">Nguyễn Văn A</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-secondary small">Tài liệu:</span>
-                                <span class="fw-semibold text-truncate" style="max-width: 250px;" id="modalBookTitle">Tên sách</span>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span class="text-secondary small">Hạn trả:</span>
-                                <span class="font-monospace text-danger fw-semibold" id="modalDueDate">15/09/2026</span>
-                            </div>
-                        </div>
-
-                        <!-- KHU VỰC THÔNG TIN TIỀN PHẠT -->
-                        <div class="alert alert-danger d-flex align-items-start gap-2 mb-3">
-                            <i class="bi bi-exclamation-triangle-fill fs-5 text-danger mt-1"></i>
-                            <div>
-                                <div class="fw-bold text-danger">Tài liệu đã trễ hạn!</div>
-                                <div class="small">
-                                    Số ngày quá hạn: <strong id="modalOverdueDays">0</strong> ngày. Mức phạt: <strong>5.000 VNĐ / ngày</strong>.
-                                </div>
-                                <div class="mt-1 fs-6">
-                                    Tổng tiền phạt thu: <strong class="text-danger fs-5" id="modalFineText">0 VNĐ</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- CHỌN PHƯƠNG THỨC THANH TOÁN -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold small text-uppercase text-secondary">
-                                Phương thức thanh toán:
-                            </label>
-                            <div class="d-grid gap-2">
-                                <div class="form-check form-check-card p-3 border rounded-3">
-                                    <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payMethodCash" value="CASH" checked>
-                                    <label class="form-check-label fw-medium w-100" for="payMethodCash">
-                                        <i class="bi bi-cash-stack text-success me-1"></i>
-                                        Tiền mặt (Thu trực tiếp tại quầy)
-                                    </label>
-                                </div>
-
-                                <div class="form-check form-check-card p-3 border rounded-3">
-                                    <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payMethodQr" value="QR_CODE">
-                                    <label class="form-check-label fw-medium w-100" for="payMethodQr">
-                                        <i class="bi bi-qr-code-scan text-primary me-1"></i>
-                                        Quét mã QR VietQR (Chuyển khoản ngay)
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- KHUNG MÃ QR -->
-                        <div id="qrCodeContainer" class="d-none text-center p-3 border rounded-3 bg-light mb-3">
-                            <div class="text-secondary small mb-2">Quét mã QR để chuyển khoản tiền phạt:</div>
-                            <div class="bg-white p-2 d-inline-block rounded border shadow-sm mb-2">
-                                <img id="vietQrImg" src="" alt="VietQR" style="width: 180px; height: 180px; object-fit: contain;">
-                            </div>
-                            <div class="small font-monospace text-muted">
-                                <div>Ngân hàng: <strong>MB Bank (Quân Đội)</strong></div>
-                                <div>Số tài khoản: <strong>0345678901</strong></div>
-                                <div>Chủ tài khoản: <strong>THƯ VIỆN SỐ</strong></div>
-                                <div>Nội dung: <strong id="qrTransferContent">PHAT_BR_0001</strong></div>
-                            </div>
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="returnNote" class="form-label small text-secondary">Ghi chú (nếu có):</label>
-                            <input type="text" class="form-control form-control-sm" id="returnNote" name="note"
-                                   placeholder="Ví dụ: Đã thu phạt đủ tại quầy...">
-                        </div>
-
-                        <input type="hidden" id="modalHiddenFine" name="fineAmount" value="0">
-                    </div>
-
-                    <div class="modal-footer border-top pt-3">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-danger d-inline-flex align-items-center gap-1">
-                            <i class="bi bi-check2-circle"></i>
-                            <span>Xác nhận thu tiền & Trả sách</span>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
                         </button>
+
                     </div>
+
+
+                    <!-- BODY -->
+                    <div class="modal-body py-4">
+
+
+                        <!-- THÔNG TIN -->
+                        <div class="app-card p-3 mb-3 bg-light border">
+
+                            <div class="d-flex justify-content-between mb-1">
+
+                                <span class="text-secondary small">
+                                    Mã phiếu:
+                                </span>
+
+                                <span class="fw-bold font-monospace text-danger"
+                                      id="modalBrId">
+                                    #BR-0000
+                                </span>
+
+                            </div>
+
+
+                            <div class="d-flex justify-content-between mb-1">
+
+                                <span class="text-secondary small">
+                                    Độc giả:
+                                </span>
+
+                                <span class="fw-semibold"
+                                      id="modalReaderName">
+                                    Nguyễn Văn A
+                                </span>
+
+                            </div>
+
+
+                            <div class="d-flex justify-content-between mb-1">
+
+                                <span class="text-secondary small">
+                                    Tài liệu:
+                                </span>
+
+                                <span class="fw-semibold text-truncate"
+                                      style="max-width: 250px;"
+                                      id="modalBookTitle">
+                                    Tên sách
+                                </span>
+
+                            </div>
+
+
+                            <div class="d-flex justify-content-between">
+
+                                <span class="text-secondary small">
+                                    Hạn trả:
+                                </span>
+
+                                <span class="font-monospace text-danger fw-semibold"
+                                      id="modalDueDate">
+                                    15/09/2026
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CẢNH BÁO -->
+                        <div class="alert alert-danger d-flex align-items-start gap-2 mb-3">
+
+                            <i class="bi bi-exclamation-triangle-fill fs-5 mt-1"></i>
+
+                            <div>
+
+                                <div class="fw-bold">
+                                    Tài liệu đã trễ hạn!
+                                </div>
+
+                                <div class="small">
+
+                                    Số ngày quá hạn:
+
+                                    <strong id="modalOverdueDays">
+                                        0
+                                    </strong>
+
+                                    ngày.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PHẠT QUÁ HẠN -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Phạt quá hạn
+                            </label>
+
+                            <div class="form-control bg-light">
+
+                                <span id="lateFineDisplay">
+                                    0đ
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TÌNH TRẠNG -->
+                        <div class="mb-3">
+
+                            <label for="bookCondition"
+                                   class="form-label fw-bold">
+
+                                Tình trạng sách khi trả
+
+                            </label>
+
+
+                            <select id="bookCondition"
+                                    name="bookCondition"
+                                    class="form-select">
+
+                                <option value="GOOD"
+                                        data-fee="0"
+                                        selected>
+                                    Tốt / nguyên vẹn - 0đ
+                                </option>
+
+                                <option value="SCRATCHED"
+                                        data-fee="20000">
+                                    Cũ / trầy xước nhẹ - 20.000đ
+                                </option>
+
+                                <option value="DAMAGED"
+                                        data-fee="50000">
+                                    Rách / hư hỏng nhẹ - 50.000đ
+                                </option>
+
+                                <option value="HEAVILY_DAMAGED"
+                                        data-fee="100000">
+                                    Hư hỏng nặng - 100.000đ
+                                </option>
+
+                                <option value="LOST"
+                                        data-fee="200000">
+                                    Mất sách - 200.000đ
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- PHẠT TÌNH TRẠNG -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Phạt tình trạng sách
+                            </label>
+
+                            <div class="form-control bg-light">
+
+                                <span id="damageFeeDisplay">
+                                    0đ
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TỔNG -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-bold">
+                                Tổng tiền phải thu
+                            </label>
+
+                            <div class="form-control bg-warning-subtle fw-bold fs-5">
+
+                                <span id="totalFineDisplay">
+                                    0đ
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- GHI CHÚ -->
+                        <div class="mb-2">
+
+                            <label for="returnNote"
+                                   class="form-label small text-secondary">
+
+                                Ghi chú:
+
+                            </label>
+
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   id="returnNote"
+                                   name="note"
+                                   placeholder="Ví dụ: Sách bị trầy nhẹ...">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer border-top pt-3">
+
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+
+                            Đóng
+
+                        </button>
+
+
+                        <button type="button"
+                                class="btn btn-danger d-inline-flex align-items-center gap-1"
+                                onclick="openPaymentModal()">
+
+                            <i class="bi bi-arrow-right-circle"></i>
+
+                            <span>
+                                Tiếp tục thanh toán
+                            </span>
+
+                        </button>
+
+                    </div>
+
                 </form>
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- SCRIPT MODAL TRẢ SÁCH -->
-    <script>
-    function openReturnModal(button) {
-        const returnModalEl = document.getElementById('returnBookModal');
-        if (!returnModalEl) return;
-        const returnModal = bootstrap.Modal.getOrCreateInstance(returnModalEl);
 
-        const form = document.getElementById('returnBookForm');
-        const modalBrId = document.getElementById('modalBrId');
-        const modalReader = document.getElementById('modalReaderName');
-        const modalBook = document.getElementById('modalBookTitle');
-        const modalDueDate = document.getElementById('modalDueDate');
-        const overdueDaysSpan = document.getElementById('modalOverdueDays');
-        const fineTextSpan = document.getElementById('modalFineText');
-        const hiddenFine = document.getElementById('modalHiddenFine');
-        const qrContainer = document.getElementById('qrCodeContainer');
-        const vietQrImg = document.getElementById('vietQrImg');
-        const qrTransferContent = document.getElementById('qrTransferContent');
-        const payMethodCash = document.getElementById('payMethodCash');
-        const payMethodQr = document.getElementById('payMethodQr');
+    <!-- ========================================================= -->
+    <!-- MODAL 2: THANH TOÁN -->
+    <!-- ========================================================= -->
 
-        const id = button.getAttribute('data-id');
-        const reader = button.getAttribute('data-reader');
-        const book = button.getAttribute('data-book');
-        const dueDate = button.getAttribute('data-due-date');
-        const overdueDays = parseInt(button.getAttribute('data-overdue-days') || '0', 10);
-        const fine = parseInt(button.getAttribute('data-fine') || '0', 10);
+    <div class="modal fade"
+         id="paymentMethodModal"
+         tabindex="-1"
+         aria-labelledby="paymentMethodModalLabel"
+         aria-hidden="true">
 
-        form.action = '/borrow/' + id + '/return';
-        modalBrId.textContent = '#BR-' + String(id).padStart(4, '0');
-        modalReader.textContent = reader || 'Độc giả';
-        modalBook.textContent = book || 'Tài liệu';
-        modalDueDate.textContent = dueDate || '-';
-        overdueDaysSpan.textContent = overdueDays;
-        fineTextSpan.textContent = new Intl.NumberFormat('vi-VN').format(fine) + ' VNĐ';
-        hiddenFine.value = fine;
+        <div class="modal-dialog modal-dialog-centered">
 
-        if (payMethodCash) payMethodCash.checked = true;
-        if (qrContainer) qrContainer.classList.add('d-none');
+            <div class="modal-content border-0 shadow-lg">
 
-        const transferNote = 'PHAT_BR_' + id;
-        if (qrTransferContent) qrTransferContent.textContent = transferNote;
-        const qrUrl = 'https://img.vietqr.io/image/MB-0345678901-compact2.png?amount=' + fine + '&addInfo=' + encodeURIComponent(transferNote) + '&accountName=THU%20VIEN%20SO';
-        if (vietQrImg) vietQrImg.src = qrUrl;
 
-        returnModal.show();
-    }
-    window.openReturnModal = openReturnModal;
+                <!-- HEADER -->
+                <div class="modal-header border-bottom">
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const payMethodCash = document.getElementById('payMethodCash');
-        const payMethodQr = document.getElementById('payMethodQr');
-        const qrContainer = document.getElementById('qrCodeContainer');
+                    <h5 class="modal-title fw-bold text-primary"
+                        id="paymentMethodModalLabel">
 
-        if (payMethodCash && payMethodQr && qrContainer) {
-            payMethodCash.addEventListener('change', function() {
-                if (this.checked) qrContainer.classList.add('d-none');
-            });
-            payMethodQr.addEventListener('change', function() {
-                if (this.checked) qrContainer.classList.remove('d-none');
-            });
-        }
+                        <i class="bi bi-credit-card me-2"></i>
 
-        // Lắng nghe click cho các nút trả sách quá hạn
-        document.querySelectorAll('.open-return-modal-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                openReturnModal(this);
-            });
-        });
-    });
-    </script>
+                        Thanh Toán Tiền Phạt
+
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+
+                <!-- BODY -->
+                <div class="modal-body py-4">
+
+
+                    <!-- THÔNG TIN -->
+                    <div class="app-card bg-light border p-3 mb-3">
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span class="text-secondary">
+                                Mã phiếu
+                            </span>
+
+                            <strong class="font-monospace text-danger"
+                                    id="paymentBrId">
+                                #BR-0000
+                            </strong>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span class="text-secondary">
+                                Độc giả
+                            </span>
+
+                            <strong id="paymentReader">
+                                Nguyễn Văn A
+                            </strong>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-between">
+
+                            <span class="text-secondary">
+                                Tài liệu
+                            </span>
+
+                            <strong class="text-truncate"
+                                    style="max-width: 220px;"
+                                    id="paymentBook">
+                                Tên sách
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CHI TIẾT TIỀN -->
+                    <div class="border rounded-3 p-3 mb-3">
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span class="text-secondary">
+                                Phạt quá hạn
+                            </span>
+
+                            <span class="fw-semibold text-danger"
+                                  id="paymentLateFine">
+                                0đ
+                            </span>
+
+                        </div>
+
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span class="text-secondary">
+                                Phạt tình trạng sách
+                            </span>
+
+                            <span class="fw-semibold text-warning"
+                                  id="paymentDamageFee">
+                                0đ
+                            </span>
+
+                        </div>
+
+
+                        <hr>
+
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <span class="fw-bold">
+                                Tổng thanh toán
+                            </span>
+
+                            <span class="fw-bold text-danger fs-4"
+                                  id="paymentTotal">
+                                0đ
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PHƯƠNG THỨC -->
+                    <div id="paymentOptions">
+
+                        <label class="form-label fw-bold">
+                            Phương thức thanh toán
+                        </label>
+
+
+                        <div class="d-grid gap-2">
+
+
+                            <!-- CASH -->
+                            <div class="form-check p-3 border rounded-3"
+                                 id="cashPaymentCard">
+
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="payMethodCash"
+                                       value="CASH"
+                                       name="paymentChoice">
+
+                                <label class="form-check-label fw-medium w-100"
+                                       for="payMethodCash">
+
+                                    <i class="bi bi-cash-stack text-success me-2"></i>
+
+                                    Tiền mặt
+
+                                    <div class="small text-secondary mt-1">
+                                        Thu trực tiếp tại quầy
+                                    </div>
+
+                                </label>
+
+                            </div>
+
+
+                            <!-- QR -->
+                            <div class="form-check p-3 border rounded-3"
+                                 id="qrPaymentCard">
+
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="payMethodQr"
+                                       value="QR_CODE"
+                                       name="paymentChoice">
+
+                                <label class="form-check-label fw-medium w-100"
+                                       for="payMethodQr">
+
+                                    <i class="bi bi-qr-code-scan text-primary me-2"></i>
+
+                                    Quét mã QR VietQR
+
+                                    <div class="small text-secondary mt-1">
+                                        Chuyển khoản trực tiếp
+                                    </div>
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- QR -->
+                    <div id="qrCodeContainer"
+                         class="d-none text-center p-3 border rounded-3 bg-light mt-3">
+
+                        <div class="text-secondary small mb-2">
+
+                            Quét mã QR để thanh toán:
+
+                        </div>
+
+
+                        <div class="bg-white p-2 d-inline-block rounded border shadow-sm mb-2">
+
+                            <img id="vietQrImg"
+                                 src=""
+                                 alt="VietQR"
+                                 style="width: 200px; height: 200px; object-fit: contain;">
+
+                        </div>
+
+
+                        <div class="small font-monospace text-muted">
+
+                            <div>
+                                Ngân hàng:
+                                <strong>MB Bank (Quân Đội)</strong>
+                            </div>
+
+                            <div>
+                                Số tài khoản:
+                                <strong>0345678901</strong>
+                            </div>
+
+                            <div>
+                                Chủ tài khoản:
+                                <strong>THƯ VIỆN SỐ</strong>
+                            </div>
+
+                            <div>
+                                Nội dung:
+                                <strong id="qrTransferContent">
+                                    PHAT_BR_0001
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- KHÔNG CÓ TIỀN -->
+                    <div id="noPaymentAlert"
+                         class="alert alert-success d-none mb-0">
+
+                        <i class="bi bi-check-circle me-1"></i>
+
+                        Không phát sinh tiền phạt.
+                        Có thể xác nhận trả sách ngay.
+
+                    </div>
+
+                </div>
+
+
+                <!-- FOOTER -->
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            onclick="backToReturnModal()">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Quay lại
+
+                    </button>
+
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            onclick="submitReturnForm()"
+                            id="confirmPaymentBtn">
+
+                        <i class="bi bi-check2-circle me-1"></i>
+
+                        Xác nhận thanh toán & Trả sách
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<!-- BLOCK SCRIPTS THYMELEAF -->
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
 <th:block layout:fragment="scripts">
+
 <script>
-if (typeof window.openReturnModal === 'undefined') {
-    window.openReturnModal = openReturnModal;
-}
+
+    let currentReturnId = null;
+    let currentLateFine = 0;
+    let currentDamageFee = 0;
+
+
+    /*
+     * FORMAT TIỀN
+     */
+    function formatMoney(value) {
+        return Number(value || 0).toLocaleString('vi-VN') + 'đ';
+    }
+
+
+    /*
+     * MỞ MODAL TRẢ SÁCH
+     */
+    function openReturnModal(button) {
+
+        const returnModalEl =
+            document.getElementById('returnBookModal');
+
+        const form =
+            document.getElementById('returnBookForm');
+
+        if (!returnModalEl || !form) {
+            return;
+        }
+
+
+        const id =
+            button.getAttribute('data-id');
+
+        const reader =
+            button.getAttribute('data-reader');
+
+        const book =
+            button.getAttribute('data-book');
+
+        const dueDate =
+            button.getAttribute('data-due-date');
+
+        const overdueDays =
+            parseInt(
+                button.getAttribute('data-overdue-days') || '0',
+                10
+            );
+
+        const fine =
+            parseInt(
+                button.getAttribute('data-fine') || '0',
+                10
+            );
+
+
+        currentReturnId = id;
+        currentLateFine = fine;
+        currentDamageFee = 0;
+
+
+        /*
+         * ACTION FORM
+         */
+        form.action =
+            '/borrow/' + id + '/return';
+
+
+        /*
+         * THÔNG TIN
+         */
+        document.getElementById('modalBrId').textContent =
+            '#BR-' + String(id).padStart(4, '0');
+
+        document.getElementById('modalReaderName').textContent =
+            reader || 'Độc giả';
+
+        document.getElementById('modalBookTitle').textContent =
+            book || 'Tài liệu';
+
+        document.getElementById('modalDueDate').textContent =
+            dueDate || '-';
+
+        document.getElementById('modalOverdueDays').textContent =
+            overdueDays;
+
+
+        /*
+         * RESET TÌNH TRẠNG
+         */
+        const bookCondition =
+            document.getElementById('bookCondition');
+
+        if (bookCondition) {
+            bookCondition.value = 'GOOD';
+        }
+
+
+        /*
+         * RESET GHI CHÚ
+         */
+        const note =
+            document.getElementById('returnNote');
+
+        if (note) {
+            note.value = '';
+        }
+
+
+        /*
+         * RESET PAYMENT
+         */
+        document.getElementById('modalPaymentMethod').value =
+            'NONE';
+
+
+        /*
+         * HIỂN THỊ PHẠT
+         */
+        document.getElementById('lateFineDisplay').textContent =
+            formatMoney(currentLateFine);
+
+        document.getElementById('damageFeeDisplay').textContent =
+            '0đ';
+
+        document.getElementById('totalFineDisplay').textContent =
+            formatMoney(currentLateFine);
+
+
+        /*
+         * HIDDEN
+         */
+        document.getElementById('modalHiddenFine').value =
+            currentLateFine;
+
+        document.getElementById('modalHiddenDamageFee').value =
+            0;
+
+
+        /*
+         * MỞ MODAL
+         */
+        const returnModal =
+            bootstrap.Modal.getOrCreateInstance(returnModalEl);
+
+        returnModal.show();
+    }
+
+
+    /*
+     * TÍNH PHẠT TÌNH TRẠNG
+     */
+    function updateDamageFee() {
+
+        const select =
+            document.getElementById('bookCondition');
+
+        if (!select) {
+            return;
+        }
+
+
+        const option =
+            select.options[select.selectedIndex];
+
+        if (!option) {
+            return;
+        }
+
+
+        currentDamageFee =
+            Number(option.dataset.fee || 0);
+
+
+        const totalFine =
+            currentLateFine + currentDamageFee;
+
+
+        /*
+         * HIỂN THỊ
+         */
+        document.getElementById('damageFeeDisplay').textContent =
+            formatMoney(currentDamageFee);
+
+        document.getElementById('totalFineDisplay').textContent =
+            formatMoney(totalFine);
+
+
+        /*
+         * BACKEND:
+         *
+         * fineAmount = phạt quá hạn
+         * damageFee = phạt tình trạng
+         */
+        document.getElementById('modalHiddenFine').value =
+            currentLateFine;
+
+        document.getElementById('modalHiddenDamageFee').value =
+            currentDamageFee;
+    }
+
+
+    /*
+     * MỞ POPUP THANH TOÁN
+     */
+    function openPaymentModal() {
+
+        updateDamageFee();
+
+
+        const returnModalEl =
+            document.getElementById('returnBookModal');
+
+        const paymentModalEl =
+            document.getElementById('paymentMethodModal');
+
+
+        if (!paymentModalEl) {
+            return;
+        }
+
+
+        const totalFine =
+            currentLateFine + currentDamageFee;
+
+
+        /*
+         * THÔNG TIN
+         */
+        document.getElementById('paymentBrId').textContent =
+            document.getElementById('modalBrId').textContent;
+
+        document.getElementById('paymentReader').textContent =
+            document.getElementById('modalReaderName').textContent;
+
+        document.getElementById('paymentBook').textContent =
+            document.getElementById('modalBookTitle').textContent;
+
+
+        /*
+         * TIỀN
+         */
+        document.getElementById('paymentLateFine').textContent =
+            formatMoney(currentLateFine);
+
+        document.getElementById('paymentDamageFee').textContent =
+            formatMoney(currentDamageFee);
+
+        document.getElementById('paymentTotal').textContent =
+            formatMoney(totalFine);
+
+
+        /*
+         * RESET PHƯƠNG THỨC
+         */
+        const cash =
+            document.getElementById('payMethodCash');
+
+        const qr =
+            document.getElementById('payMethodQr');
+
+        const qrContainer =
+            document.getElementById('qrCodeContainer');
+
+        const paymentOptions =
+            document.getElementById('paymentOptions');
+
+        const noPaymentAlert =
+            document.getElementById('noPaymentAlert');
+
+        const confirmButton =
+            document.getElementById('confirmPaymentBtn');
+
+
+        if (qrContainer) {
+            qrContainer.classList.add('d-none');
+        }
+
+
+        /*
+         * CÓ TIỀN PHẠT
+         */
+        if (totalFine > 0) {
+
+            paymentOptions.classList.remove('d-none');
+
+            noPaymentAlert.classList.add('d-none');
+
+            cash.checked = true;
+
+            document.getElementById('modalPaymentMethod').value =
+                'CASH';
+
+            confirmButton.innerHTML =
+                '<i class="bi bi-check2-circle me-1"></i>' +
+                'Xác nhận thanh toán & Trả sách';
+
+        }
+
+
+        /*
+         * KHÔNG CÓ TIỀN
+         */
+        else {
+
+            paymentOptions.classList.add('d-none');
+
+            noPaymentAlert.classList.remove('d-none');
+
+            document.getElementById('modalPaymentMethod').value =
+                'NONE';
+
+            confirmButton.innerHTML =
+                '<i class="bi bi-check2-circle me-1"></i>' +
+                'Xác nhận trả sách';
+
+        }
+
+
+        /*
+         * QR
+         */
+        updateQrCode(
+            totalFine,
+            currentReturnId
+        );
+
+
+        /*
+         * ĐÓNG MODAL TRẢ
+         */
+        const returnModal =
+            bootstrap.Modal.getOrCreateInstance(returnModalEl);
+
+        returnModal.hide();
+
+
+        /*
+         * CHỜ MODAL CŨ ĐÓNG RỒI MỞ MODAL MỚI
+         */
+        returnModalEl.addEventListener(
+            'hidden.bs.modal',
+            function openPaymentAfterReturn() {
+
+                paymentModalEl.removeEventListener(
+                    'hidden.bs.modal',
+                    openPaymentAfterReturn
+                );
+
+                const paymentModal =
+                    bootstrap.Modal.getOrCreateInstance(paymentModalEl);
+
+                paymentModal.show();
+
+            },
+            {
+                once: true
+            }
+        );
+    }
+
+
+    /*
+     * CHỌN TIỀN MẶT
+     */
+    function selectCashPayment() {
+
+        document.getElementById('modalPaymentMethod').value =
+            'CASH';
+
+        document.getElementById('qrCodeContainer')
+            .classList.add('d-none');
+    }
+
+
+    /*
+     * CHỌN QR
+     */
+    function selectQrPayment() {
+
+        document.getElementById('modalPaymentMethod').value =
+            'QR_CODE';
+
+        document.getElementById('qrCodeContainer')
+            .classList.remove('d-none');
+
+        updateQrCode(
+            currentLateFine + currentDamageFee,
+            currentReturnId
+        );
+    }
+
+
+    /*
+     * QR CODE
+     */
+    function updateQrCode(amount, id) {
+
+        const vietQrImg =
+            document.getElementById('vietQrImg');
+
+        const qrTransferContent =
+            document.getElementById('qrTransferContent');
+
+
+        const transferNote =
+            'PHAT_BR_' + id;
+
+
+        if (qrTransferContent) {
+
+            qrTransferContent.textContent =
+                transferNote;
+
+        }
+
+
+        if (vietQrImg) {
+
+            const qrUrl =
+                'https://img.vietqr.io/image/' +
+                'MB-0345678901-compact2.png' +
+                '?amount=' +
+                amount +
+                '&addInfo=' +
+                encodeURIComponent(transferNote) +
+                '&accountName=' +
+                encodeURIComponent('THU VIEN SO');
+
+
+            vietQrImg.src =
+                qrUrl;
+        }
+    }
+
+
+    /*
+     * QUAY LẠI MODAL TRẢ SÁCH
+     */
+    function backToReturnModal() {
+
+        const paymentModalEl =
+            document.getElementById('paymentMethodModal');
+
+        const returnModalEl =
+            document.getElementById('returnBookModal');
+
+
+        const paymentModal =
+            bootstrap.Modal.getOrCreateInstance(paymentModalEl);
+
+        paymentModal.hide();
+
+
+        paymentModalEl.addEventListener(
+            'hidden.bs.modal',
+            function () {
+
+                const returnModal =
+                    bootstrap.Modal.getOrCreateInstance(returnModalEl);
+
+                returnModal.show();
+
+            },
+            {
+                once: true
+            }
+        );
+    }
+
+
+    /*
+     * SUBMIT FORM
+     */
+    function submitReturnForm() {
+
+        const totalFine =
+            currentLateFine + currentDamageFee;
+
+
+        const paymentMethod =
+            document.getElementById('modalPaymentMethod');
+
+
+        /*
+         * CÓ TIỀN PHẢI THU
+         */
+        if (totalFine > 0) {
+
+            if (
+                !paymentMethod.value ||
+                paymentMethod.value === 'NONE'
+            ) {
+
+                alert(
+                    'Vui lòng chọn phương thức thanh toán.'
+                );
+
+                return;
+            }
+
+        }
+
+
+        /*
+         * KHÔNG CÓ TIỀN
+         */
+        else {
+
+            paymentMethod.value =
+                'NONE';
+
+        }
+
+
+        /*
+         * ĐẢM BẢO GIÁ TRỊ
+         */
+        document.getElementById('modalHiddenFine').value =
+            currentLateFine;
+
+        document.getElementById('modalHiddenDamageFee').value =
+            currentDamageFee;
+
+
+        /*
+         * SUBMIT
+         */
+        document.getElementById('returnBookForm').submit();
+    }
+
+
+    /*
+     * GLOBAL
+     */
+    window.openReturnModal =
+        openReturnModal;
+
+    window.openPaymentModal =
+        openPaymentModal;
+
+    window.backToReturnModal =
+        backToReturnModal;
+
+    window.submitReturnForm =
+        submitReturnForm;
+
+    window.updateDamageFee =
+        updateDamageFee;
+
+
+    /*
+     * DOM READY
+     */
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            /*
+             * NÚT TRẢ SÁCH
+             */
+            document
+                .querySelectorAll('.open-return-modal-btn')
+                .forEach(function (btn) {
+
+                    btn.addEventListener(
+                        'click',
+                        function (e) {
+
+                            e.preventDefault();
+
+                            openReturnModal(this);
+
+                        }
+                    );
+
+                });
+
+
+            /*
+             * TIỀN MẶT
+             */
+            const cash =
+                document.getElementById('payMethodCash');
+
+            if (cash) {
+
+                cash.addEventListener(
+                    'change',
+                    function () {
+
+                        if (this.checked) {
+                            selectCashPayment();
+                        }
+
+                    }
+                );
+
+            }
+
+
+            /*
+             * QR
+             */
+            const qr =
+                document.getElementById('payMethodQr');
+
+            if (qr) {
+
+                qr.addEventListener(
+                    'change',
+                    function () {
+
+                        if (this.checked) {
+                            selectQrPayment();
+                        }
+
+                    }
+                );
+
+            }
+
+
+            /*
+             * TÌNH TRẠNG SÁCH
+             */
+            const condition =
+                document.getElementById('bookCondition');
+
+            if (condition) {
+
+                condition.addEventListener(
+                    'change',
+                    updateDamageFee
+                );
+
+            }
+
+        }
+    );
+
 </script>
+
 </th:block>
 
 </body>

@@ -19,7 +19,15 @@ public interface BorrowService {
     BorrowRecord returnBook(Long id);
 
     BorrowRecord returnBook(Long id, Long fineAmount, String paymentMethod, String note);
- 
+
+    BorrowRecord returnBook(
+            Long id,
+            Long fineAmount,
+            Long damageFee,
+            String paymentMethod,
+            String note,
+            com.library.model.BookCondition bookCondition);
+
     BorrowRecord renewBorrow(Long id, Long userId, boolean isAdmin);
 
     void updateOverdue();

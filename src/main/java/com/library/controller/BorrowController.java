@@ -75,15 +75,14 @@ public class BorrowController {
                     }
                     String k = keyword.trim().toLowerCase();
                     boolean matchId = String.valueOf(r.getId()).contains(k) || ("#br-" + r.getId()).contains(k);
-                    boolean matchUser = r.getUser() != null && (
-                            (r.getUser().getFullName() != null && r.getUser().getFullName().toLowerCase().contains(k)) ||
+                    boolean matchUser = r.getUser() != null && ((r.getUser().getFullName() != null
+                            && r.getUser().getFullName().toLowerCase().contains(k)) ||
                             (r.getUser().getEmail() != null && r.getUser().getEmail().toLowerCase().contains(k)) ||
-                            (r.getUser().getUsername() != null && r.getUser().getUsername().toLowerCase().contains(k))
-                    );
-                    boolean matchDoc = r.getDocument() != null && (
-                            (r.getDocument().getTitle() != null && r.getDocument().getTitle().toLowerCase().contains(k)) ||
-                            (r.getDocument().getIdentifierCode() != null && r.getDocument().getIdentifierCode().toLowerCase().contains(k))
-                    );
+                            (r.getUser().getUsername() != null && r.getUser().getUsername().toLowerCase().contains(k)));
+                    boolean matchDoc = r.getDocument() != null && ((r.getDocument().getTitle() != null
+                            && r.getDocument().getTitle().toLowerCase().contains(k)) ||
+                            (r.getDocument().getIdentifierCode() != null
+                                    && r.getDocument().getIdentifierCode().toLowerCase().contains(k)));
                     return matchId || matchUser || matchDoc;
                 })
                 .toList();
@@ -135,15 +134,18 @@ public class BorrowController {
 
             redirectAttributes.addFlashAttribute("successMessage",
                     "Đã lập phiếu mượn #" + createdRecord.getId() + " thành công cho độc giả " +
-                    (createdRecord.getUser() != null ? createdRecord.getUser().getFullName() : "") + "!");
+                            (createdRecord.getUser() != null ? createdRecord.getUser().getFullName() : "") + "!");
             return "redirect:/borrow/list";
 
         } catch (IllegalArgumentException | IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("users", userRepository.findByRole(RoleName.ROLE_READER).stream().filter(User::isActive).toList());
+            model.addAttribute("users",
+                    userRepository.findByRole(RoleName.ROLE_READER).stream().filter(User::isActive).toList());
             model.addAttribute("documents", documentRepository.findAll());
-            model.addAttribute("borrowDate", request.getBorrowDate() != null ? request.getBorrowDate() : LocalDate.now());
-            model.addAttribute("defaultDueDate", request.getDueDate() != null ? request.getDueDate() : LocalDate.now().plusDays(14));
+            model.addAttribute("borrowDate",
+                    request.getBorrowDate() != null ? request.getBorrowDate() : LocalDate.now());
+            model.addAttribute("defaultDueDate",
+                    request.getDueDate() != null ? request.getDueDate() : LocalDate.now().plusDays(14));
             model.addAttribute("selectedUserId", request.getUserId());
             model.addAttribute("selectedBookId", request.getBookId());
             model.addAttribute("activeMenu", "borrow");
@@ -157,25 +159,31 @@ public class BorrowController {
     @PostMapping("/{id}/return")
     public String returnBook(
             @PathVariable Long id,
-            @ModelAttribute ReturnRequestDto returnDto,
+            @ModelAttribute ReturnRequestDto request,
             RedirectAttributes redirectAttributes) {
 
         try {
-            Long fineAmount = (returnDto != null && returnDto.getFineAmount() != null) ? returnDto.getFineAmount() : 0L;
-            String paymentMethod = (returnDto != null && returnDto.getPaymentMethod() != null) ? returnDto.getPaymentMethod() : "NONE";
-            String note = (returnDto != null) ? returnDto.getNote() : null;
+            BorrowRecord currentRecord = borrowService.getById(id);
 
-            BorrowRecord record = borrowService.returnBook(id, fineAmount, paymentMethod, note);
+            long fineAmount = currentRecord.calculateLateFine(5000L);
 
-            String message = "Đã xác nhận trả sách #" + record.getId() + " thành công. Tồn kho tài liệu đã được cập nhật!";
-            if (fineAmount > 0) {
-                String methodText = "QR_CODE".equalsIgnoreCase(paymentMethod) ? "Mã QR chuyển khoản" : "Tiền mặt";
-                message += " (Đã thu phạt " + String.format("%,d", fineAmount) + " VNĐ qua " + methodText + ")";
-            }
-            redirectAttributes.addFlashAttribute("successMessage", message);
+            borrowService.returnBook(
+                    id,
+                    fineAmount,
+                    request.getDamageFee(),
+                    request.getPaymentMethod(),
+                    request.getNote(),
+                    request.getBookCondition());
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    "Trả sách thành công");
 
         } catch (IllegalArgumentException | IllegalStateException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    e.getMessage());
         }
 
         return "redirect:/borrow/list";
@@ -264,8 +272,9 @@ public class BorrowController {
         try {
             BorrowRecord record = borrowService.renewBorrow(id, user.getId(), isAdmin);
             String docTitle = (record.getDocument() != null) ? record.getDocument().getTitle() : "Tài liệu";
-            String newDueDate = record.getDueDate() != null ?
-                    record.getDueDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
+            String newDueDate = record.getDueDate() != null
+                    ? record.getDueDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    : "";
             redirectAttributes.addFlashAttribute("successMessage",
                     "Gia hạn thành công sách '" + docTitle + "' thêm 7 ngày! Hạn trả mới: " + newDueDate);
 
