@@ -6,10 +6,12 @@ import com.library.repository.DocumentRepository;
 import com.library.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,6 +34,8 @@ public class DataSeeder implements CommandLineRunner {
         if (borrowRecordRepository.count() == 0) {
             seedBorrowRecords();
         }
+        // Chạy mỗi lần khởi động: gán ảnh bìa cho các sách chưa có ảnh (ví dụ sách nhập từ CSV)
+        fillMissingBookCovers();
     }
 
     private void seedUsers() {
@@ -236,5 +240,59 @@ public class DataSeeder implements CommandLineRunner {
 
             borrowRecordRepository.saveAll(List.of(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12));
         }
+    }
+
+    /**
+     * Gắn ảnh bìa đúng với từng cuốn sách theo ISBN:
+     *  1. Nếu có file static/images/covers/{ISBN}.jpg trong dự án -> dùng ảnh trong máy
+     *     (chạy được cả khi không có mạng).
+     *  2. Nếu không có file -> dùng link Open Library theo ISBN.
+     * Chỉ thay ảnh cho sách chưa có ảnh hoặc đang dùng link Open Library;
+     * ảnh của sách mẫu (/images/clean_code.jpg, ...) và tạp chí giữ nguyên.
+     */
+    private void fillMissingBookCovers() {
+        List<Document> changed = new ArrayList<>();
+
+        for (Document d : documentRepository.findAll()) {
+            if (!(d instanceof Book book)) {
+                continue;
+            }
+            String isbn = book.getIsbn();
+            if (isbn == null || isbn.isBlank()) {
+                continue;
+            }
+            isbn = isbn.trim();
+
+            String current = d.getImageUrl();
+            boolean noImage = current == null || current.isBlank();
+            boolean onlineCover = !noImage && current.startsWith("https://covers.openlibrary.org");
+            if (!noImage && !onlineCover) {
+                continue; // đã có ảnh riêng, không đụng tới
+            }
+
+            String newUrl = hasLocalCover(isbn) ? "/images/covers/" + isbn + ".jpg" : coverUrlFromIsbn(isbn);
+
+            if (!newUrl.equals(current)) {
+                d.setImageUrl(newUrl);
+                changed.add(d);
+            }
+        }
+
+        if (!changed.isEmpty()) {
+            documentRepository.saveAll(changed);
+        }
+    }
+
+    /** Kiểm tra dự án có file ảnh bìa static/images/covers/{ISBN}.jpg hay không. */
+    private boolean hasLocalCover(String isbn) {
+        return new ClassPathResource("static/images/covers/" + isbn + ".jpg").exists();
+    }
+
+    /**
+     * Link ảnh bìa trên Open Library theo ISBN.
+     * default=false: nếu không có bìa sẽ trả lỗi 404 để giao diện hiện ảnh mặc định.
+     */
+    private String coverUrlFromIsbn(String isbn) {
+        return "https://covers.openlibrary.org/b/isbn/" + isbn.trim() + "-L.jpg?default=false";
     }
 }

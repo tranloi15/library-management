@@ -155,11 +155,16 @@
                         <!-- CỘT 2: BÌA SÁCH & TÊN TÀI LIỆU -->
                         <td>
                             <div class="d-flex align-items-center gap-3">
-                                <img th:src="${doc.imageUrl != null and !doc.imageUrl.isEmpty() ? doc.imageUrl : '/images/clean_code.jpg'}" 
-                                     alt="Bìa" 
-                                     class="rounded-2 border flex-shrink-0 shadow-xs" 
+                                <!-- Sách: ưu tiên ảnh /images/covers/{ISBN}.jpg.
+                                     Không có -> dùng imageUrl trong DB -> cuối cùng là bìa mặc định. -->
+                                <img th:with="dbImg=${doc.imageUrl != null and !doc.imageUrl.isBlank() ? doc.imageUrl : '/images/default-book.svg'}"
+                                     th:src="${doc.documentType.name() == 'BOOK' ? '/images/covers/' + doc.isbn + '.jpg' : dbImg}"
+                                     th:attr="data-fallback=${dbImg}"
+                                     alt="Bìa"
+                                     loading="lazy"
+                                     class="rounded-2 border flex-shrink-0 shadow-xs"
                                      style="width: 44px; height: 58px; object-fit: cover; background: #f8fafc;"
-                                     onerror="this.src='/images/clean_code.jpg'" />
+                                     onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src = this.dataset.fallback; } else { this.onerror = null; this.src = '/images/default-book.svg'; }" />
                                 <div>
                                     <div class="fw-semibold text-dark mb-0.5" style="font-size: 0.92rem; line-height: 1.3;" th:text="${doc.title}">Tên sách</div>
                                     <div class="text-secondary small" style="font-size: 0.78rem;">
@@ -316,7 +321,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label small fw-semibold">Đường dẫn ảnh bìa (URL)</label>
-                                        <input type="text" name="imageUrl" class="form-control form-control-sm" placeholder="https://images.unsplash.com/... hoặc để trống dùng ảnh mặc định">
+                                        <input type="text" name="imageUrl" class="form-control form-control-sm" placeholder="Để trống: hệ thống tự lấy bìa theo mã ISBN">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label small fw-semibold">Đoạn preview tóm tắt nội dung</label>
@@ -361,7 +366,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label small fw-semibold">Đường dẫn ảnh bìa (URL)</label>
-                                        <input type="text" name="imageUrl" class="form-control form-control-sm" placeholder="https://... hoặc để trống">
+                                        <input type="text" name="imageUrl" class="form-control form-control-sm" placeholder="https://... hoặc để trống dùng ảnh mặc định">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label small fw-semibold">Tóm tắt chuyên mục</label>
