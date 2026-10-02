@@ -5,7 +5,6 @@ import com.library.dto.TopBookDto;
 import com.library.model.Book;
 import com.library.model.BorrowRecord;
 import com.library.model.BorrowStatus;
-import com.library.model.Document;
 import com.library.repository.BorrowRecordRepository;
 import com.library.repository.DocumentRepository;
 import com.library.repository.UserRepository;
@@ -14,8 +13,8 @@ import com.library.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +44,7 @@ public class ReportServiceImpl implements ReportService {
         );
     }
 
+    /** Top sách mượn nhiều nhất trên toàn bộ lịch sử. */
     @Override
     public List<TopBookDto> getTopBorrowedBooks(int limit) {
 
@@ -52,25 +52,29 @@ public class ReportServiceImpl implements ReportService {
             return List.of();
         }
 
-        return borrowRecordRepository.findTopBorrowedBooks()
-                .stream()
-                .filter(row -> row[0] instanceof Book)
-                .limit(limit)
-                .map(row -> {
+        return toTopBookDtos(borrowRecordRepository.findTopBorrowedBooks(), limit);
+    }
 
-                    Book book = (Book) row[0];
+    /** Top sách mượn nhiều nhất trong khoảng ngày [from, to]. */
+    @Override
+    public List<TopBookDto> getTopBorrowedBooks(LocalDate from, LocalDate to, int limit) {
 
-                    Long borrowCount =
-                            ((Number) row[1]).longValue();
+        if (limit <= 0 || from == null || to == null || from.isAfter(to)) {
+            return List.of();
+        }
 
-                    return new TopBookDto(
-                            book.getId(),
-                            book.getTitle(),
-                            book.getAuthor(),
-                            borrowCount
-                    );
-                })
-                .collect(Collectors.toList());
+        return toTopBookDtos(borrowRecordRepository.findTopBorrowedBooksBetween(from, to), limit);
+    }
+
+    /** Tổng số lượt mượn trong khoảng ngày [from, to]. */
+    @Override
+    public long countBorrowsBetween(LocalDate from, LocalDate to) {
+
+        if (from == null || to == null || from.isAfter(to)) {
+            return 0;
+        }
+
+        return borrowRecordRepository.countBorrowsBetween(from, to);
     }
 
     @Override
@@ -80,5 +84,32 @@ public class ReportServiceImpl implements ReportService {
 
         return borrowRecordRepository
                 .findByStatus(BorrowStatus.OVERDUE);
+    }
+
+    /**
+     * Chuyển kết quả truy vấn [Document, số lượt mượn] thành danh sách TopBookDto.
+     * Chỉ lấy Sách (bỏ Tạp chí), kèm ISBN và ảnh bìa để giao diện hiển thị.
+     */
+    private List<TopBookDto> toTopBookDtos(List<Object[]> rows, int limit) {
+
+        return rows.stream()
+                .filter(row -> row[0] instanceof Book)
+                .limit(limit)
+                .map(row -> {
+
+                    Book book = (Book) row[0];
+
+                    Long borrowCount = ((Number) row[1]).longValue();
+
+                    return new TopBookDto(
+                            book.getId(),
+                            book.getTitle(),
+                            book.getAuthor(),
+                            borrowCount,
+                            book.getIsbn(),
+                            book.getImageUrl()
+                    );
+                })
+                .toList();
     }
 }

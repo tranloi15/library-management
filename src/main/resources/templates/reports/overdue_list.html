@@ -13,12 +13,15 @@
 <div layout:fragment="content">
 
     <!-- CHỨC NĂNG CHUYỂN ĐỔI BÁO CÁO -->
-    <div class="d-flex gap-2 mb-4">
+    <div class="d-flex flex-wrap gap-2 mb-4">
         <a th:href="@{/reports/top-books}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-trophy me-1"></i> Top Sách Mượn
         </a>
         <a th:href="@{/reports/overdue-list}" class="btn btn-danger btn-sm">
             <i class="bi bi-exclamation-triangle me-1"></i> Phiếu Quá Hạn
+        </a>
+        <a th:href="@{/reports/fines}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-cash-coin me-1"></i> Tiền Phạt
         </a>
     </div>
 
@@ -40,13 +43,29 @@
 
         </div>
 
-        <a th:href="@{/borrow}"
-           class="btn btn-outline-secondary">
+        <div class="d-flex flex-wrap gap-2">
 
-            <i class="bi bi-arrow-left me-1"></i>
-            Quản lý phiếu mượn
+            <!-- XUẤT EXCEL: tắt khi không có phiếu quá hạn -->
+            <a th:href="@{/reports/overdue-list/export}"
+               class="btn btn-success"
+               th:classappend="${#lists.isEmpty(overdueRecords)} ? 'disabled' : ''"
+               th:attr="aria-disabled=${#lists.isEmpty(overdueRecords)}"
+               title="Tải danh sách phiếu quá hạn để liên hệ độc giả thu hồi sách">
 
-        </a>
+                <i class="bi bi-file-earmark-excel me-1"></i>
+                Xuất Excel
+
+            </a>
+
+            <a th:href="@{/borrow/list}"
+               class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left me-1"></i>
+                Quản lý phiếu mượn
+
+            </a>
+
+        </div>
 
     </div>
 
