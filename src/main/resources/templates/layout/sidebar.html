@@ -50,6 +50,12 @@
                     <span>Hồ sơ Độc giả</span>
                 </a>
             </li>
+            <li class="menu-item" th:classappend="${activeMenu == 'roles' ? 'active' : ''}">
+                <a th:href="@{/roles}" class="menu-link" title="Quản lý phân quyền">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Quản lý phân quyền</span>
+                </a>
+            </li>
 
             <li class="menu-category">PHÂN TÍCH & BÁO CÁO</li>
             <li class="menu-item" id="menuItemReports" th:classappend="${activeMenu == 'reports' ? 'active' : ''}">
