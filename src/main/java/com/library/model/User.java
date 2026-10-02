@@ -43,6 +43,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean active = true;
 
+    private String passwordResetToken;
+
+    private java.time.LocalDateTime passwordResetTokenExpiry;
+
     public User(String username, String password, String fullName, String email, String phone, String address, RoleName role) {
         this.username = username;
         this.password = password;
@@ -62,6 +66,9 @@ public class User extends BaseEntity {
     public String getReaderCode() {
         if (this.role == RoleName.ROLE_ADMIN) {
             return String.format("QL-%04d", this.id != null ? this.id : 1);
+        }
+        if (this.role == RoleName.ROLE_LIBRARIAN) {
+            return String.format("TV-%04d", this.id != null ? this.id : 1);
         }
         return String.format("DG-%04d", this.id != null ? this.id : 1);
     }

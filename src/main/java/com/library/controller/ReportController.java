@@ -60,6 +60,7 @@ public class ReportController {
         DashboardStatsDto stats =
                 reportService.getDashboardStats();
 
+        model.addAttribute("activeMenu", "reports");
         model.addAttribute("stats", stats);
 
         return "home/dashboard";
@@ -85,9 +86,13 @@ public class ReportController {
             Model model) {
 
         limit = normalizeLimit(limit);
+
         PeriodRange range = resolvePeriod(period, quarter, year, from, to);
 
         model.addAttribute("topBooks", loadTopBooks(range, limit));
+        model.addAttribute("activeMenu", "reports");
+        model.addAttribute("limit", limit);
+        addPeriodAttributes(model, range);
         model.addAttribute("limit", limit);
         addPeriodAttributes(model, range);
 
@@ -246,6 +251,7 @@ public class ReportController {
                         record.getOverdueDays() * FINE_PER_DAY)
                 .sum();
 
+        model.addAttribute("activeMenu", "reports");
         model.addAttribute("overdueRecords", overdueRecords);
         model.addAttribute("finePerDay", FINE_PER_DAY);
         model.addAttribute("totalFine", totalFine);

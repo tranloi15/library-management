@@ -244,140 +244,50 @@
                     <table class="craft-table">
 
                         <thead>
-
-                        <tr>
-
-                            <th>Mã phiếu</th>
-                            <th>Độc giả</th>
-                            <th>Tài liệu</th>
-                            <th>Ngày mượn</th>
-                            <th>Hạn trả</th>
-                            <th>Trạng thái</th>
-
-                        </tr>
-
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Độc giả</th>
+                                <th>Tài liệu</th>
+                                <th>Ngày mượn</th>
+                                <th>Hạn trả</th>
+                                <th class="text-nowrap">Trạng thái</th>
+                            </tr>
                         </thead>
 
 
                         <tbody>
-
-                        <tr th:if="${#lists.isEmpty(recentRecords)}">
-
-                            <td colspan="6"
-                                style="text-align: center;
-                                       color: var(--text-tertiary);
-                                       padding: 3rem 1rem;">
-
-                                Chưa có giao dịch mượn trả nào.
-
-                            </td>
-
-                        </tr>
-
-
-                        <tr th:each="rec : ${recentRecords}">
-
-                            <td class="code-col"
-                                th:text="'BR-' + ${rec.id}">
-                                BR-1
-                            </td>
-
-
-                            <td>
-
-                                <div class="fw-medium text-primary"
-                                     th:text="${rec.user != null ? rec.user.fullName : 'Độc giả'}">
-
-                                    Nguyễn Văn An
-
-                                </div>
-
-                                <div class="text-muted small"
-                                     th:text="${rec.user != null ? rec.user.email : ''}">
-
-                                    reader1@gmail.com
-
-                                </div>
-
-                            </td>
-
-
-                            <td>
-
-                                <div class="fw-medium text-dark"
-                                     th:text="${rec.document != null ? rec.document.title : 'Tài liệu'}">
-
-                                    Clean Code
-
-                                </div>
-
-                                <div class="text-muted small"
-                                     th:text="${rec.document != null ? rec.document.publisher : ''}">
-
-                                    Prentice Hall
-
-                                </div>
-
-                            </td>
-
-
-                            <td class="text-muted small"
-                                th:text="${rec.borrowDate != null ? #temporals.format(rec.borrowDate, 'dd/MM/yyyy') : '---'}">
-
-                                10/09/2026
-
-                            </td>
-
-
-                            <td class="small">
-
-                                <span th:text="${rec.dueDate != null ? #temporals.format(rec.dueDate, 'dd/MM/yyyy') : '---'}">
-                                    24/09/2026
-                                </span>
-
-                                <span th:if="${rec.isOverdue()}"
-                                      class="badge bg-danger-subtle text-danger ms-1"
-                                      style="font-size: 0.65rem;">
-
-                                    Quá hạn
-
-                                </span>
-
-                            </td>
-
-
-                            <td>
-
-                                <span th:if="${'BORROWING'.equalsIgnoreCase(rec.status) and !rec.isOverdue()}"
-                                      class="status-pill success">
-
-                                    <i class="bi bi-arrow-up-right"></i>
-                                    Đang mượn
-
-                                </span>
-
-
-                                <span th:if="${'BORROWING'.equalsIgnoreCase(rec.status) and rec.isOverdue()}"
-                                      class="status-pill danger">
-
-                                    <i class="bi bi-exclamation-circle"></i>
-                                    Trễ hạn
-
-                                </span>
-
-
-                                <span th:if="${'RETURNED'.equalsIgnoreCase(rec.status)}"
-                                      class="status-pill info">
-
-                                    <i class="bi bi-check-all"></i>
-                                    Đã trả
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
+                            <tr th:if="${#lists.isEmpty(recentRecords)}">
+                                <td colspan="6" style="text-align: center; color: var(--text-tertiary); padding: 3rem 1rem;">
+                                    Chưa có giao dịch mượn trả nào.
+                                </td>
+                            </tr>
+                            <tr th:each="rec : ${recentRecords}">
+                                <td class="code-col" th:text="'BR-' + ${rec.id}">BR-1</td>
+                                <td>
+                                    <div class="fw-medium text-primary" th:text="${rec.user != null ? rec.user.fullName : 'Độc giả'}">Nguyễn Văn An</div>
+                                    <div class="text-muted small" th:text="${rec.user != null ? rec.user.email : ''}">reader1@gmail.com</div>
+                                </td>
+                                <td>
+                                    <div class="fw-medium text-dark" th:text="${rec.document != null ? rec.document.title : 'Tài liệu'}">Clean Code</div>
+                                    <div class="text-muted small" th:text="${rec.document != null ? rec.document.publisher : ''}">Prentice Hall</div>
+                                </td>
+                                <td class="text-muted small" th:text="${rec.borrowDate != null ? #temporals.format(rec.borrowDate, 'dd/MM/yyyy') : '---'}">--/--/----</td>
+                                <td class="small">
+                                    <span th:text="${rec.dueDate != null ? #temporals.format(rec.dueDate, 'dd/MM/yyyy') : '---'}">--/--/----</span>
+                                    <span th:if="${rec.isOverdue()}" class="badge bg-danger-subtle text-danger ms-1" style="font-size: 0.65rem;">Quá hạn</span>
+                                </td>
+                                <td class="text-nowrap">
+                                    <span th:if="${rec.status != null and rec.status.name() == 'BORROWING' and !rec.isOverdue()}" class="status-pill warning">
+                                        <i class="bi bi-clock"></i> Đang mượn
+                                    </span>
+                                    <span th:if="${rec.status != null and (rec.status.name() == 'OVERDUE' or (rec.isOverdue() and rec.status.name() != 'RETURNED'))}" class="status-pill danger">
+                                        <i class="bi bi-exclamation-circle"></i> Trễ hạn
+                                    </span>
+                                    <span th:if="${rec.status != null and rec.status.name() == 'RETURNED'}" class="status-pill success">
+                                        <i class="bi bi-check2"></i> Đã trả
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
 
                     </table>

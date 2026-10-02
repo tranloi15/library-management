@@ -1,17 +1,20 @@
 package com.library.controller;
 
+import com.library.model.User;
+import com.library.service.UserService;
 import com.library.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
 
     private final DocumentService documentService;
+    private final UserService userService;
 
     @GetMapping({"/", "/home"})
     public String home(Model model,
@@ -49,7 +52,7 @@ public class HomeController {
 
     @GetMapping("/login")
     public String login(jakarta.servlet.http.HttpServletRequest request) {
-        org.springframework.security.web.csrf.CsrfToken csrf = 
+        org.springframework.security.web.csrf.CsrfToken csrf =
             (org.springframework.security.web.csrf.CsrfToken) request.getAttribute(org.springframework.security.web.csrf.CsrfToken.class.getName());
         if (csrf != null) {
             csrf.getToken(); // Eagerly initialize token and session before template commits response
@@ -60,5 +63,22 @@ public class HomeController {
     @GetMapping("/register")
     public String register() {
         return "redirect:/login?action=register";
+    }
+
+    @PostMapping("/register")
+    public String processRegister(@RequestParam("fullName") String fullName,
+                                  @RequestParam("email") String email,
+                                  @RequestParam("password") String password) {
+        try {
+            User newUser = new User();
+            newUser.setFullName(fullName.trim());
+            newUser.setEmail(email.trim().toLowerCase());
+            newUser.setPassword(password);
+            userService.createReader(newUser);
+            return "redirect:/login?regSuccess=1&action=register";
+        } catch (IllegalArgumentException e) {
+            String errMsg = java.net.URLEncoder.encode(e.getMessage(), java.nio.charset.StandardCharsets.UTF_8);
+            return "redirect:/login?regError=" + errMsg + "&action=register";
+        }
     }
 }

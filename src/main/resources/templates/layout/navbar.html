@@ -40,6 +40,34 @@
             background-color: #121722 !important;
             border-color: rgba(255, 255, 255, 0.08) !important;
         }
+        .nav-shortcut-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.38rem 0.75rem;
+            font-size: 0.84rem;
+            font-weight: 500;
+            color: var(--text-secondary, #475569);
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+            background: transparent;
+            white-space: nowrap;
+        }
+        .nav-shortcut-btn:hover {
+            color: var(--primary, #36A4F7);
+            background-color: var(--bg-subtle, #F1F5F9);
+            border-color: var(--border-hairline, rgba(0, 0, 0, 0.06));
+        }
+        [data-bs-theme="dark"] .nav-shortcut-btn {
+            color: #94A3B8 !important;
+        }
+        [data-bs-theme="dark"] .nav-shortcut-btn:hover {
+            color: #38BDF8 !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
     </style>
     <!-- Nút Menu Mobile & Command Search Bar -->
     <div class="d-flex align-items-center gap-2">
@@ -60,6 +88,18 @@
 
     <!-- Công cụ & Profile góc phải -->
     <div class="header-actions">
+        <!-- 2 Nút Trang chủ & Kho tài liệu đưa sang bên phải, cạnh nút thông báo -->
+        <div class="d-flex align-items-center gap-1 me-1">
+            <a th:href="@{/}" class="nav-shortcut-btn" title="Trang chủ">
+                <i class="bi bi-house"></i>
+                <span class="d-none d-sm-inline">Trang chủ</span>
+            </a>
+            <a th:href="@{/catalog}" class="nav-shortcut-btn" title="Kho tài liệu trực tuyến">
+                <i class="bi bi-grid-fill"></i>
+                <span class="d-none d-sm-inline">Kho tài liệu</span>
+            </a>
+        </div>
+
         <!-- Chuông thông báo tinh gọn (Notification Bell with Minimal Dot) -->
         <div class="dropdown">
             <a href="#" class="notif-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo mượn trả">

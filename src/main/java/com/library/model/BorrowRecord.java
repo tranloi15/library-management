@@ -43,8 +43,6 @@ public class BorrowRecord extends BaseEntity {
     @Column(nullable = false)
     private BorrowStatus status;
 
-
-
     private Long fineAmount = 0L;
 
     private String paymentMethod; // "CASH", "QR_CODE", "NONE"
