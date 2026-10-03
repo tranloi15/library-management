@@ -13,7 +13,7 @@
 
 <div layout:fragment="content">
 
-    <!-- 1. TIÊU ĐỀ & TÁC VỤ NHANH -->
+    <!-- Tiêu đề và điều hướng -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
 
         <div>
@@ -48,7 +48,7 @@
     </div>
 
 
-    <!-- 2. HÀNG THẺ KPI TỔNG QUAN -->
+    <!-- Các thẻ thống kê nhanh -->
     <div class="row g-3 mb-4">
 
         <!-- Tổng số tài liệu -->
@@ -201,16 +201,9 @@
     </div>
 
 
-    <!-- 3. BỐ CỤC CHIA ĐÔI -->
     <div class="row g-4">
-
-        <!-- ====================================================== -->
-        <!-- CỘT TRÁI -->
-        <!-- ====================================================== -->
-
+        <!-- Cột trái: Giao dịch mượn trả gần đây -->
         <div class="col-12 col-lg-8">
-
-            <!-- HOẠT ĐỘNG MƯỢN / TRẢ -->
             <div class="app-card mb-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -297,7 +290,7 @@
             </div>
 
 
-            <!-- TỶ LỆ PHÂN BỔ TÀI LIỆU -->
+            <!-- Cơ cấu tài liệu -->
             <div class="app-card">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -390,14 +383,9 @@
         </div>
 
 
-        <!-- ====================================================== -->
-        <!-- CỘT PHẢI -->
-        <!-- ====================================================== -->
-
+        <!-- Cột phải: Cảnh báo và công cụ -->
         <div class="col-12 col-lg-4">
-
-
-            <!-- CẢNH BÁO QUÁ HẠN -->
+            <!-- Cảnh báo quá hạn -->
             <div class="app-card mb-4 border-danger-subtle">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -508,138 +496,8 @@
             </div>
 
 
-            <!-- ================================================== -->
-            <!-- THAO TÁC NHANH QUẢN LÝ -->
-            <!-- ================================================== -->
-
+            <!-- Nhập xuất danh mục sách -->
             <div class="app-card">
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-
-                    <h6 class="fw-bold mb-0">
-                        Tác Vụ Nhanh
-                    </h6>
-
-                    <span class="text-muted small">
-                        Phím tắt
-                    </span>
-
-                </div>
-
-
-                <div class="d-flex flex-column gap-2">
-
-                    <!-- Cấp thẻ -->
-                    <a th:href="@{/users/new}"
-                       class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
-
-                        <div class="d-flex align-items-center gap-2">
-
-                            <div class="rounded-3 p-2 bg-primary-subtle text-primary">
-
-                                <i class="bi bi-person-plus-fill"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="fw-semibold small text-dark">
-                                    Cấp thẻ độc giả mới
-                                </div>
-
-                                <div class="text-muted"
-                                     style="font-size: 0.75rem;">
-
-                                    Tạo tài khoản và cấp quyền mượn
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <i class="bi bi-chevron-right text-muted small"></i>
-
-                    </a>
-
-
-                    <!-- Tra cứu -->
-                    <a th:href="@{/catalog}"
-                       class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
-
-                        <div class="d-flex align-items-center gap-2">
-
-                            <div class="rounded-3 p-2 bg-success-subtle text-success">
-
-                                <i class="bi bi-search"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="fw-semibold small text-dark">
-                                    Tra cứu kho tài liệu
-                                </div>
-
-                                <div class="text-muted"
-                                     style="font-size: 0.75rem;">
-
-                                    Kiểm tra số lượng và vị trí sách
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <i class="bi bi-chevron-right text-muted small"></i>
-
-                    </a>
-
-
-                    <!-- Cổng thông tin -->
-                    <a th:href="@{/}"
-                       class="p-3 border rounded-2 text-decoration-none d-flex align-items-center justify-content-between hover-bg-subtle transition">
-
-                        <div class="d-flex align-items-center gap-2">
-
-                            <div class="rounded-3 p-2 bg-info-subtle text-info">
-
-                                <i class="bi bi-globe"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="fw-semibold small text-dark">
-                                    Cổng thông tin bạn đọc
-                                </div>
-
-                                <div class="text-muted"
-                                     style="font-size: 0.75rem;">
-
-                                    Trang chủ công cộng của thư viện
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <i class="bi bi-chevron-right text-muted small"></i>
-
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- ================================================== -->
-            <!-- IMPORT / EXPORT DANH MỤC SÁCH - PHẦN THÊM MỚI -->
-            <!-- ================================================== -->
-
-            <div class="app-card mt-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
 

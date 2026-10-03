@@ -244,9 +244,9 @@ public class DataSeeder implements CommandLineRunner {
 
     /**
      * Gắn ảnh bìa đúng với từng cuốn sách theo ISBN:
-     *  1. Nếu có file static/images/covers/{ISBN}.jpg trong dự án -> dùng ảnh trong máy
+     *  - Nếu có file static/images/covers/{ISBN}.jpg trong dự án -> dùng ảnh trong máy
      *     (chạy được cả khi không có mạng).
-     *  2. Nếu không có file -> dùng link Open Library theo ISBN.
+     *  - Nếu không có file -> dùng link Open Library theo ISBN.
      * Chỉ thay ảnh cho sách chưa có ảnh hoặc đang dùng link Open Library;
      * ảnh của sách mẫu (/images/clean_code.jpg, ...) và tạp chí giữ nguyên.
      */

@@ -67,11 +67,7 @@ public class FineReportService {
         return result;
     }
 
-    // =====================================================================
-    // KẾT QUẢ BÁO CÁO
-    // =====================================================================
-
-    /** Tổng hợp các khoản phạt, chia theo phương thức thanh toán. */
+    // Kết quả báo cáo tổng hợp
     @Getter
     public static class FineReport {
 

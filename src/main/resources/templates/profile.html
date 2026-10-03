@@ -115,17 +115,32 @@
 
                     <div class="mb-3">
                         <label for="oldPassword" class="form-label small fw-semibold">Mật khẩu hiện tại <span class="text-danger">*</span></label>
-                        <input type="password" id="oldPassword" name="oldPassword" class="form-control form-control-sm" placeholder="Nhập mật khẩu hiện tại" required>
+                        <div class="input-group">
+                            <input type="password" id="oldPassword" name="oldPassword" class="form-control form-control-sm" placeholder="Nhập mật khẩu hiện tại" required>
+                            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="togglePasswordVisibility('oldPassword', this)" title="Hiện/Ẩn mật khẩu">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="newPassword" class="form-label small fw-semibold">Mật khẩu mới (tối thiểu 6 ký tự) <span class="text-danger">*</span></label>
-                        <input type="password" id="newPassword" name="newPassword" class="form-control form-control-sm" placeholder="Nhập mật khẩu mới" minlength="6" required>
+                        <div class="input-group">
+                            <input type="password" id="newPassword" name="newPassword" class="form-control form-control-sm" placeholder="Nhập mật khẩu mới" minlength="6" required>
+                            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="togglePasswordVisibility('newPassword', this)" title="Hiện/Ẩn mật khẩu">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-4">
                         <label for="confirmPassword" class="form-label small fw-semibold">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
-                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control form-control-sm" placeholder="Nhập lại mật khẩu mới" minlength="6" required>
+                        <div class="input-group">
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control form-control-sm" placeholder="Nhập lại mật khẩu mới" minlength="6" required>
+                            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="togglePasswordVisibility('confirmPassword', this)" title="Hiện/Ẩn mật khẩu">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-sm btn-outline-primary px-4 py-2 fw-medium d-inline-flex align-items-center gap-2">
@@ -137,6 +152,18 @@
         </div>
     </div>
 
+    <script>
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const icon = btn.querySelector('i');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            if (icon) {
+                icon.className = isPassword ? 'bi bi-eye-slash text-primary' : 'bi bi-eye';
+            }
+        }
+    </script>
 </div>
 </body>
 </html>

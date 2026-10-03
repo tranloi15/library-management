@@ -32,10 +32,7 @@ public class ReportExportService {
 
     private static final DateTimeFormatter VN_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // =====================================================================
-    // TOP SÁCH MƯỢN NHIỀU NHẤT
-    // =====================================================================
-
+    // Top sách mượn nhiều nhất
     public byte[] exportTopBooks(List<TopBookDto> books, String periodLabel) throws IOException {
 
         try (Workbook wb = new XSSFWorkbook();
@@ -71,10 +68,7 @@ public class ReportExportService {
         }
     }
 
-    // =====================================================================
-    // PHIẾU MƯỢN QUÁ HẠN
-    // =====================================================================
-
+    // Phiếu mượn quá hạn
     public byte[] exportOverdue(List<BorrowRecord> records, long finePerDay) throws IOException {
 
         try (Workbook wb = new XSSFWorkbook();
@@ -131,10 +125,7 @@ public class ReportExportService {
         }
     }
 
-    // =====================================================================
-    // TIỀN PHẠT ĐÃ THU (sheet 1: chi tiết, sheet 2: so sánh các kỳ)
-    // =====================================================================
-
+    // Tiền phạt đã thu
     public byte[] exportFines(FineReport report, String periodLabel, String comparisonText,
                               List<PeriodSummary> history) throws IOException {
 
@@ -231,11 +222,7 @@ public class ReportExportService {
         }
     }
 
-    // =====================================================================
-    // HÀM DÙNG CHUNG
-    // =====================================================================
-
-    /** Ghi tiêu đề, dòng thông tin và ngày xuất. Trả về vị trí dòng tiếp theo cho bảng. */
+    // Tiện ích hỗ trợ xuất file
     private int writeTitle(Workbook wb, Sheet sheet, String title, String info) {
         Font font = wb.createFont();
         font.setBold(true);

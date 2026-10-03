@@ -107,6 +107,7 @@
                     <label class="form-label small fw-semibold mb-1">Khoảng thời gian</label>
                     <select name="period" id="periodSelect" class="form-select form-select-sm" style="width: 190px;">
                         <option value="ALL"     th:selected="${period == null or period == 'ALL'}">Toàn bộ thời gian</option>
+                        <option value="WEEK"    th:selected="${period == 'WEEK'}">Tuần này</option>
                         <option value="MONTH"   th:selected="${period == 'MONTH'}">Tháng này</option>
                         <option value="QUARTER" th:selected="${period == 'QUARTER'}">Theo quý</option>
                         <option value="YEAR"    th:selected="${period == 'YEAR'}">Theo năm</option>

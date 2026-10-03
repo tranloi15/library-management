@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Nhập & Đăng Ký - Thư Viện Số</title>
 
-    <!-- Script khởi tạo Theme sớm (Chống giật chớp màn hình khi tải trang) -->
+    <!-- Script khởi tạo Theme sớm -->
     <script>
         (function () {
             const savedTheme = localStorage.getItem('library_theme') || 'light';
@@ -360,6 +360,37 @@
             transition: all 0.2s ease;
         }
 
+        .form-control.has-toggle,
+        .input-group:has(.toggle-pw) .form-control {
+            padding-right: 2.75rem;
+        }
+
+        .toggle-pw {
+            position: absolute;
+            right: 0.9rem;
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            font-size: 1.05rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: color 0.15s ease;
+            z-index: 2;
+        }
+
+        .toggle-pw:hover {
+            color: var(--primary);
+        }
+
+        .toggle-pw:focus-visible {
+            outline: 2px solid var(--primary-border);
+            color: var(--primary);
+        }
+
         .form-control:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(54, 164, 247, 0.15);
@@ -576,9 +607,7 @@
             }
         }
 
-        /* ==========================================================================
-           CHẾ ĐỘ TỐI (DARK THEME) CHO ĐĂNG NHẬP & ĐĂNG KÝ
-           ========================================================================== */
+        /* Dark theme */
         [data-bs-theme="dark"] {
             --primary: #38BDF8;
             --primary-hover: #0EA5E9;
@@ -652,6 +681,14 @@
             color: #64748B;
         }
 
+        [data-bs-theme="dark"] .toggle-pw {
+            color: #64748B;
+        }
+
+        [data-bs-theme="dark"] .toggle-pw:hover {
+            color: var(--primary);
+        }
+
         [data-bs-theme="dark"] .checkbox-label {
             color: #94A3B8;
         }
@@ -701,7 +738,7 @@
 
 <body>
 
-    <!-- Nút điều hướng đầu trang (Quay lại góc trên bên trái, Theme góc trên bên phải) -->
+    <!-- Nút điều hướng đầu trang -->
     <a href="/" class="back-home">
         <i class="bi bi-arrow-left"></i> Quay lại trang chủ
     </a>
@@ -710,17 +747,15 @@
         <span id="themeToggleText">Chế độ tối</span>
     </button>
 
-    <!-- KHỐI 3D BOOK FLIP STAGE -->
+    <!-- Form sách lật 3D -->
     <div class="book-stage">
         <div class="book-wrapper" id="authBook">
 
-            <!-- ========================================== -->
-            <!-- MẶT TRƯỚC: ĐĂNG NHẬP                   -->
-            <!-- ========================================== -->
+            <!-- Mặt trước: Đăng nhập -->
             <div class="book-face face-front">
                 <div class="spine-decor-left"></div>
 
-                <!-- CỘT TRÁI: BANNER & LỜI CHÀO -->
+                <!-- Banner giới thiệu -->
                 <div class="banner-col">
                     <div>
                         <div class="brand-header">
@@ -751,9 +786,9 @@
                     </div>
                 </div>
 
-                <!-- CỘT PHẢI: FORM ĐĂNG NHẬP -->
+                <!-- Form đăng nhập -->
                 <div class="form-col">
-                    <!-- Header trên mobile: icon Thư viện số + Đăng nhập to đen giống ảnh 2 -->
+                    <!-- Header trên mobile: icon Thư viện số + Đăng nhập -->
                     <div class="mobile-auth-header">
                         <div class="brand-header">
                             <div class="brand-icon">
@@ -783,7 +818,7 @@
                             <div class="input-group">
                                 <i class="bi bi-person input-icon"></i>
                                 <input type="text" id="username" name="username" class="form-control"
-                                    placeholder="Tên đăng nhập" required autofocus>
+                                    placeholder="Tên đăng nhập (hoặc email/sđt)..." required autofocus>
                             </div>
                         </div>
 
@@ -792,8 +827,12 @@
                             <label class="form-label" for="password">Mật khẩu</label>
                             <div class="input-group">
                                 <i class="bi bi-lock input-icon"></i>
-                                <input type="password" id="password" name="password" class="form-control"
-                                    placeholder="Nhập mật khẩugit status" required>
+                                <input type="password" id="password" name="password" class="form-control has-toggle"
+                                    placeholder="Nhập mật khẩu..." required>
+                                <button type="button" class="toggle-pw" onclick="togglePasswordVisibility('password', this)"
+                                    title="Hiện/Ẩn mật khẩu" aria-label="Hiện/Ẩn mật khẩu">
+                                    <i class="bi bi-eye"></i>
+                                </button>
                             </div>
                         </div>
 
@@ -824,15 +863,12 @@
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- MẶT SAU: ĐĂNG KÝ (ĐẢO NGƯỢC CHIỀU)       -->
-            <!-- ========================================== -->
+            <!-- Mặt sau: Đăng ký -->
             <div class="book-face face-back">
                 <div class="spine-decor-right"></div>
 
-                <!-- CỘT TRÁI (ĐẢO CHIỀU): FORM ĐĂNG KÝ -->
+                <!-- Form đăng ký -->
                 <div class="form-col">
-                    <!-- Header Đăng ký chỉ hiển thị trên mobile (trên desktop đã có banner bên phải) -->
                     <div class="mobile-auth-header">
                         <h1 class="register-heading">Đăng ký</h1>
                     </div>
@@ -872,8 +908,12 @@
                             <label class="form-label">Mật khẩu</label>
                             <div class="input-group">
                                 <i class="bi bi-shield-lock input-icon"></i>
-                                <input type="password" name="password" id="reg_password" class="form-control"
+                                <input type="password" name="password" id="reg_password" class="form-control has-toggle"
                                     placeholder="Tối thiểu 6 ký tự" required minlength="6">
+                                <button type="button" class="toggle-pw" onclick="togglePasswordVisibility('reg_password', this)"
+                                    title="Hiện/Ẩn mật khẩu" aria-label="Hiện/Ẩn mật khẩu">
+                                    <i class="bi bi-eye"></i>
+                                </button>
                             </div>
                         </div>
 
@@ -881,8 +921,12 @@
                             <label class="form-label">Xác nhận mật khẩu</label>
                             <div class="input-group">
                                 <i class="bi bi-check2-square input-icon"></i>
-                                <input type="password" id="reg_confirm" class="form-control"
+                                <input type="password" id="reg_confirm" class="form-control has-toggle"
                                     placeholder="Nhập lại mật khẩu" required>
+                                <button type="button" class="toggle-pw" onclick="togglePasswordVisibility('reg_confirm', this)"
+                                    title="Hiện/Ẩn mật khẩu" aria-label="Hiện/Ẩn mật khẩu">
+                                    <i class="bi bi-eye"></i>
+                                </button>
                             </div>
                             <div id="reg_match_hint" style="font-size:0.78rem; margin-top:0.3rem;"></div>
                         </div>
@@ -893,7 +937,7 @@
                         </button>
                     </form>
 
-                    <!-- Lật lại Đăng nhập: Đúng dòng chữ bạn yêu cầu -->
+                    <!--Lật lại Đăng nhập-->
                     <div class="switch-flip">
                         <div>
                             <span>Bạn đã có tài khoản? </span>
@@ -910,7 +954,7 @@
                     </div>
                 </div>
 
-                <!-- CỘT PHẢI (ĐẢO CHIỀU): BANNER LỜI CHÀO ĐĂNG KÝ -->
+                <!-- Banner đăng ký -->
                 <div class="banner-col reversed">
                     <div>
                         <div class="brand-header">
@@ -950,9 +994,20 @@
         <p>© 2026 Thư Viện Số • Lập trình hướng đối tượng - Nhóm 9</p>
     </footer>
 
-    <!-- Script điều khiển hiệu ứng dở trang sách 3D -->
     <script>
-        // ===== VALIDATE FORM ĐĂNG KÝ =====
+        // Bật/tắt ẩn hiện mật khẩu
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const icon = btn.querySelector('i');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            if (icon) {
+                icon.className = isPassword ? 'bi bi-eye-slash text-primary' : 'bi bi-eye';
+            }
+        }
+
+        // Kiểm tra mật khẩu trước khi submit
         function validateRegisterForm() {
             const pw = document.getElementById('reg_password');
             const cpw = document.getElementById('reg_confirm');
@@ -966,7 +1021,7 @@
             return true;
         }
 
-        // Live feedback khi gõ xác nhận mật khẩu
+        // Kiểm tra khớp mật khẩu trực tiếp
         document.addEventListener('DOMContentLoaded', function () {
             const pw = document.getElementById('reg_password');
             const cpw = document.getElementById('reg_confirm');
@@ -983,7 +1038,7 @@
                 cpw.addEventListener('input', checkMatch);
                 pw.addEventListener('input', checkMatch);
             }
-            // Nếu có lỗi/thành công đăng ký, tự flip sang mặt đăng ký
+            // Tự lật sang mặt đăng ký nếu có lỗi hoặc tham số url
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('regError') || urlParams.get('regSuccess') || urlParams.get('action') === 'register') {
                 const book = document.getElementById('authBook');
@@ -1020,7 +1075,7 @@
             setTimeout(() => { authBook.style.transition = ''; }, 60);
         }
 
-        // Điều khiển chuyển đổi Theme Sáng / Tối
+        // Chuyển đổi giao diện sáng tối
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const themeToggleIcon = document.getElementById('themeToggleIcon');
         const themeToggleText = document.getElementById('themeToggleText');
@@ -1041,7 +1096,7 @@
             }
         }
 
-        // Đọc theme hiện tại và cập nhật nút bấm
+        // Đọc theme đã lưu
         const currentTheme = localStorage.getItem('library_theme') || 'light';
         updateThemeUI(currentTheme);
 

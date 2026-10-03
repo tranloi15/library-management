@@ -76,7 +76,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // ===== FORGOT PASSWORD =====
+    // Xử lý quên mật khẩu
 
     /**
      * Tạo token reset mật khẩu cho user (giả lập gửi email, thực tế trả token về để hiển thị).
@@ -121,7 +121,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // ===== QUERIES =====
+    // Truy vấn danh sách người dùng
 
     public List<User> getAllReaders() {
         return userRepository.findByRole(RoleName.ROLE_READER);

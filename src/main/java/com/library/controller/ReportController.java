@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -66,15 +67,7 @@ public class ReportController {
         return "home/dashboard";
     }
 
-    // =====================================================================
-    // TOP SÁCH MƯỢN
-    // =====================================================================
-
-    /**
-     * Top sách mượn nhiều nhất, có lọc theo thời gian.
-     * period: ALL (mặc định) | MONTH | QUARTER | YEAR | CUSTOM
-     * Ví dụ: /reports/top-books?period=QUARTER&quarter=3&year=2026&limit=10
-     */
+    // Top sách mượn nhiều nhất
     @GetMapping("/top-books")
     public String topBooks(
             @RequestParam(defaultValue = "10") int limit,
@@ -236,10 +229,7 @@ public class ReportController {
         return reportService.getTopBorrowedBooks(range.from(), range.to(), limit);
     }
 
-    // =====================================================================
-    // PHIẾU QUÁ HẠN
-    // =====================================================================
-
+    // Danh sách phiếu quá hạn
     @GetMapping("/overdue-list")
     public String overdueList(Model model) {
 
@@ -268,10 +258,7 @@ public class ReportController {
         return excelResponse(file, "phieu-qua-han_" + LocalDate.now() + ".xlsx");
     }
 
-    // =====================================================================
-    // TIỀN PHẠT (tính theo ngày trả sách, có so sánh các kỳ trước)
-    // =====================================================================
-
+    // Báo cáo tiền phạt
     @GetMapping("/fines")
     public String fines(
             @RequestParam(required = false) String period,
@@ -347,14 +334,7 @@ public class ReportController {
                 + " (" + String.format("%,d", previousTotal).replace(',', '.') + " đ)";
     }
 
-    // =====================================================================
-    // KHOẢNG THỜI GIAN BÁO CÁO
-    // =====================================================================
-
-    /**
-     * Khoảng thời gian của báo cáo. from/to = null nghĩa là toàn bộ thời gian.
-     * name: tên ngắn ("Quý 3/2026"); label: tên đầy đủ kèm ngày.
-     */
+    // Xử lý khoảng thời gian báo cáo
     private record PeriodRange(String type, int quarter, int year,
                                LocalDate from, LocalDate to, String name, String label) {
     }
@@ -370,6 +350,7 @@ public class ReportController {
         int q = (quarter == null || quarter < 1 || quarter > 4) ? quarterOf(today) : quarter;
 
         return switch (type) {
+            case "WEEK" -> weekRange(today);
             case "MONTH" -> monthRange(YearMonth.from(today));
             case "QUARTER" -> quarterRange(y, q);
             case "YEAR" -> yearRange(y);
@@ -384,6 +365,7 @@ public class ReportController {
     /** Kỳ liền trước có cùng độ dài. Null nếu đang xem toàn bộ thời gian. */
     private PeriodRange previousPeriod(PeriodRange r) {
         return switch (r.type()) {
+            case "WEEK" -> weekRange(r.from().minusWeeks(1));
             case "MONTH" -> monthRange(YearMonth.from(r.from()).minusMonths(1));
             case "QUARTER" -> r.quarter() == 1 ? quarterRange(r.year() - 1, 4) : quarterRange(r.year(), r.quarter() - 1);
             case "YEAR" -> yearRange(r.year() - 1);
@@ -398,12 +380,22 @@ public class ReportController {
 
     private String previousName(PeriodRange r) {
         return switch (r.type()) {
+            case "WEEK" -> "tuần trước";
             case "MONTH" -> "tháng trước";
             case "QUARTER" -> "quý trước";
             case "YEAR" -> "năm trước";
             case "CUSTOM" -> "kỳ trước";
             default -> "";
         };
+    }
+
+    private PeriodRange weekRange(LocalDate date) {
+        LocalDate start = date.with(DayOfWeek.MONDAY);
+        LocalDate end = date.with(DayOfWeek.SUNDAY);
+        LocalDate now = LocalDate.now();
+        boolean isCurrentWeek = !now.isBefore(start) && !now.isAfter(end);
+        String name = isCurrentWeek ? "Tuần này" : ("Tuần " + start.format(DateTimeFormatter.ofPattern("dd/MM")) + " – " + end.format(DateTimeFormatter.ofPattern("dd/MM")));
+        return build("WEEK", start, end, name);
     }
 
     private PeriodRange monthRange(YearMonth ym) {
@@ -454,10 +446,7 @@ public class ReportController {
         return range.from() == null ? "toan-bo" : range.from() + "_" + range.to();
     }
 
-    // =====================================================================
-    // HÀM DÙNG CHUNG
-    // =====================================================================
-
+    // Tiện ích chung
     private int normalizeLimit(int limit) {
         return (limit == 5 || limit == 10) ? limit : 10;
     }

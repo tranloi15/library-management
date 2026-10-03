@@ -88,7 +88,7 @@
 
     <!-- Công cụ & Profile góc phải -->
     <div class="header-actions">
-        <!-- 2 Nút Trang chủ & Kho tài liệu đưa sang bên phải, cạnh nút thông báo -->
+        <!-- Phím tắt trang chủ và kho tài liệu -->
         <div class="d-flex align-items-center gap-1 me-1">
             <a th:href="@{/}" class="nav-shortcut-btn" title="Trang chủ">
                 <i class="bi bi-house"></i>
@@ -100,7 +100,7 @@
             </a>
         </div>
 
-        <!-- Chuông thông báo tinh gọn (Notification Bell with Minimal Dot) -->
+        <!-- Chuông thông báo -->
         <div class="dropdown">
             <a href="#" class="notif-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo mượn trả">
                 <i class="bi bi-bell fs-6"></i>
@@ -135,7 +135,7 @@
             </div>
         </div>
 
-        <!-- PROFILE DROPDOWN (Dùng tài khoản thực tế từ hệ thống) -->
+        <!-- Menu tài khoản -->
         <div class="dropdown">
             <a href="#" class="profile-dropdown-btn d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.35rem 0.75rem; gap: 0.55rem; text-decoration: none;">
                 <div class="profile-avatar-circle" style="width: 28px; height: 28px; border-radius: 50%; background: #F0F8FF; color: #36A4F7; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; border: 1px solid #BAE0FD; flex-shrink: 0;">
@@ -154,7 +154,7 @@
                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle" sec:authorize="hasRole('ADMIN')">Quản lý</span>
                     </div>
                 </li>
-                <!-- Theme Toggle Switch tinh xảo -->
+                <!-- Nút chuyển theme -->
                 <li class="px-2">
                     <div class="theme-switch-wrapper">
                         <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem; font-weight: 500;">

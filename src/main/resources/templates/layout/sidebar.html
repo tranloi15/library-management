@@ -21,7 +21,7 @@
 
     <!-- Menu Links -->
     <ul class="sidebar-menu">
-        <!-- CHỈ HIỂN THỊ VỚI ADMIN / QUẢN LÝ (ẨN VỚI ĐỘC GIẢ) -->
+        <!-- Menu quản trị (chỉ dành cho Admin) -->
         <th:block sec:authorize="hasRole('ADMIN')">
             <li class="menu-category">TỔNG QUAN</li>
             <li class="menu-item" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">
@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <!-- Script tự động nhận diện active cho menu kể cả khi hot-reload server chưa restart -->
+    <!-- Highlight menu theo đường dẫn hiện tại -->
     <script>
         (function() {
             try {
