@@ -1,0 +1,60 @@
+# ==============================================================================
+# PRO-GRADE .GITIGNORE FOR SPRING BOOT (MAVEN), JAVA, WEB & IDEs
+# ==============================================================================
+
+# --- Maven Build Artifacts ---
+target/
+*.class
+
+# --- Package Archives ---
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# --- Maven Wrapper & Timing ---
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+!mvnw
+!mvnw.cmd
+!.mvn/wrapper/maven-wrapper.properties
+
+# --- Log Files ---
+*.log
+logs/
+
+# --- JVM Crash & Dump Files ---
+hs_err_pid*
+replay_pid*
+
+# --- Operating System Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# --- IDE & Editor Files ---
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+bin/
+cookies.txt
+scratch/
+*.tmp
+*.bak
+*.swp
+
+# --- Environment & Credentials ---
+.env
+.env.local
+*.secret

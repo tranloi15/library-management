@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Top Sách Mượn Nhiều Nhất - Thư Viện Số</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- CHỨC NĂNG CHUYỂN ĐỔI BÁO CÁO -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a th:href="@{/reports/top-books}" class="btn btn-primary btn-sm">
+            <i class="bi bi-trophy me-1"></i> Top Sách Mượn
+        </a>
+        <a th:href="@{/reports/overdue-list}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-exclamation-triangle me-1"></i> Phiếu Quá Hạn
+        </a>
+        <a th:href="@{/reports/fines}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-cash-coin me-1"></i> Tiền Phạt
+        </a>
+    </div>
+
+    <!-- HEADER -->
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between
+                align-items-start align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+
+            <h4 class="fw-bold mb-1">
+                Top Sách Mượn Nhiều Nhất
+            </h4>
+
+            <p class="text-secondary small mb-0">
+                Thống kê các sách được độc giả mượn nhiều nhất
+                <span class="mx-1">•</span>
+                <i class="bi bi-calendar3 me-1"></i>
+                <strong th:text="${periodLabel != null ? periodLabel : 'Toàn bộ thời gian'}">
+                    Toàn bộ thời gian
+                </strong>
+            </p>
+
+        </div>
+
+
+        <!-- CHỌN TOP 5 / TOP 10 + XUẤT EXCEL (giữ nguyên bộ lọc thời gian đang chọn) -->
+        <div class="d-flex flex-wrap gap-2">
+
+            <a th:href="@{/reports/top-books(limit=5, period=${period}, quarter=${quarter},
+                          year=${year}, from=${fromDate}, to=${toDate})}"
+               class="btn btn-sm"
+               th:classappend="${limit == 5
+                    ? 'btn-primary'
+                    : 'btn-outline-secondary'}">
+
+                <i class="bi bi-trophy me-1"></i>
+                Top 5
+
+            </a>
+
+
+            <a th:href="@{/reports/top-books(limit=10, period=${period}, quarter=${quarter},
+                          year=${year}, from=${fromDate}, to=${toDate})}"
+               class="btn btn-sm"
+               th:classappend="${limit == 10
+                    ? 'btn-primary'
+                    : 'btn-outline-secondary'}">
+
+                <i class="bi bi-bar-chart me-1"></i>
+                Top 10
+
+            </a>
+
+
+            <a th:href="@{/reports/top-books/export(limit=${limit}, period=${period}, quarter=${quarter},
+                          year=${year}, from=${fromDate}, to=${toDate})}"
+               class="btn btn-sm btn-success"
+               th:classappend="${#lists.isEmpty(topBooks)} ? 'disabled' : ''"
+               title="Tải bảng xếp hạng của kỳ đang xem">
+
+                <i class="bi bi-file-earmark-excel me-1"></i>
+                Xuất Excel
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- BỘ LỌC THỜI GIAN -->
+    <div class="app-card p-3 mb-4">
+
+        <form th:action="@{/reports/top-books}" method="get" class="m-0" id="periodFilterForm">
+
+            <input type="hidden" name="limit" th:value="${limit}">
+
+            <div class="d-flex flex-wrap align-items-end gap-2">
+
+                <div>
+                    <label class="form-label small fw-semibold mb-1">Khoảng thời gian</label>
+                    <select name="period" id="periodSelect" class="form-select form-select-sm" style="width: 190px;">
+                        <option value="ALL"     th:selected="${period == null or period == 'ALL'}">Toàn bộ thời gian</option>
+                        <option value="MONTH"   th:selected="${period == 'MONTH'}">Tháng này</option>
+                        <option value="QUARTER" th:selected="${period == 'QUARTER'}">Theo quý</option>
+                        <option value="YEAR"    th:selected="${period == 'YEAR'}">Theo năm</option>
+                        <option value="CUSTOM"  th:selected="${period == 'CUSTOM'}">Tùy chọn ngày</option>
+                    </select>
+                </div>
+
+                <!-- Chọn quý (hiện khi chọn "Theo quý") -->
+                <div class="period-field" data-show-for="QUARTER">
+                    <label class="form-label small fw-semibold mb-1">Quý</label>
+                    <select name="quarter" class="form-select form-select-sm" style="width: 110px;">
+                        <option value="1" th:selected="${quarter == 1}">Quý 1</option>
+                        <option value="2" th:selected="${quarter == 2}">Quý 2</option>
+                        <option value="3" th:selected="${quarter == 3}">Quý 3</option>
+                        <option value="4" th:selected="${quarter == 4}">Quý 4</option>
+                    </select>
+                </div>
+
+                <!-- Chọn năm (hiện khi chọn "Theo quý" hoặc "Theo năm") -->
+                <div class="period-field" data-show-for="QUARTER YEAR">
+                    <label class="form-label small fw-semibold mb-1">Năm</label>
+                    <input type="number" name="year" min="2000" max="2100"
+                           class="form-control form-control-sm" style="width: 100px;"
+                           th:value="${year != null ? year : #dates.year(#dates.createNow())}">
+                </div>
+
+                <!-- Từ ngày - đến ngày (hiện khi chọn "Tùy chọn ngày") -->
+                <div class="period-field" data-show-for="CUSTOM">
+                    <label class="form-label small fw-semibold mb-1">Từ ngày</label>
+                    <input type="date" name="from" class="form-control form-control-sm"
+                           th:value="${fromDate}">
+                </div>
+
+                <div class="period-field" data-show-for="CUSTOM">
+                    <label class="form-label small fw-semibold mb-1">Đến ngày</label>
+                    <input type="date" name="to" class="form-control form-control-sm"
+                           th:value="${toDate}">
+                </div>
+
+                <button type="submit" class="btn btn-sm btn-primary px-3">
+                    <i class="bi bi-funnel me-1"></i> Lọc
+                </button>
+
+                <a th:href="@{/reports/top-books(limit=${limit})}"
+                   th:if="${period != null and period != 'ALL'}"
+                   class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i> Bỏ lọc
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- TỔNG LƯỢT MƯỢN + SO SÁNH VỚI KỲ TRƯỚC -->
+    <div class="app-card p-3 mb-3 d-flex flex-wrap align-items-center gap-2">
+        <i class="bi bi-graph-up-arrow text-primary"></i>
+
+        <th:block th:if="${totalBorrows != null}">
+            <span>Tổng lượt mượn trong kỳ:</span>
+            <strong class="fs-5" th:text="${totalBorrows}">10</strong>
+        </th:block>
+
+        <span th:if="${borrowComparisonText != null}"
+              class="badge rounded-pill px-3 py-2"
+              th:style="${borrowHistory[0].changeDirection == 'UP'
+                    ? 'background: rgba(22,163,74,0.12); color: #16A34A;'
+                    : (borrowHistory[0].changeDirection == 'DOWN'
+                        ? 'background: rgba(220,38,38,0.12); color: #DC2626;'
+                        : 'background: rgba(100,116,139,0.15); color: #64748B;')}"
+              th:text="${borrowComparisonText}">+43% so với quý trước (7 lượt)</span>
+
+        <span th:if="${totalBorrows == null}" class="text-secondary small">
+            Chọn Tháng / Quý / Năm / Tùy chọn để so sánh với các kỳ trước
+        </span>
+    </div>
+
+
+    <!-- THỐNG KÊ -->
+    <div class="row g-3 mb-4">
+
+        <!-- SỐ SÁCH -->
+        <div class="col-12 col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Số sách trong bảng
+                    </span>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-book"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value"
+                     th:text="${#lists.size(topBooks)}">
+
+                    10
+
+                </div>
+
+
+                <div class="stat-trend positive">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    <span th:text="'Top ' + ${limit}">
+                        Top 10
+                    </span>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SÁCH ĐỨNG ĐẦU -->
+        <div class="col-12 col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Sách đứng đầu
+                    </span>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-trophy"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value"
+                     style="font-size: 1.15rem;"
+                     th:if="${!#lists.isEmpty(topBooks)}"
+                     th:text="${topBooks[0].title}">
+
+                    Clean Code
+
+                </div>
+
+
+                <div class="stat-value"
+                     th:if="${#lists.isEmpty(topBooks)}">
+
+                    -
+
+                </div>
+
+
+                <div class="stat-trend"
+                     th:if="${!#lists.isEmpty(topBooks)}">
+
+                    <i class="bi bi-arrow-up-right"></i>
+
+                    <span th:text="${topBooks[0].borrowCount} + ' lượt mượn'">
+                        25 lượt mượn
+                    </span>
+
+                </div>
+
+
+                <div class="stat-trend"
+                     th:if="${#lists.isEmpty(topBooks)}">
+
+                    Chưa có dữ liệu
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LƯỢT MƯỢN CAO NHẤT -->
+        <div class="col-12 col-md-4">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Lượt mượn cao nhất
+                    </span>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-bar-chart-fill"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-value">
+
+                    <span th:if="${!#lists.isEmpty(topBooks)}"
+                          th:text="${topBooks[0].borrowCount}">
+
+                        25
+
+                    </span>
+
+                    <span th:if="${#lists.isEmpty(topBooks)}">
+                        0
+                    </span>
+
+                </div>
+
+
+                <div class="stat-trend">
+
+                    lượt mượn
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BIỂU ĐỒ CỘT -->
+    <div class="app-card p-3 p-sm-4 mb-4" th:if="${!#lists.isEmpty(topBooks)}">
+
+        <h6 class="fw-bold mb-1">
+            Biểu đồ lượt mượn
+        </h6>
+
+        <p class="text-secondary small mb-3"
+           th:text="'Top ' + ${limit} + ' • ' + ${periodLabel != null ? periodLabel : 'Toàn bộ thời gian'}">
+            Top 10 • Toàn bộ thời gian
+        </p>
+
+        <div style="position: relative; height: 320px;">
+            <canvas id="topBooksChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- SO SÁNH CÁC KỲ GẦN NHẤT -->
+    <div class="app-card p-2 p-sm-4 mb-4" th:if="${!#lists.isEmpty(borrowHistory)}">
+
+        <div class="mb-3">
+            <h6 class="fw-bold mb-1">So sánh các kỳ gần nhất</h6>
+            <p class="text-secondary small mb-0">Mỗi kỳ được so với kỳ liền trước nó</p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="craft-table">
+                <thead>
+                <tr>
+                    <th>KỲ</th>
+                    <th style="width: 160px;">TỔNG LƯỢT MƯỢN</th>
+                    <th>SÁCH ĐỨNG ĐẦU</th>
+                    <th style="width: 170px;">SO VỚI KỲ TRƯỚC</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p, st : ${borrowHistory}">
+                    <td>
+                        <span class="fw-medium" th:text="${p.name}">Quý 3/2026</span>
+                        <span th:if="${st.first}" class="badge rounded-pill ms-1"
+                              style="background: rgba(37,99,235,0.12); color: #2563EB;">Đang xem</span>
+                    </td>
+                    <td><span class="fw-bold" th:text="${p.total}">10</span> lượt</td>
+                    <td>
+                        <span th:if="${p.topTitle != null}"
+                              th:text="${p.topTitle} + ' (' + ${p.topCount} + ' lượt)'">Clean Code (3 lượt)</span>
+                        <span th:if="${p.topTitle == null}" class="text-secondary">—</span>
+                    </td>
+                    <td>
+                        <span class="fw-semibold"
+                              th:style="${p.changeDirection == 'UP' ? 'color: #16A34A;'
+                                       : (p.changeDirection == 'DOWN' ? 'color: #DC2626;' : 'color: #64748B;')}"
+                              th:text="${p.changeText}">+43%</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+    <!-- BẢNG -->
+    <div class="app-card p-2 p-sm-4">
+
+        <div class="d-flex flex-column flex-md-row
+                    justify-content-between
+                    align-items-start
+                    align-items-md-center
+                    gap-2 mb-3">
+
+            <div>
+
+                <h6 class="fw-bold mb-1">
+                    Bảng xếp hạng sách
+                </h6>
+
+                <p class="text-secondary small mb-0">
+                    Sắp xếp theo số lượt mượn giảm dần
+                </p>
+
+            </div>
+
+
+            <span class="status-pill success">
+
+                <span class="status-dot"></span>
+
+                <span th:text="'Top ' + ${limit}">
+                    Top 10
+                </span>
+
+            </span>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="craft-table">
+
+                <thead>
+
+                <tr>
+
+                    <th style="width: 80px;">
+                        HẠNG
+                    </th>
+
+                    <th>
+                        SÁCH
+                    </th>
+
+                    <th>
+                        TÁC GIẢ
+                    </th>
+
+                    <th style="width: 180px;">
+                        LƯỢT MƯỢN
+                    </th>
+
+                    <th style="width: 140px;" th:if="${previousRanks != null}">
+                        XU HƯỚNG
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                <!-- KHÔNG CÓ DỮ LIỆU -->
+                <tr th:if="${topBooks == null || topBooks.isEmpty()}">
+
+                    <td th:colspan="${previousRanks != null ? 5 : 4}"
+                        class="text-center text-secondary py-5">
+
+                        <i class="bi bi-bar-chart-line fs-2
+                                  d-block mb-2"></i>
+
+                        Chưa có lượt mượn sách nào trong khoảng thời gian này.
+
+                    </td>
+
+                </tr>
+
+
+                <!-- DANH SÁCH -->
+                <tr th:each="book, stat : ${topBooks}">
+
+
+                    <!-- HẠNG -->
+                    <td>
+
+                        <span class="craft-code"
+                              th:text="'#' + ${stat.count}">
+
+                            #1
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- SÁCH: ẢNH BÌA + TÊN + MÃ -->
+                    <td>
+
+                        <div class="d-flex
+                                    align-items-center
+                                    gap-3">
+
+                            <!-- Ảnh bìa: /images/covers/{ISBN}.jpg -> imageUrl trong DB -> bìa mặc định -->
+                            <img th:src="${book.primaryCoverUrl}"
+                                 th:attr="data-fallback=${book.fallbackCoverUrl}"
+                                 alt="Bìa sách"
+                                 loading="lazy"
+                                 class="rounded-2 border flex-shrink-0"
+                                 style="width: 40px; height: 54px; object-fit: cover; background: #f8fafc;"
+                                 onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src = this.dataset.fallback; } else { this.onerror = null; this.src = '/images/default-book.svg'; }" />
+
+
+                            <div>
+
+                                <div class="fw-medium"
+                                     th:text="${book.title}">
+
+                                    Clean Code
+
+                                </div>
+
+
+                                <div class="text-secondary small">
+
+                                    Mã tài liệu:
+
+                                    <span class="craft-code"
+                                          th:text="'#DOC-' + ${book.bookId}">
+
+                                        #DOC-1
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- TÁC GIẢ -->
+                    <td>
+
+                        <span th:if="${book.author != null
+                                      && !book.author.isBlank()}"
+                              th:text="${book.author}">
+
+                            Robert C. Martin
+
+                        </span>
+
+
+                        <span th:if="${book.author == null
+                                      || book.author.isBlank()}"
+                              class="text-secondary">
+
+                            Chưa cập nhật
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- LƯỢT MƯỢN -->
+                    <td>
+
+                        <div class="d-flex
+                                    align-items-center
+                                    gap-2">
+
+                            <span class="fw-bold"
+                                  th:text="${book.borrowCount}">
+
+                                25
+
+                            </span>
+
+                            <span class="text-secondary small">
+                                lượt
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- XU HƯỚNG SO VỚI KỲ TRƯỚC -->
+                    <td th:if="${previousRanks != null}"
+                        th:with="prev=${previousRanks.get(book.bookId)}, cur=${stat.count}">
+
+                        <span th:if="${prev == null}" class="fw-semibold small"
+                              style="color: #2563EB;">Mới vào top</span>
+
+                        <span th:if="${prev != null and prev > cur}" class="fw-semibold"
+                              style="color: #16A34A;"
+                              th:title="'Kỳ trước hạng #' + ${prev}"
+                              th:text="'▲ ' + ${prev - cur}">▲ 2</span>
+
+                        <span th:if="${prev != null and prev < cur}" class="fw-semibold"
+                              style="color: #DC2626;"
+                              th:title="'Kỳ trước hạng #' + ${prev}"
+                              th:text="'▼ ' + ${cur - prev}">▼ 1</span>
+
+                        <span th:if="${prev != null and prev == cur}" class="fw-semibold small"
+                              style="color: #64748B;">Giữ hạng</span>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- GHI CHÚ -->
+    <div class="app-card mt-4">
+
+        <div class="d-flex align-items-start gap-3">
+
+            <div class="rounded-3 p-2
+                        bg-info-subtle text-info">
+
+                <i class="bi bi-info-circle"></i>
+
+            </div>
+
+
+            <div>
+
+                <h6 class="fw-bold mb-1">
+                    Thông tin báo cáo
+                </h6>
+
+                <p class="text-secondary small mb-0">
+
+                    Danh sách được sắp xếp dựa trên số phiếu mượn của từng sách
+                    có ngày mượn nằm trong khoảng thời gian đã chọn.
+                    <strong>Xu hướng</strong> so sánh thứ hạng với kỳ liền trước
+                    (▲ tăng hạng, ▼ giảm hạng, "Mới vào top" là kỳ trước chưa có lượt mượn).
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Ẩn/hiện ô Quý, Năm, Từ ngày - Đến ngày theo khoảng thời gian đang chọn -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const periodSelect = document.getElementById('periodSelect');
+
+            function togglePeriodFields() {
+                const current = periodSelect.value;
+                document.querySelectorAll('#periodFilterForm .period-field').forEach(function (field) {
+                    const showFor = field.getAttribute('data-show-for').split(' ');
+                    const visible = showFor.includes(current);
+                    field.style.display = visible ? '' : 'none';
+                    // Ô bị ẩn thì không gửi lên server, URL gọn hơn
+                    field.querySelectorAll('input, select').forEach(function (el) {
+                        el.disabled = !visible;
+                    });
+                });
+            }
+
+            periodSelect.addEventListener('change', togglePeriodFields);
+            togglePeriodFields();
+        });
+    </script>
+
+    <!-- CHART.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const canvas = document.getElementById('topBooksChart');
+            if (!canvas) {
+                return; // không có dữ liệu -> khung biểu đồ không hiển thị
+            }
+            if (typeof Chart === 'undefined') {
+                canvas.parentElement.innerHTML =
+                    '<div class="h-100 d-flex align-items-center justify-content-center text-secondary small">'
+                    + 'Không tải được thư viện biểu đồ (kiểm tra kết nối mạng)</div>';
+                return;
+            }
+
+            // Dữ liệu lấy từ danh sách topBooks của trang
+            const titles = /*[[${topBooks.![title]}]]*/ [];
+            const counts = /*[[${topBooks.![borrowCount]}]]*/ [];
+
+            // Rút gọn tên quá dài để nhãn trục không bị tràn
+            const labels = titles.map(t => t && t.length > 28 ? t.substring(0, 27) + '…' : t);
+
+            // Màu chữ theo giao diện sáng / tối đang dùng
+            Chart.defaults.color = getComputedStyle(canvas.closest('.app-card')).color;
+            Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+
+            new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Lượt mượn',
+                        data: counts,
+                        // Sách đứng đầu màu cam, còn lại màu xanh
+                        backgroundColor: counts.map((v, i) => i === 0 ? '#F59E0B' : 'rgba(37, 99, 235, 0.75)'),
+                        borderRadius: 6,
+                        maxBarThickness: 30
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',               // cột nằm ngang, dễ đọc tên sách
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: items => titles[items[0].dataIndex],   // hiện tên đầy đủ
+                                label: ctx => ctx.parsed.x + ' lượt mượn'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: 'rgba(148, 163, 184, 0.2)' } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+    </script>
+
+</div>
+
+</body>
+</html>

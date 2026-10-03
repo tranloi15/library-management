@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Quản Lý Phân Quyền - Thư Viện Số</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- TIÊU ĐỀ -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
+                <i class="bi bi-shield-check text-primary me-2"></i>Quản Lý Phân Quyền
+            </h4>
+            <p class="text-secondary small m-0">Xem và phân quyền vai trò cho tất cả tài khoản trong hệ thống</p>
+        </div>
+    </div>
+
+    <!-- THỐNG KÊ THEO VAI TRÒ -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-badge-box" style="background: rgba(239,68,68,0.1); color: #EF4444;">
+                    <i class="bi bi-shield-fill-check"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Admin</div>
+                    <h5 class="fw-bold m-0" th:text="${#lists.size(allUsers.?[role.name() == 'ROLE_ADMIN'])}">0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-badge-box" style="background: rgba(245,158,11,0.1); color: #F59E0B;">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Thủ thư</div>
+                    <h5 class="fw-bold m-0" th:text="${#lists.size(allUsers.?[role.name() == 'ROLE_LIBRARIAN'])}">0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="app-card p-3 d-flex align-items-center gap-3">
+                <div class="stat-badge-box stat-badge-primary">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Độc giả</div>
+                    <h5 class="fw-bold m-0" th:text="${#lists.size(allUsers.?[role.name() == 'ROLE_READER'])}">0</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TÌM KIẾM -->
+    <div class="app-card p-3 mb-4">
+        <form th:action="@{/roles}" method="get" class="m-0">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <div class="position-relative flex-grow-1" style="min-width: 260px;">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control form-control-sm ps-5 py-2"
+                           placeholder="Tìm theo tên, email, tài khoản...">
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary px-3 py-2 fw-semibold">
+                    <i class="bi bi-search"></i> Tìm kiếm
+                </button>
+                <a th:href="@{/roles}" th:if="${keyword != null and !keyword.isEmpty()}"
+                   class="btn btn-sm btn-outline-secondary px-3 py-2">
+                    <i class="bi bi-x-circle"></i> Xóa lọc
+                </a>
+                <span class="text-secondary small ms-auto">
+                    Hiển thị: <strong th:text="${#lists.size(allUsers)}">0</strong> tài khoản
+                </span>
+            </div>
+        </form>
+    </div>
+
+    <!-- BẢNG PHÂN QUYỀN -->
+    <div class="app-card p-0 overflow-hidden mb-4">
+        <div class="table-responsive">
+            <table class="craft-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">#</th>
+                        <th>Người dùng</th>
+                        <th>Tài khoản</th>
+                        <th>Vai trò hiện tại</th>
+                        <th>Trạng thái</th>
+                        <th style="width:220px; text-align:right;">Thay đổi quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(allUsers)}">
+                        <td colspan="6" style="text-align:center; color:var(--text-tertiary); padding:3.5rem 1.5rem;">
+                            <i class="bi bi-people text-secondary fs-1 d-block mb-2"></i>
+                            <span>Không tìm thấy tài khoản nào.</span>
+                        </td>
+                    </tr>
+                    <tr th:each="u, stat : ${allUsers}">
+                        <td th:text="${stat.count}">1</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Avatar màu theo role -->
+                                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm flex-shrink-0"
+                                     th:style="'width:34px;height:34px;font-size:0.85rem;background:' +
+                                        (${u.role.name() == 'ROLE_ADMIN'} ? 'linear-gradient(135deg,#EF4444,#B91C1C)' :
+                                        (${u.role.name() == 'ROLE_LIBRARIAN'} ? 'linear-gradient(135deg,#F59E0B,#D97706)' :
+                                        'linear-gradient(135deg,#36A4F7,#0E73BD)'))"
+                                     th:text="${#strings.substring(u.fullName,0,1)}">A</div>
+                                <div>
+                                    <div class="fw-semibold small" th:text="${u.fullName}">Tên</div>
+                                    <div class="text-muted" style="font-size:0.78rem;" th:text="${u.email}">email</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="craft-code" th:text="${u.username}">username</span>
+                        </td>
+                        <td>
+                            <span th:class="'badge rounded-pill px-3 py-1 fw-semibold ' +
+                                (${u.role.name() == 'ROLE_ADMIN'} ? 'bg-danger' :
+                                (${u.role.name() == 'ROLE_LIBRARIAN'} ? 'bg-warning text-dark' : 'bg-primary'))"
+                                  style="font-size:0.78rem;">
+                                <i class="bi" th:classappend="${u.role.name() == 'ROLE_ADMIN'} ? 'bi-shield-fill-check' :
+                                    (${u.role.name() == 'ROLE_LIBRARIAN'} ? 'bi-person-badge-fill' : 'bi-person-fill')"></i>
+                                <span th:text="${u.role.name() == 'ROLE_ADMIN'} ? 'Admin' :
+                                    (${u.role.name() == 'ROLE_LIBRARIAN'} ? 'Thủ thư' : 'Độc giả')">Role</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span th:class="'status-pill ' + (${u.active} ? 'success' : 'danger')">
+                                <i th:class="'bi ' + (${u.active} ? 'bi-check2' : 'bi-lock')"></i>
+                                <span th:text="${u.active ? 'Hoạt động' : 'Bị khóa'}">Active</span>
+                            </span>
+                        </td>
+                        <td style="text-align:right;">
+                            <!-- Không cho đổi role của admin gốc -->
+                            <span th:if="${u.username == 'admin'}" class="text-muted small fst-italic">Tài khoản hệ thống</span>
+                            <form th:unless="${u.username == 'admin'}"
+                                  th:action="@{'/roles/' + ${u.id} + '/update'}" method="post"
+                                  class="d-inline-flex align-items-center gap-2">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <select name="role" class="form-select form-select-sm" style="width:140px;"
+                                        th:onchange="'this.form.submit()'">
+                                    <option value="ROLE_ADMIN"
+                                            th:selected="${u.role.name() == 'ROLE_ADMIN'}">🛡 Admin</option>
+                                    <option value="ROLE_LIBRARIAN"
+                                            th:selected="${u.role.name() == 'ROLE_LIBRARIAN'}">📚 Thủ thư</option>
+                                    <option value="ROLE_READER"
+                                            th:selected="${u.role.name() == 'ROLE_READER'}">👤 Độc giả</option>
+                                </select>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- GHI CHÚ PHÂN QUYỀN -->
+    <div class="app-card p-4 mb-2">
+        <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Quy định phân quyền</h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="d-flex gap-2">
+                    <span class="badge bg-danger rounded-pill px-2">Admin</span>
+                    <div class="small text-secondary">Toàn quyền quản trị: người dùng, sách, mượn/trả, báo cáo, phân quyền.</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex gap-2">
+                    <span class="badge bg-warning text-dark rounded-pill px-2">Thủ thư</span>
+                    <div class="small text-secondary">Quản lý sách, mượn/trả, báo cáo. Không có quyền phân quyền người dùng.</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex gap-2">
+                    <span class="badge bg-primary rounded-pill px-2">Độc giả</span>
+                    <div class="small text-secondary">Tra cứu danh mục, xem lịch sử mượn sách cá nhân và hồ sơ tài khoản.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
