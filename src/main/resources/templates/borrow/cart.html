@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Giỏ Mượn Sách Cá Nhân - Thư Viện Số</title>
+    <style>
+        .cart-item-card {
+            background: var(--bg-surface, #FFFFFF);
+            border: 1px solid var(--border-subtle, #E2E8F0);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .cart-item-card:hover {
+            border-color: #38BDF8;
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.08);
+        }
+        [data-bs-theme="dark"] .cart-item-card {
+            background: #151A23 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-bs-theme="dark"] .cart-summary-box {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- HEADER TIÊU ĐỀ TRANG -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1 tracking-tight d-flex align-items-center gap-2">
+                <i class="bi bi-cart3 text-primary"></i>
+                Giỏ Mượn Sách Cá Nhân
+            </h4>
+            <p class="text-secondary small mb-0">Kiểm tra danh sách sách đã chọn trước khi gửi yêu cầu mượn tự phục vụ tại quầy</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/catalog}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
+                <i class="bi bi-plus-lg me-2"></i> Tiếp tục tìm sách
+            </a>
+            <a th:href="@{/borrow/history}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center">
+                <i class="bi bi-journal-check me-2"></i> Sách đang mượn & Lịch sử
+            </a>
+        </div>
+    </div>
+
+    <!-- TỔNG QUAN HẠN MỨC & QUOTA (KPI STRIP) -->
+    <div class="row g-2 g-sm-3 mb-4 align-items-stretch">
+        <!-- Trong giỏ mượn -->
+        <div class="col-4 d-flex">
+            <div class="app-card cart-stat-card w-100">
+                <div class="cart-stat-icon-wrap">
+                    <div class="cart-stat-icon bg-light border text-primary">
+                        <i class="bi bi-bag-check"></i>
+                    </div>
+                </div>
+                <!-- Đến chữ & Đến số lượng -->
+                <div class="cart-stat-text-wrap">
+                    <span class="cart-stat-label">Trong giỏ mượn</span>
+                    <div class="cart-stat-value">
+                        <span class="cart-stat-num text-primary" th:text="${cartCount}">0</span>
+                        <span class="cart-stat-unit">cuốn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Đang giữ chưa trả -->
+        <div class="col-4 d-flex">
+            <div class="app-card cart-stat-card w-100">
+                <div class="cart-stat-icon-wrap">
+                    <div class="cart-stat-icon bg-light border text-secondary">
+                        <i class="bi bi-book"></i>
+                    </div>
+                </div>
+                <!-- Đến chữ & Đến số lượng -->
+                <div class="cart-stat-text-wrap">
+                    <span class="cart-stat-label">Đang giữ chưa trả</span>
+                    <div class="cart-stat-value">
+                        <span class="cart-stat-num text-secondary" th:text="${activeCount + ' / 5'}">0 / 5</span>
+                        <span class="cart-stat-unit">cuốn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hạn mức còn lại -->
+        <div class="col-4 d-flex">
+            <div class="app-card cart-stat-card w-100">
+                <div class="cart-stat-icon-wrap">
+                    <div class="cart-stat-icon border"
+                         th:classappend="${availableQuota > 0 ? 'bg-success-subtle text-success border-success-subtle' : 'bg-danger-subtle text-danger border-danger-subtle'}">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                </div>
+                <!-- Đến chữ & Đến số lượng -->
+                <div class="cart-stat-text-wrap">
+                    <span class="cart-stat-label">Hạn mức còn lại</span>
+                    <div class="cart-stat-value">
+                        <span class="cart-stat-num"
+                              th:classappend="${availableQuota > 0 ? 'text-success' : 'text-danger'}"
+                              th:text="${availableQuota}">5</span>
+                        <span class="cart-stat-unit">cuốn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KHI GIỎ TRỐNG -->
+    <div th:if="${cartItems == null || cartItems.isEmpty()}" class="app-card text-center py-5 px-3">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+             style="width: 72px; height: 72px; background: rgba(54, 164, 247, 0.1); color: #36A4F7; font-size: 2.2rem;">
+            <i class="bi bi-cart-x"></i>
+        </div>
+        <h5 class="fw-bold mb-2">Giỏ mượn của bạn đang trống!</h5>
+        <p class="text-secondary small mx-auto mb-4" style="max-width: 480px;">
+            Hãy khám phá kho tài liệu hoặc xem các đầu sách tiêu biểu ngoài trang chủ, sau đó bấm <strong>"Thêm vào giỏ mượn"</strong> để gom sách cần mượn tại đây.
+        </p>
+        <a th:href="@{/catalog}" class="btn btn-primary px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2">
+            <i class="bi bi-bookshelf"></i>
+            <span>Khám phá kho tài liệu</span>
+        </a>
+    </div>
+
+    <!-- KHI CÓ SÁCH TRONG GIỎ -->
+    <div th:if="${cartItems != null and !cartItems.isEmpty()}">
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-6" th:each="doc : ${cartItems}">
+                <div class="cart-item-card p-3 d-flex gap-3 align-items-center">
+                    <!-- Ảnh bìa sách -->
+                    <img th:if="${doc.imageUrl != null and !doc.imageUrl.isEmpty()}"
+                         th:src="@{${doc.imageUrl}}"
+                         alt="Bìa sách" class="rounded object-fit-cover shadow-sm flex-shrink-0"
+                         style="width: 64px; height: 88px; border: 1px solid var(--border-subtle, #E2E8F0);">
+                    <div th:unless="${doc.imageUrl != null and !doc.imageUrl.isEmpty()}"
+                         class="rounded bg-light border d-flex align-items-center justify-content-center text-muted flex-shrink-0"
+                         style="width: 64px; height: 88px;">
+                        <i class="bi bi-book fs-3"></i>
+                    </div>
+
+                    <!-- Thông tin sách -->
+                    <div class="flex-grow-1 min-w-0">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-secondary-subtle text-secondary font-mono" style="font-size: 0.72rem;"
+                                  th:text="${doc.getIdentifierCode()}">ISBN</span>
+                            <span class="badge" style="font-size: 0.72rem;"
+                                  th:classappend="${doc.quantity > 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}"
+                                  th:text="${doc.quantity > 0 ? 'Còn ' + doc.quantity + ' cuốn' : 'Tạm hết'}">Khả dụng</span>
+                        </div>
+                        <h6 class="fw-bold mb-1 text-truncate" th:text="${doc.title}">Tên cuốn sách</h6>
+                        <div class="text-secondary small mb-1" style="font-size: 0.8rem;">
+                            <span>Tác giả: <strong class="text-body" th:text="${doc.author}">Tác giả</strong></span>
+                            • <span th:text="${doc.publisher}">NXB</span> (<span th:text="${doc.publishYear}">2024</span>)
+                        </div>
+                        <div th:if="${doc.shelfLocation != null and !doc.shelfLocation.isBlank()}" class="text-secondary small" style="font-size: 0.8rem;">
+                            Vị trí kệ: <strong class="text-primary" th:text="${doc.shelfLocation}">Kệ A1</strong>
+                        </div>
+                    </div>
+
+                    <!-- Nút xóa khỏi giỏ -->
+                    <form th:action="@{/borrow/cart/remove}" method="post" class="m-0 flex-shrink-0">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <input type="hidden" name="bookId" th:value="${doc.id}" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa khỏi giỏ mượn">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- HỘP XÁC NHẬN & QUY TRÌNH MƯỢN -->
+        <div class="app-card cart-summary-box p-4 border rounded-3 mb-4" style="background: var(--bg-surface, #F8FAFC);">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                <div>
+                    <h6 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle text-primary"></i>Quy trình hoàn tất mượn sách:
+                    </h6>
+                    <p class="text-secondary small mb-0" style="max-width: 650px;">
+                        Khi bấm <strong>"Xác nhận mượn sách"</strong>, hệ thống sẽ tạm giữ các tài liệu này cho bạn tại quầy trong vòng <strong>30 phút</strong>. Bạn chỉ cần mang sách đến quầy để quản lý đối chiếu và duyệt hoàn tất trong 5 giây.
+                    </p>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <form th:action="@{/borrow/cart/clear}" method="post" class="m-0"
+                          onsubmit="return confirm('Bạn có chắc muốn xóa tất cả sách trong giỏ mượn?');">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-trash me-1"></i>Xóa tất cả
+                        </button>
+                    </form>
+
+                    <form th:action="@{/borrow/cart/checkout}" method="post" class="m-0">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn btn-primary px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm">
+                            <i class="bi bi-send-check-fill"></i>
+                            <span class="fw-bold" th:text="${'Xác nhận mượn ' + cartCount + ' cuốn sách'}">Xác nhận mượn sách</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

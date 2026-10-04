@@ -24,11 +24,14 @@ public class SecurityConfig {
                 .requestMatchers("/", "/home", "/catalog", "/login", "/register",
                                  "/forgot-password", "/forgot-password/**",
                                  "/reset-password", "/reset-password/**",
+                                 "/documents/*/qr", "/documents/*/qr/**",
                                  "/error", "/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
-                .requestMatchers("/borrow/history", "/borrow/*/renew", "/profile", "/profile/**").hasAnyRole("READER", "ADMIN", "LIBRARIAN")
+                .requestMatchers("/borrow/history", "/borrow/*/renew", "/borrow/qr-request", "/borrow/qr-request/**",
+                                 "/borrow/cart", "/borrow/cart/**",
+                                 "/borrow/*/cancel-request", "/notifications", "/notifications/**", "/profile", "/profile/**").hasAnyRole("READER", "ADMIN", "LIBRARIAN")
                 .requestMatchers("/borrow", "/borrow/**", "/documents", "/documents/**",
                                  "/reports/**", "/dashboard", "/dashboard/**").hasAnyRole("ADMIN", "LIBRARIAN")
-                .requestMatchers("/users/**", "/roles/**").hasRole("ADMIN")
+                .requestMatchers("/users/**", "/roles/**", "/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))

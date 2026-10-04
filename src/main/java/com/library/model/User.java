@@ -72,4 +72,20 @@ public class User extends BaseEntity {
         }
         return String.format("DG-%04d", this.id != null ? this.id : 1);
     }
+
+    public boolean isAdmin() {
+        return this.role == RoleName.ROLE_ADMIN;
+    }
+
+    public boolean isLibrarian() {
+        return this.role == RoleName.ROLE_LIBRARIAN;
+    }
+
+    public boolean isReader() {
+        return this.role == RoleName.ROLE_READER;
+    }
+
+    public boolean canBorrow() {
+        return this.active && isReader();
+    }
 }

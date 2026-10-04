@@ -50,6 +50,46 @@ public abstract class Document extends BaseEntity {
     public abstract String getDocumentDetails();
     public abstract String getIdentifierCode();
 
+    @Transient
+    public String getAuthor() {
+        return "Nhiều tác giả";
+    }
+
+    public String getCoverImage() {
+        return this.imageUrl;
+    }
+
+    @Transient
+    public String getIsbn() {
+        return null;
+    }
+
+    public boolean matchesKeyword(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return true;
+        }
+        String term = keyword.trim().toLowerCase();
+        boolean matchTitle = title != null && title.toLowerCase().contains(term);
+        boolean matchPublisher = publisher != null && publisher.toLowerCase().contains(term);
+        boolean matchCode = getIdentifierCode() != null && getIdentifierCode().toLowerCase().contains(term);
+        boolean matchAuthor = getAuthor() != null && getAuthor().toLowerCase().contains(term);
+        boolean matchDetails = getDocumentDetails() != null && getDocumentDetails().toLowerCase().contains(term);
+        boolean matchShelf = shelfLocation != null && shelfLocation.toLowerCase().contains(term);
+        boolean matchId = (id != null && (String.valueOf(id).equals(term) || ("#doc-" + id).equalsIgnoreCase(term)));
+        return matchTitle || matchPublisher || matchCode || matchAuthor || matchDetails || matchShelf || matchId;
+    }
+
+    @Column(name = "shelf_location")
+    private String shelfLocation;
+
+    public String getShelfLocation() {
+        return this.shelfLocation;
+    }
+
+    public void setShelfLocation(String shelfLocation) {
+        this.shelfLocation = (shelfLocation != null && !shelfLocation.trim().isEmpty()) ? shelfLocation.trim() : null;
+    }
+
     public String getSummary() {
         if (summary != null && !summary.trim().isEmpty()) {
             return summary;
@@ -62,6 +102,10 @@ public abstract class Document extends BaseEntity {
 
     public boolean isAvailable() {
         return this.quantity > 0;
+    }
+
+    public boolean isBorrowable() {
+        return this.documentType != DocumentType.MAGAZINE;
     }
 
     public void adjustQuantity(int delta) {

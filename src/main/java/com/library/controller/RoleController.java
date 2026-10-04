@@ -1,7 +1,10 @@
 package com.library.controller;
 
+import com.library.model.ActionType;
 import com.library.model.RoleName;
+import com.library.model.TargetType;
 import com.library.model.User;
+import com.library.service.ActivityLogService;
 import com.library.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RoleController {
 
     private final UserService userService;
+    private final ActivityLogService activityLogService;
 
     @GetMapping
     public String listAllUsers(Model model,
@@ -34,6 +38,13 @@ public class RoleController {
             RoleName newRole = RoleName.valueOf(roleName);
             userService.updateRole(id, newRole);
             User user = userService.getUserById(id);
+            activityLogService.log(
+                    ActionType.ROLE_CHANGE,
+                    TargetType.USER,
+                    user.getId(),
+                    user.getFullName() + " (" + user.getUsername() + ")",
+                    "Cập nhật quyền hạn của '" + user.getFullName() + "' (" + user.getUsername() + ") thành " + getRoleLabel(newRole)
+            );
             redirectAttributes.addFlashAttribute("successMessage",
                 "Đã cập nhật quyền của '" + user.getFullName() + "' thành " + getRoleLabel(newRole) + "!");
         } catch (IllegalArgumentException e) {

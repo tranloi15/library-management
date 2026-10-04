@@ -35,4 +35,17 @@ public interface BorrowService {
     List<BorrowRecord> getOverdueRecords();
 
     List<Object[]> getTopBorrowedBooks();
+
+    // Quy trình mượn tự phục vụ qua QR tại quầy
+    BorrowRecord createPendingQrRequest(Long userId, Long bookId);
+
+    BorrowRecord approvePendingRequest(Long recordId, String managerName);
+
+    BorrowRecord rejectPendingRequest(Long recordId, String reason, String managerName);
+
+    BorrowRecord cancelPendingRequest(Long recordId, Long userId);
+
+    List<BorrowRecord> getPendingRequests();
+
+    void cleanupExpiredPendingRequests();
 }

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Hộp Thư Thông Báo - Thư Viện Số</title>
+    <style>
+        .notif-card {
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-subtle, #E2E8F0);
+            background: var(--bg-card, #FFFFFF);
+        }
+        .notif-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+        }
+        .notif-card.unread {
+            border-left: 4px solid #36A4F7;
+            background: rgba(54, 164, 247, 0.03);
+        }
+        .notif-card.unread.type-overdue {
+            border-left: 4px solid #EF4444;
+            background: rgba(239, 68, 68, 0.03);
+        }
+        .notif-card.unread.type-fine {
+            border-left: 4px solid #F59E0B;
+            background: rgba(245, 158, 11, 0.03);
+        }
+        .notif-icon-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .notif-filter-pill {
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary, #64748B);
+            text-decoration: none;
+            border: 1px solid var(--border-subtle, #E2E8F0);
+            transition: all 0.15s ease;
+        }
+        .notif-filter-pill:hover,
+        .notif-filter-pill.active {
+            background-color: var(--primary, #36A4F7);
+            color: #FFFFFF !important;
+            border-color: var(--primary, #36A4F7);
+        }
+        [data-bs-theme="dark"] .notif-card {
+            background: #151A23 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-bs-theme="dark"] .notif-filter-pill {
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #94A3B8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- TIÊU ĐỀ TRANG & NÚT HÀNH ĐỘNG -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
+                <i class="bi bi-bell-fill text-primary me-2"></i>Hộp Thư Thông Báo
+            </h4>
+            <p class="text-secondary small m-0">Trung tâm nhận thông tin mượn trả, nhắc nhở hạn sách và thông báo từ ban quản lý thư viện</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <form th:action="@{/notifications/read-all}" method="post" class="m-0"
+                  th:if="${unreadNotificationCount != null and unreadNotificationCount > 0}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-check2-all"></i>
+                    <span>Đánh dấu tất cả đã đọc</span>
+                </button>
+            </form>
+            <a th:href="@{/notifications}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Tải lại</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- BỘ LỌC THÔNG BÁO DẠNG PILLS -->
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-4 pb-2 border-bottom">
+        <span class="text-secondary small fw-medium me-1"><i class="bi bi-funnel me-1"></i>Bộ lọc:</span>
+        <a th:href="@{/notifications(filter='ALL')}" 
+           class="notif-filter-pill" 
+           th:classappend="${currentFilter == 'ALL' ? 'active' : ''}">
+            Tất cả
+        </a>
+        <a th:href="@{/notifications(filter='UNREAD')}" 
+           class="notif-filter-pill" 
+           th:classappend="${currentFilter == 'UNREAD' ? 'active' : ''}">
+            Chưa đọc
+            <span class="badge bg-danger rounded-pill ms-1" th:if="${unreadNotificationCount != null and unreadNotificationCount > 0}" th:text="${unreadNotificationCount}">0</span>
+        </a>
+        <a th:href="@{/notifications(filter='OVERDUE_ALERT')}" 
+           class="notif-filter-pill" 
+           th:classappend="${currentFilter == 'OVERDUE_ALERT' ? 'active' : ''}">
+            <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>Cảnh báo quá hạn
+        </a>
+        <a th:href="@{/notifications(filter='BORROW_UPDATE')}" 
+           class="notif-filter-pill" 
+           th:classappend="${currentFilter == 'BORROW_UPDATE' ? 'active' : ''}">
+            <i class="bi bi-journal-check text-info me-1"></i>Mượn trả sách
+        </a>
+        <a th:href="@{/notifications(filter='FINE_REMINDER')}" 
+           class="notif-filter-pill" 
+           th:classappend="${currentFilter == 'FINE_REMINDER' ? 'active' : ''}">
+            <i class="bi bi-cash-coin text-warning me-1"></i>Nhắc phí phạt
+        </a>
+        <a th:href="@{/notifications(filter='SYSTEM')}" 
+           class="notif-filter-pill" 
+           th:classappend="${currentFilter == 'SYSTEM' ? 'active' : ''}">
+            <i class="bi bi-megaphone-fill text-primary me-1"></i>Hệ thống
+        </a>
+    </div>
+
+    <!-- DANH SÁCH THÔNG BÁO -->
+    <div th:if="${#lists.isEmpty(notifications)}" class="app-card text-center py-5">
+        <div class="py-4">
+            <i class="bi bi-bell-slash text-secondary opacity-50" style="font-size: 3.5rem;"></i>
+            <h5 class="fw-bold mt-3 mb-1">Không có thông báo nào</h5>
+            <p class="text-secondary small mb-3">Hiện tại bạn chưa có thông báo nào thuộc danh mục này.</p>
+            <a th:href="@{/notifications(filter='ALL')}" class="btn btn-sm btn-outline-primary" th:if="${currentFilter != 'ALL'}">
+                Xem tất cả thông báo
+            </a>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column gap-3 mb-4" th:unless="${#lists.isEmpty(notifications)}">
+        <th:block th:each="n : ${notifications}">
+            <div class="notif-card p-3 p-md-4" 
+                 th:classappend="${!n.read ? ('unread ' + (n.type.name() == 'OVERDUE_ALERT' ? 'type-overdue' : (n.type.name() == 'FINE_REMINDER' ? 'type-fine' : ''))) : ''}">
+                <div class="d-flex align-items-start gap-3">
+                    
+                    <!-- Icon phân loại -->
+                    <div class="notif-icon-circle"
+                         th:style="${n.type.name() == 'OVERDUE_ALERT' ? 'background: rgba(239, 68, 68, 0.12); color: #EF4444;' : 
+                                   (n.type.name() == 'FINE_REMINDER' ? 'background: rgba(245, 158, 11, 0.12); color: #F59E0B;' : 
+                                   (n.type.name() == 'BORROW_UPDATE' ? 'background: rgba(14, 165, 233, 0.12); color: #0EA5E9;' : 
+                                   'background: rgba(54, 164, 247, 0.12); color: #36A4F7;'))}">
+                        <i class="bi"
+                           th:classappend="${n.type.name() == 'OVERDUE_ALERT' ? 'bi-exclamation-triangle-fill' : 
+                                           (n.type.name() == 'FINE_REMINDER' ? 'bi-cash-coin' : 
+                                           (n.type.name() == 'BORROW_UPDATE' ? 'bi-journal-check' : 'bi-megaphone-fill'))}"></i>
+                    </div>
+
+                    <!-- Nội dung thông báo -->
+                    <div class="flex-grow-1 min-w-0">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span class="badge" 
+                                      th:classappend="${n.type.name() == 'OVERDUE_ALERT' ? 'bg-danger-subtle text-danger' : 
+                                                      (n.type.name() == 'FINE_REMINDER' ? 'bg-warning-subtle text-warning' : 
+                                                      (n.type.name() == 'BORROW_UPDATE' ? 'bg-info-subtle text-info' : 'bg-primary-subtle text-primary'))}"
+                                      th:text="${n.type.displayName}">Loại</span>
+                                
+                                <span class="badge bg-secondary-subtle text-secondary" th:if="${n.broadcast}">Toàn hệ thống</span>
+                                
+                                <span class="badge bg-danger rounded-pill" th:if="${!n.read}" style="font-size: 0.65rem;">Mới</span>
+                            </div>
+
+                            <span class="text-secondary small d-flex align-items-center gap-1" style="font-size: 0.76rem;">
+                                <i class="bi bi-clock"></i>
+                                <span th:text="${#temporals.format(n.createdAt, 'HH:mm - dd/MM/yyyy')}">10:30 - 15/09/2026</span>
+                            </span>
+                        </div>
+
+                        <h6 class="fw-bold mb-1" th:text="${n.title}">Tiêu đề thông báo</h6>
+                        <p class="text-secondary mb-3" style="font-size: 0.88rem; line-height: 1.5; white-space: pre-line;" th:text="${n.content}">
+                            Nội dung chi tiết của thông báo.
+                        </p>
+
+                        <!-- Thanh điều hướng và nút thao tác -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 border-top gap-2">
+                            <div class="text-secondary small" style="font-size: 0.78rem;">
+                                <i class="bi bi-person-check me-1"></i>Người gửi: <span class="fw-medium text-body" th:text="${n.senderName != null ? n.senderName : 'Ban Quản lý'}">Quản lý</span>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Nút liên kết chuyển tiếp nếu có -->
+                                <a th:if="${n.targetUrl != null and !n.targetUrl.isEmpty()}" 
+                                   th:href="@{${n.targetUrl}}" 
+                                   class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1" 
+                                   style="font-size: 0.78rem; padding: 0.25rem 0.6rem;">
+                                    <span>Xem chi tiết</span>
+                                    <i class="bi bi-arrow-up-right"></i>
+                                </a>
+
+                                <!-- Nút đánh dấu đã đọc nếu chưa đọc -->
+                                <form th:if="${!n.read}" th:action="@{/notifications/{id}/read(id=${n.id})}" method="post" class="m-0">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="btn btn-xs btn-outline-secondary d-inline-flex align-items-center gap-1"
+                                            style="font-size: 0.78rem; padding: 0.25rem 0.6rem;" title="Đánh dấu đã đọc">
+                                        <i class="bi bi-check2"></i>
+                                        <span>Đã đọc</span>
+                                    </button>
+                                </form>
+
+                                <!-- Nút xóa thông báo -->
+                                <form th:action="@{/notifications/{id}/delete(id=${n.id})}" method="post" class="m-0"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa thông báo này khỏi hộp thư?');">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="btn btn-xs btn-link text-danger p-0" title="Xóa thông báo">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+    <!-- PHÂN TRANG -->
+    <div th:if="${totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4">
+        <div class="text-secondary small">
+            Hiển thị trang <span class="fw-bold" th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+            (Tổng số <strong th:text="${totalElements}">0</strong> thông báo)
+        </div>
+        <nav aria-label="Phân trang thông báo">
+            <ul class="pagination pagination-sm m-0">
+                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/notifications(filter=${currentFilter}, page=${currentPage - 1})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/notifications(filter=${currentFilter}, page=${i})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage + 1 >= totalPages ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/notifications(filter=${currentFilter}, page=${currentPage + 1})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+</body>
+</html>

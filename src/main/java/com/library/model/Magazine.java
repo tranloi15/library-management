@@ -44,4 +44,16 @@ public class Magazine extends Document {
     public String getIdentifierCode() {
         return String.format("MAG-%d-%02d", getPublishYear(), issueNumber);
     }
+
+    @Override
+    public String getAuthor() {
+        return (getPublisher() != null && !getPublisher().isBlank())
+                ? "Tòa soạn " + getPublisher()
+                : "Ban biên tập tạp chí";
+    }
+
+    @Override
+    public boolean isBorrowable() {
+        return false;
+    }
 }

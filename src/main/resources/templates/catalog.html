@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf?.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
     <title>Kho Tài Liệu & Ấn Phẩm - Thư Viện Số</title>
 
     <!-- SCRIPT KHỞI TẠO THEME SỚM (Chống giật chớp màn hình khi F5) -->
@@ -574,6 +576,7 @@
             letter-spacing: 0.05em;
             display: inline-block;
             margin-bottom: 0.5rem;
+            white-space: nowrap !important;
         }
         .type-book {
             background: var(--primary-light);
@@ -912,20 +915,47 @@
             border: 1px solid var(--border-color) !important;
         }
 
-        [data-bs-theme="dark"] .catalog-table th {
+        [data-bs-theme="dark"] .catalog-table-card {
             background: #1E293B !important;
+            border-color: var(--border-color) !important;
+        }
+
+        [data-bs-theme="dark"] .catalog-table-card table th,
+        [data-bs-theme="dark"] .catalog-table th {
+            background: #0F172A !important;
             color: #94A3B8 !important;
             border-color: var(--border-color) !important;
         }
 
+        [data-bs-theme="dark"] .catalog-table-card table td,
         [data-bs-theme="dark"] .catalog-table td {
             background: #1E293B !important;
             color: #F8FAFC !important;
             border-color: var(--border-color) !important;
         }
 
+        [data-bs-theme="dark"] .catalog-table-card table tr:hover td,
         [data-bs-theme="dark"] .catalog-table tr:hover td {
             background: #334155 !important;
+        }
+
+        [data-bs-theme="dark"] .catalog-table-card code,
+        [data-bs-theme="dark"] code.identifier-code {
+            background: #0F172A !important;
+            color: #38BDF8 !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        [data-bs-theme="dark"] .type-magazine {
+            background: rgba(245, 158, 11, 0.15) !important;
+            color: #FBBF24 !important;
+            border-color: rgba(245, 158, 11, 0.3) !important;
+        }
+
+        [data-bs-theme="dark"] .type-book {
+            background: rgba(56, 189, 248, 0.15) !important;
+            color: #38BDF8 !important;
+            border-color: rgba(56, 189, 248, 0.3) !important;
         }
 
         [data-bs-theme="dark"] .site-footer {
@@ -934,14 +964,163 @@
             color: #94A3B8 !important;
         }
 
-        [data-bs-theme="dark"] .modal-content {
-            background: #1E293B !important;
-            color: #F8FAFC !important;
-            border-color: var(--border-color) !important;
+        /* MODALS */
+        .doc-modal-content {
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        .doc-modal-cover {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            background: #F8FAFC;
+            display: block;
+        }
+        .doc-modal-title {
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+            color: var(--text-main);
+        }
+        .doc-meta-box {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+        }
+        .doc-meta-box .meta-label {
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+        .doc-meta-box .doc-code-badge {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
+            font-weight: 600;
+            padding: 0.18rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            letter-spacing: 0.02em;
+        }
+        .doc-meta-box .meta-qty {
+            font-size: 0.84rem;
+            color: var(--primary);
         }
 
-        [data-bs-theme="dark"] .modal-content .text-dark {
+        .doc-summary-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+            padding: 0.95rem 1.1rem;
+            margin-bottom: 0.85rem;
+        }
+        .doc-summary-card .summary-title {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.84rem;
+            margin-bottom: 0.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .doc-summary-card p {
+            color: #334155;
+            font-size: 0.875rem;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+
+        .doc-details-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+        }
+        .doc-details-card .details-label {
+            color: #64748B;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .doc-details-card p {
+            color: #1E293B;
+            font-size: 0.84rem;
+            margin-bottom: 0;
+        }
+
+        .doc-notice-card {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            color: #1D4ED8;
+        }
+
+        [data-bs-theme="dark"] .modal-content,
+        [data-bs-theme="dark"] .doc-modal-content {
+            background: #121722 !important;
             color: #F8FAFC !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+
+        [data-bs-theme="dark"] .modal-content .text-dark,
+        [data-bs-theme="dark"] .doc-modal-title {
+            color: #F8FAFC !important;
+        }
+
+        [data-bs-theme="dark"] .doc-modal-cover {
+            background: #0B0E14 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        [data-bs-theme="dark"] .doc-meta-box {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        [data-bs-theme="dark"] .doc-meta-box .meta-label {
+            color: #94A3B8 !important;
+        }
+
+        [data-bs-theme="dark"] .doc-meta-box .doc-code-badge {
+            background: rgba(56, 189, 248, 0.12) !important;
+            color: #38BDF8 !important;
+            border-color: rgba(56, 189, 248, 0.25) !important;
+        }
+
+        [data-bs-theme="dark"] .doc-meta-box .meta-qty {
+            color: #38BDF8 !important;
+        }
+
+        [data-bs-theme="dark"] .doc-summary-card {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            border-left: 4px solid #38BDF8 !important;
+        }
+
+        [data-bs-theme="dark"] .doc-summary-card .summary-title {
+            color: #38BDF8 !important;
+        }
+
+        [data-bs-theme="dark"] .doc-summary-card p {
+            color: #CBD5E1 !important;
+        }
+
+        [data-bs-theme="dark"] .doc-details-card {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        [data-bs-theme="dark"] .doc-details-card .details-label {
+            color: #94A3B8 !important;
+        }
+
+        [data-bs-theme="dark"] .doc-details-card p {
+            color: #E2E8F0 !important;
+        }
+
+        [data-bs-theme="dark"] .doc-notice-card {
+            background: rgba(56, 189, 248, 0.08) !important;
+            border-color: rgba(56, 189, 248, 0.2) !important;
+            color: #7DD3FC !important;
         }
 
         [data-bs-theme="dark"] .modal-content .bg-light {
@@ -1019,7 +1198,12 @@
                 </div>
 
                 <!-- Khi ĐÃ đăng nhập: Chỉ hiện ảnh mặt người dùng và mũi tên nhỏ trên mobile -->
-                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center ms-1">
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center" style="gap: 0.75rem;">
+                    <a href="/borrow/cart" class="nav-btn nav-btn-ghost d-none d-sm-inline-flex position-relative" title="Giỏ mượn của tôi" style="padding: 0.38rem 0.75rem; gap: 0.45rem;">
+                        <i class="bi bi-cart3"></i>
+                        <span>Giỏ mượn</span>
+                        <span id="navCartBadge" class="badge rounded-pill bg-danger" style="display: none; font-size: 0.65rem;">0</span>
+                    </a>
                     <div class="dropdown">
                         <a href="#" class="user-pill text-decoration-none d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.35rem 0.75rem; gap: 0.55rem;">
                             <div class="profile-avatar-circle" style="width: 28px; height: 28px; border-radius: 50%; background: #EFF6FF; color: #36A4F7; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; border: 1px solid #BAE0FD; flex-shrink: 0;">
@@ -1067,10 +1251,10 @@
                                     <span>Quản lý độc giả</span>
                                 </a>
                             </li>
-                            <li sec:authorize="hasRole('READER')">
-                                <a class="dropdown-item py-1.5 px-3 small d-flex align-items-center gap-2" href="/borrow/history">
-                                    <i class="bi bi-journal-check text-primary"></i>
-                                    <span>Lịch sử mượn trả</span>
+                            <li sec:authorize="isAuthenticated()">
+                                <a class="dropdown-item py-1.5 px-3 small d-flex align-items-center gap-2" href="/borrow/cart">
+                                    <i class="bi bi-cart3 text-primary"></i>
+                                    <span>Giỏ mượn của tôi</span>
                                 </a>
                             </li>
                             <li>
@@ -1199,6 +1383,7 @@
                     </div>
 
                     <button type="button" class="btn-view-detail" 
+                            th:data-id="${doc.id}"
                             th:data-title="${doc.title}"
                             th:data-type="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"
                             th:data-publisher="${doc.publisher}"
@@ -1248,7 +1433,7 @@
                                       th:text="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"></span>
                             </td>
                             <td>
-                                <code class="text-dark small px-1.5 py-0.5 rounded bg-light border" th:text="${doc.getIdentifierCode()}">ISBN</code>
+                                <code class="small px-2 py-0.5 rounded border identifier-code" th:text="${doc.getIdentifierCode()}">ISBN</code>
                             </td>
                             <td th:text="${doc.publisher}">NXB</td>
                             <td th:text="${doc.publishYear}">2026</td>
@@ -1261,6 +1446,7 @@
                             </td>
                             <td style="text-align: right;">
                                 <button type="button" class="btn-view-detail" 
+                                        th:data-id="${doc.id}"
                                         th:data-title="${doc.title}"
                                         th:data-type="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"
                                         th:data-publisher="${doc.publisher}"
@@ -1289,10 +1475,10 @@
         </div>
     </main>
 
-    <!-- Modal Chi Tiết Tài Liệu (Bao gồm ảnh bìa và đoạn preview tóm tắt nội dung) -->
+    <!-- Modal Chi Tiết Tài Liệu -->
     <div class="modal fade" id="docDetailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content" style="border-radius: 18px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+            <div class="modal-content doc-modal-content">
                 <div class="modal-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <span id="modalTypeBadge" class="pub-type-badge type-book">Sách</span>
@@ -1304,51 +1490,50 @@
                         <div class="col-12 col-md-4 text-center">
                             <div class="position-relative mx-auto" style="max-width: 220px;">
                                 <img id="modalCoverImg" src="" alt="Bìa sách" 
-                                     class="img-fluid rounded-3 shadow-sm" 
-                                     style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border: 1px solid var(--border-color); background: #f8fafc; display: block;" 
+                                     class="img-fluid rounded-3 shadow-sm doc-modal-cover" 
                                      onerror="this.src='/images/clean_code.jpg'" />
                             </div>
 
-                            <div class="mt-3 p-2.5 bg-light rounded-3 border text-start">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="text-muted small">Mã định danh:</span>
-                                    <strong id="modalCode" class="text-dark small fw-bold"></strong>
+                            <div class="mt-3 p-2.5 rounded-3 border text-start doc-meta-box">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="meta-label">Mã định danh:</span>
+                                    <code id="modalCode" class="doc-code-badge font-mono"></code>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted small">Tồn kho khả dụng:</span>
-                                    <strong id="modalQuantity" class="text-primary small fw-bold"></strong>
+                                    <span class="meta-label">Tồn kho khả dụng:</span>
+                                    <strong id="modalQuantity" class="meta-qty"></strong>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Cột Phải: Thông tin chi tiết, Đoạn Preview tóm tắt và Thông số -->
                         <div class="col-12 col-md-8">
-                            <h4 id="modalTitle" class="fw-bold mb-1 text-dark" style="letter-spacing: -0.01em; line-height: 1.3;">Tên tài liệu</h4>
-                            <p class="text-muted small mb-3">
+                            <h4 id="modalTitle" class="fw-bold mb-1 doc-modal-title">Tên tài liệu</h4>
+                            <p class="text-secondary small mb-3">
                                 <span id="modalPublisher"></span> • Năm xuất bản: <span id="modalYear"></span>
                             </p>
 
-                            <!-- PHẦN NỘI DUNG CƠ BẢN (PREVIEW TÓM TẮT SÁCH NÓI VỀ GÌ) THEO YÊU CẦU -->
-                            <div class="p-3 rounded-3 mb-3" style="background: #F8FAFC; border: 1px solid #E2E8F0; border-left: 4px solid var(--primary);">
-                                <div class="d-flex align-items-center gap-1.5 text-primary fw-bold small mb-1.5">
+                            <!-- PHẦN NỘI DUNG CƠ BẢN (PREVIEW TÓM TẮT SÁCH NÓI VỀ GÌ) -->
+                            <div class="doc-summary-card">
+                                <div class="summary-title">
                                     <i class="bi bi-card-text fs-6"></i>
                                     <span>Tóm tắt & Giới thiệu nội dung:</span>
                                 </div>
-                                <p id="modalSummary" class="text-secondary small mb-0 lh-base" style="font-size: 0.88rem; color: #334155 !important;">
+                                <p id="modalSummary" class="lh-base">
                                     <!-- Nội dung tóm tắt sách -->
                                 </p>
                             </div>
 
                             <!-- Thông số kỹ thuật / chi tiết -->
-                            <div class="p-2.5 bg-light rounded-3 mb-3 border">
-                                <span class="text-secondary small d-block mb-1 fw-bold">
+                            <div class="doc-details-card p-2.5 rounded-3 mb-3 border">
+                                <span class="details-label">
                                     <i class="bi bi-info-circle me-1"></i>Thông số tài liệu:
                                 </span>
-                                <p id="modalDetails" class="mb-0 text-dark small"></p>
+                                <p id="modalDetails" class="mb-0"></p>
                             </div>
 
-                            <!-- Cảnh báo hướng dẫn mượn sách -->
-                            <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-0" style="background: #F0F8FF; border-color: var(--primary-border); color: #0E73BD;">
+                            <!-- Hướng dẫn mượn sách -->
+                            <div class="doc-notice-card py-2.5 px-3 rounded-3 small d-flex align-items-center gap-2 mb-0">
                                 <i class="bi bi-info-circle-fill flex-shrink-0"></i>
                                 <span>Độc giả vui lòng xuất trình thẻ thư viện hoặc mã tài liệu tại quầy quản lý để mượn sách.</span>
                             </div>
@@ -1356,14 +1541,27 @@
                     </div>
                 </div>
 
-                <div class="modal-footer border-top-0 pt-0 px-4 pb-3">
-                    <button type="button" class="btn btn-light btn-sm border" data-bs-dismiss="modal">Đóng</button>
-                    <a sec:authorize="isAnonymous()" href="/login" class="btn btn-primary btn-sm" style="background: var(--primary); border-color: var(--primary);">
-                        Đăng nhập để mượn sách
+                <div class="modal-footer border-top-0 pt-0 px-4 pb-3 d-flex flex-wrap justify-content-end align-items-center gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Đóng</button>
+                    
+                    <a sec:authorize="isAnonymous()" id="modalAnonLoginBtn" href="/login" class="btn btn-primary btn-sm px-3 d-inline-flex align-items-center shadow-sm d-none">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                        <span>Đăng nhập để mượn sách</span>
                     </a>
-                    <a sec:authorize="isAuthenticated()" href="/borrow/history" class="btn btn-primary btn-sm" style="background: var(--primary); border-color: var(--primary);">
-                        Xem giỏ mượn cá nhân
+
+                    <button type="button" id="modalOnsiteBtn" class="btn btn-onsite-magazine btn-sm px-3 d-inline-flex align-items-center shadow-sm d-none" style="background-color: #F59E0B !important; color: #0F172A !important; font-weight: 700 !important;">
+                        <i class="bi bi-book-half me-2" style="color: #0F172A !important;"></i>
+                        <span style="color: #0F172A !important;">Chỉ đọc tại chỗ</span>
+                    </button>
+                    
+                    <a sec:authorize="isAuthenticated()" href="/borrow/cart" class="btn btn-outline-primary btn-sm px-3 d-inline-flex align-items-center">
+                        <i class="bi bi-cart3 me-2"></i>
+                        <span>Xem giỏ mượn cá nhân</span>
                     </a>
+                    <button sec:authorize="isAuthenticated()" type="button" id="modalBorrowBtn" class="btn btn-primary btn-sm px-3 d-inline-flex align-items-center shadow-sm d-none">
+                        <i id="modalBorrowBtnIcon" class="bi bi-cart-plus me-2"></i>
+                        <span id="modalBorrowBtnText">Thêm vào giỏ mượn</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1537,8 +1735,180 @@
                 modalSummary.textContent = 'Tài liệu học thuật thuộc kho tài nguyên số của thư viện. Độc giả vui lòng liên hệ quầy quản lý để biết thêm thông tin mượn đọc chi tiết.';
             }
 
+            const docId = btn.getAttribute('data-id');
+            const qty = parseInt(btn.getAttribute('data-quantity') || '0', 10);
+            const anonLoginBtn = document.getElementById('modalAnonLoginBtn');
+            const onsiteBtn = document.getElementById('modalOnsiteBtn');
+            const borrowBtn = document.getElementById('modalBorrowBtn');
+            const borrowBtnText = document.getElementById('modalBorrowBtnText');
+            const borrowBtnIcon = document.getElementById('modalBorrowBtnIcon');
+
+            // Ẩn tất cả các nút hành động trước khi kiểm tra điều kiện
+            if (anonLoginBtn) anonLoginBtn.classList.add('d-none');
+            if (onsiteBtn) onsiteBtn.classList.add('d-none');
+            if (borrowBtn) borrowBtn.classList.add('d-none');
+
+            if (type === 'Tạp chí') {
+                // Tạp chí: luôn hiện DUY NHẤT nút "Chỉ đọc tại chỗ" cho cả độc giả và khách vãng lai
+                if (onsiteBtn) {
+                    onsiteBtn.classList.remove('d-none');
+                    onsiteBtn.onclick = function (e) {
+                        e.preventDefault();
+                        showToastNotification('Tạp chí chỉ phục vụ đọc tại chỗ trong khuôn viên thư viện, không thể thêm vào giỏ để mượn về.', 'warning');
+                    };
+                }
+            } else {
+                // Sách
+                if (anonLoginBtn) {
+                    // Chưa đăng nhập -> hiện nút đăng nhập
+                    anonLoginBtn.classList.remove('d-none');
+                } else if (borrowBtn && borrowBtnText) {
+                    // Đã đăng nhập -> hiện nút giỏ mượn
+                    borrowBtn.classList.remove('d-none');
+                    if (qty > 0 && docId) {
+                        borrowBtn.className = 'btn btn-primary btn-sm px-3 d-inline-flex align-items-center shadow-sm';
+                        borrowBtnText.textContent = 'Thêm vào giỏ mượn';
+                        if (borrowBtnIcon) borrowBtnIcon.className = 'bi bi-cart-plus me-2';
+                        borrowBtn.onclick = function (e) {
+                            e.preventDefault();
+                            addToBorrowCart(docId);
+                        };
+                    } else {
+                        borrowBtn.className = 'btn btn-secondary btn-sm px-3 d-inline-flex align-items-center shadow-sm disabled';
+                        borrowBtnText.textContent = 'Tạm hết sách';
+                        if (borrowBtnIcon) borrowBtnIcon.className = 'bi bi-x-circle me-2';
+                        borrowBtn.onclick = null;
+                    }
+                }
+            }
+
             const modal = new bootstrap.Modal(document.getElementById('docDetailModal'));
             modal.show();
+        }
+
+        // Thêm tài liệu vào giỏ mượn cá nhân qua AJAX
+        function addToBorrowCart(docId) {
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
+
+            const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+            if (csrfToken) headers[csrfHeader] = csrfToken;
+
+            const borrowBtn = document.getElementById('modalBorrowBtn');
+            const originalHtml = borrowBtn ? borrowBtn.innerHTML : '';
+            if (borrowBtn) {
+                borrowBtn.classList.add('disabled');
+                borrowBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang thêm...';
+            }
+
+            fetch('/borrow/cart/add?bookId=' + docId, {
+                method: 'POST',
+                headers: headers
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    window.location.href = '/login';
+                    return null;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data) return;
+                if (borrowBtn) {
+                    borrowBtn.classList.remove('disabled');
+                    borrowBtn.innerHTML = originalHtml;
+                }
+                if (data.success) {
+                    updateCartBadge(data.cartCount);
+                    showToastNotification(data.message || 'Đã thêm vào giỏ! Ấn vào xem giỏ mượn để xem chi tiết và xác nhận mượn.', 'success', true);
+                } else {
+                    showToastNotification(data.message || 'Không thể thêm tài liệu vào giỏ mượn!', 'warning');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                if (borrowBtn) {
+                    borrowBtn.classList.remove('disabled');
+                    borrowBtn.innerHTML = originalHtml;
+                }
+                showToastNotification('Đã có lỗi xảy ra khi thêm vào giỏ mượn!', 'danger');
+            });
+        }
+
+        // Cập nhật số lượng trên các badge giỏ mượn
+        function updateCartBadge(count) {
+            const badges = [document.getElementById('navCartBadge'), document.getElementById('navbarCartBadge')];
+            badges.forEach(badge => {
+                if (badge) {
+                    if (count > 0) {
+                        badge.textContent = count;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Khởi tạo số lượng giỏ khi tải trang (chỉ gọi khi đã đăng nhập)
+        document.addEventListener('DOMContentLoaded', function () {
+            const hasCartBadge = document.getElementById('navCartBadge') || document.getElementById('navbarCartBadge');
+            if (hasCartBadge) {
+                fetch('/borrow/cart/count')
+                    .then(res => {
+                        if (!res.ok) return null;
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data && typeof data.count === 'number') {
+                            updateCartBadge(data.count);
+                        }
+                    })
+                    .catch(() => {});
+            }
+        });
+
+        // Hiển thị thông báo Toast trang nhã
+        function showToastNotification(message, type = 'success', showCartLink = false) {
+            let container = document.getElementById('appToastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'appToastContainer';
+                container.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 420px; width: calc(100% - 48px);';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            const iconClass = (type === 'success') ? 'bi-check-circle-fill text-success' : (type === 'warning' ? 'bi-exclamation-triangle-fill text-warning' : 'bi-x-circle-fill text-danger');
+
+            toast.className = 'toast-alert shadow-lg rounded-3 p-3 border d-flex align-items-start gap-3';
+            toast.style.cssText = 'background: var(--surface, #ffffff); border-left: 5px solid ' + (type === 'success' ? '#10B981' : (type === 'warning' ? '#F59E0B' : '#EF4444')) + ' !important; box-shadow: 0 10px 25px rgba(0,0,0,0.12); transition: all 0.3s ease;';
+
+            toast.innerHTML = `
+                <i class="bi ${iconClass} fs-5 mt-0.5 flex-shrink-0"></i>
+                <div class="flex-grow-1" style="font-size: 0.88rem; line-height: 1.45;">
+                    <div class="fw-medium">${message}</div>
+                    ${showCartLink ? '<div class="mt-2"><a href="/borrow/cart" class="btn btn-sm btn-primary py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.8rem;"><i class="bi bi-cart3"></i> Xem giỏ mượn &amp; xác nhận</a></div>' : ''}
+                </div>
+                <button type="button" class="btn-close btn-sm flex-shrink-0" aria-label="Close" style="font-size: 0.75rem;"></button>
+            `;
+
+            const closeBtn = toast.querySelector('.btn-close');
+            closeBtn.onclick = function () {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 300);
+            };
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(10px)';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 6000);
         }
     </script>
     <script th:src="@{/js/main.js}"></script>

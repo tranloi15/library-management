@@ -2,8 +2,95 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <footer class="app-footer" th:fragment="footer">
-    <div>
-        <span>&copy; 2026 <strong>Hệ thống Quản lý Thư viện</strong> - Lập trình hướng đối tượng - Nhóm 9.</span>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 w-100 py-1">
+        <div class="small text-secondary">
+            <span>&copy; 2026 <strong>Thư Viện Số</strong> • Lập trình hướng đối tượng - Nhóm 9.</span>
+            <span class="mx-1 d-none d-xxl-inline">•</span>
+            <span class="d-block d-xxl-inline mt-1 mt-xxl-0">
+                <i class="bi bi-clock me-1 text-primary"></i><span th:text="${libraryOpeningHours ?: 'Thứ Hai - Thứ Bảy: 08:00 - 21:00'}">08:00 - 21:00</span>
+            </span>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 small">
+            <span class="text-secondary d-inline-flex align-items-center">
+                <i class="bi bi-telephone me-1 text-primary"></i>Hotline: <strong class="text-main ms-1" th:text="${libraryHotline ?: '024.3854.4444'}">024.3854.4444</strong>
+            </span>
+            <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 text-primary fw-semibold"
+                    data-bs-toggle="modal" data-bs-target="#footerRegulationsModal">
+                <i class="bi bi-journal-text me-1"></i>Nội quy thư viện
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL NỘI QUY THƯ VIỆN HIỂN THỊ ĐỘNG -->
+    <div class="modal fade" id="footerRegulationsModal" tabindex="-1" aria-labelledby="regulationsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-bottom pb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(54, 164, 247, 0.12); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title fw-bold m-0" id="regulationsModalLabel">Nội Quy & Quy Định Sử Dụng Thư Viện Số</h6>
+                            <span class="text-secondary small" style="font-size: 0.78rem;">Quy định được ban hành và cập nhật chính thức bởi Quản lý Thư viện</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- 3 THẺ TÓM TẮT ĐỊNH LƯỢNG QUY ĐỊNH -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-4">
+                            <div class="p-3 rounded-3 text-center border bg-light-subtle">
+                                <div class="text-secondary small mb-1">Mượn tối đa</div>
+                                <div class="fs-5 fw-bold text-primary">
+                                    <span th:text="${maxBorrowLimit ?: 5}">5</span> cuốn / bạn đọc
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="p-3 rounded-3 text-center border bg-light-subtle">
+                                <div class="text-secondary small mb-1">Thời hạn mượn</div>
+                                <div class="fs-5 fw-bold text-primary">
+                                    <span th:text="${maxBorrowDays ?: 14}">14</span> ngày
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="p-3 rounded-3 text-center border bg-light-subtle">
+                                <div class="text-secondary small mb-1">Mức phạt trễ hạn</div>
+                                <div class="fs-5 fw-bold text-danger">
+                                    <span th:text="${#numbers.formatDecimal(finePerDay ?: 5000, 0, 'COMMA', 0, 'POINT')}">5,000</span> đ/ngày
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NỘI DUNG VĂN BẢN QUY ĐỊNH -->
+                    <div class="p-3 rounded-3 bg-light border mb-3">
+                        <div class="fw-semibold text-main mb-2">
+                            <i class="bi bi-card-checklist me-1 text-primary"></i>Điều khoản bảo quản & sử dụng tài liệu:
+                        </div>
+                        <pre class="m-0 text-secondary" style="font-family: inherit; font-size: 0.9rem; white-space: pre-wrap; line-height: 1.7;"
+                             th:text="${libraryRegulations}"></pre>
+                    </div>
+
+                    <!-- THÔNG TIN LIÊN HỆ -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 p-3 rounded-3 border bg-white small text-secondary">
+                        <div>
+                            <i class="bi bi-clock me-1 text-primary"></i><strong>Giờ mở cửa:</strong> <span th:text="${libraryOpeningHours}">08:00 - 21:00</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-envelope me-1 text-primary"></i><strong>Hỗ trợ:</strong> <span th:text="${libraryEmail}">hotro@thuvienso.edu.vn</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Đã hiểu</button>
+                </div>
+            </div>
+        </div>
     </div>
 </footer>
 </body>

@@ -50,6 +50,59 @@ public class BorrowRecord extends BaseEntity {
     @Column(length = 500)
     private String note;
 
+    /**
+     * Phương thức khởi tạo yêu cầu: "QR_SELF_SERVICE" hoặc "DESK_MANUAL"
+     */
+    private String requestType;
+
+    /**
+     * Thời điểm hết hạn giữ sách chờ duyệt tại quầy (TTL)
+     */
+    private java.time.LocalDateTime requestExpiresAt;
+
+    private String rejectReason;
+
+    private java.time.LocalDateTime approvedAt;
+
+    private String approvedBy;
+
+    public boolean isRequestExpired() {
+        if (status != BorrowStatus.PENDING) {
+            return false;
+        }
+        if (requestExpiresAt != null) {
+            return java.time.LocalDateTime.now().isAfter(requestExpiresAt);
+        }
+        return false;
+    }
+
+    public void approveRequest(int borrowDays, String managerName) {
+        this.status = BorrowStatus.BORROWING;
+        this.borrowDate = LocalDate.now();
+        this.dueDate = LocalDate.now().plusDays(borrowDays);
+        this.approvedAt = java.time.LocalDateTime.now();
+        this.approvedBy = managerName;
+    }
+
+    public void rejectRequest(String reason, String managerName) {
+        this.status = BorrowStatus.REJECTED;
+        this.rejectReason = reason;
+        this.approvedBy = managerName;
+    }
+
+    public void cancel(String cancelNote) {
+        this.status = BorrowStatus.CANCELLED;
+        this.note = cancelNote;
+    }
+
+    public boolean markOverdueIfApplicable() {
+        if (this.status == BorrowStatus.BORROWING && isOverdue()) {
+            this.status = BorrowStatus.OVERDUE;
+            return true;
+        }
+        return false;
+    }
+
     public BorrowRecord(Long bookId, Long userId, LocalDate borrowDate, LocalDate dueDate, BorrowStatus status) {
         this.bookId = bookId;
         this.userId = userId;

@@ -163,24 +163,42 @@
 
     <!-- GHI CHÚ PHÂN QUYỀN -->
     <div class="app-card p-4 mb-2">
-        <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Quy định phân quyền</h6>
+        <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-shield-lock text-primary"></i>
+            <span>Quy định & Phạm vi phân quyền vai trò</span>
+        </h6>
         <div class="row g-3">
             <div class="col-md-4">
-                <div class="d-flex gap-2">
-                    <span class="badge bg-danger rounded-pill px-2">Admin</span>
-                    <div class="small text-secondary">Toàn quyền quản trị: người dùng, sách, mượn/trả, báo cáo, phân quyền.</div>
+                <div class="p-3 rounded-3 h-100 d-flex flex-column gap-2" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1 fw-semibold">Admin</span>
+                        <span class="small text-secondary" style="font-size: 0.72rem;">Toàn quyền</span>
+                    </div>
+                    <div class="small text-secondary lh-base">
+                        Toàn quyền quản trị hệ thống: Quản lý độc giả, phân quyền, cấu hình thông số, nhật ký hoạt động và báo cáo.
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="d-flex gap-2">
-                    <span class="badge bg-warning text-dark rounded-pill px-2">Thủ thư</span>
-                    <div class="small text-secondary">Quản lý sách, mượn/trả, báo cáo. Không có quyền phân quyền người dùng.</div>
+                <div class="p-3 rounded-3 h-100 d-flex flex-column gap-2" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2.5 py-1 fw-semibold">Quản lý</span>
+                        <span class="small text-secondary" style="font-size: 0.72rem;">Vận hành quầy</span>
+                    </div>
+                    <div class="small text-secondary lh-base">
+                        Quản lý kho tài liệu, tiếp nhận duyệt mượn tự phục vụ tại quầy, xử lý trả sách, quyết toán tiền phạt và xem báo cáo.
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="d-flex gap-2">
-                    <span class="badge bg-primary rounded-pill px-2">Độc giả</span>
-                    <div class="small text-secondary">Tra cứu danh mục, xem lịch sử mượn sách cá nhân và hồ sơ tài khoản.</div>
+                <div class="p-3 rounded-3 h-100 d-flex flex-column gap-2" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 fw-semibold">Độc giả</span>
+                        <span class="small text-secondary" style="font-size: 0.72rem;">Người dùng</span>
+                    </div>
+                    <div class="small text-secondary lh-base">
+                        Tra cứu tài liệu trực tuyến, quét mã QR gửi yêu cầu mượn tự phục vụ, theo dõi thời hạn sách và nhận thông báo.
+                    </div>
                 </div>
             </div>
         </div>

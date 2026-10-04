@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Nhật Ký Hoạt Động Hệ Thống - Thư Viện Số</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- TIÊU ĐỀ TRANG -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
+                <i class="bi bi-clock-history text-primary me-2"></i>Nhật Ký Hoạt Động & Thay Đổi
+            </h4>
+            <p class="text-secondary small m-0">Truy vết chi tiết mọi thao tác mượn trả, biến động kho sách, tài khoản và cấu hình hệ thống</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/admin/activity-logs}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Làm mới</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- THỐNG KÊ NHANH HÔM NAY -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3 h-100">
+                <div class="stat-badge-box stat-badge-primary">
+                    <i class="bi bi-activity"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Thao tác hôm nay</div>
+                    <h5 class="fw-bold m-0" th:text="${countToday}">0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3 h-100">
+                <div class="stat-badge-box" style="background: rgba(14, 165, 233, 0.12); color: #0EA5E9;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Người dùng thao tác</div>
+                    <h5 class="fw-bold m-0" th:text="${countUsersToday}">0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3 h-100">
+                <div class="stat-badge-box" style="background: rgba(16, 185, 129, 0.12); color: #10B981;">
+                    <i class="bi bi-arrow-left-right"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Lưu hành Mượn / Trả</div>
+                    <h5 class="fw-bold m-0" th:text="${countBorrowToday}">0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="app-card p-3 d-flex align-items-center gap-3 h-100">
+                <div class="stat-badge-box" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B;">
+                    <i class="bi bi-bookshelf"></i>
+                </div>
+                <div>
+                    <div class="text-secondary small">Biến động kho sách</div>
+                    <h5 class="fw-bold m-0" th:text="${countDocumentToday}">0</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THANH BỘ LỌC TÌM KIẾM -->
+    <div class="app-card p-3 mb-4">
+        <form th:action="@{/admin/activity-logs}" method="get" class="m-0" id="filterForm">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold mb-1">Từ khóa tìm kiếm</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-transparent border-end-0 text-muted">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" name="keyword" th:value="${keyword}"
+                               class="form-control border-start-0"
+                               placeholder="Tài khoản, họ tên, đối tượng, mô tả...">
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-3">
+                    <label class="form-label small fw-semibold mb-1">Loại hành vi</label>
+                    <select name="actionType" class="form-select form-select-sm">
+                        <option value="">-- Tất cả hành vi --</option>
+                        <option th:each="act : ${allActionTypes}"
+                                th:value="${act.name()}"
+                                th:text="${act.description}"
+                                th:selected="${selectedActionType != null and selectedActionType.name() == act.name()}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-sm-6 col-md-2">
+                    <label class="form-label small fw-semibold mb-1">Đối tượng</label>
+                    <select name="targetType" class="form-select form-select-sm">
+                        <option value="">-- Tất cả --</option>
+                        <option th:each="tar : ${allTargetTypes}"
+                                th:value="${tar.name()}"
+                                th:text="${tar.displayName}"
+                                th:selected="${selectedTargetType != null and selectedTargetType.name() == tar.name()}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-sm-6 col-md-2">
+                    <label class="form-label small fw-semibold mb-1">Thời gian</label>
+                    <select name="dateFilter" class="form-select form-select-sm">
+                        <option value="ALL" th:selected="${dateFilter == 'ALL'}">Toàn thời gian</option>
+                        <option value="TODAY" th:selected="${dateFilter == 'TODAY'}">Hôm nay</option>
+                        <option value="WEEK" th:selected="${dateFilter == 'WEEK'}">7 ngày qua</option>
+                        <option value="MONTH" th:selected="${dateFilter == 'MONTH'}">Tháng này</option>
+                    </select>
+                </div>
+
+                <div class="col-sm-6 col-md-1 d-flex gap-1">
+                    <button type="submit" class="btn btn-sm btn-primary w-100" title="Tìm kiếm">
+                        <i class="bi bi-filter"></i> Lọc
+                    </button>
+                    <a th:href="@{/admin/activity-logs}" class="btn btn-sm btn-outline-secondary" title="Đặt lại bộ lọc">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- BẢNG DỮ LIỆU NHẬT KÝ -->
+    <div class="app-card overflow-hidden">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+            <div class="small text-secondary">
+                Tìm thấy <strong class="text-main" th:text="${totalItems}">0</strong> bản ghi nhật ký
+            </div>
+            <div class="small text-secondary" th:if="${totalPages > 0}">
+                Trang <strong th:text="${currentPage + 1}">1</strong> / <span th:text="${totalPages}">1</span>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="craft-table align-middle m-0">
+                <thead>
+                    <tr>
+                        <th style="width: 175px;">Thời Điểm</th>
+                        <th style="width: 210px;">Người Thực Hiện</th>
+                        <th style="width: 190px;">Hành Vi & Đối Tượng</th>
+                        <th>Nội Dung Thao Tác</th>
+                        <th style="width: 120px;" class="text-end">IP / Máy Trạm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(logs)}">
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="bi bi-journal-x fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                            <div>Chưa có nhật ký hoạt động nào phù hợp với bộ lọc.</div>
+                        </td>
+                    </tr>
+
+                    <tr th:each="log : ${logs}">
+                        <!-- Thời điểm -->
+                        <td>
+                            <div class="fw-semibold text-main" th:text="${#temporals.format(log.createdAt, 'dd/MM/yyyy HH:mm:ss')}">01/01/2026 10:00:00</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">
+                                <i class="bi bi-clock me-1"></i>
+                                <span th:text="${#temporals.format(log.createdAt, 'HH:mm')}">10:00</span>
+                            </div>
+                        </td>
+
+                        <!-- Người thực hiện -->
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(54, 164, 247, 0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0;"
+                                     th:text="${#strings.substring(log.userFullName, 0, 1).toUpperCase()}">A</div>
+                                <div class="overflow-hidden">
+                                    <div class="fw-semibold text-truncate" th:text="${log.userFullName}">Quản trị viên</div>
+                                    <div class="d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                        <span class="text-muted" th:text="${log.username}">admin</span>
+                                        <span class="badge"
+                                              th:classappend="${log.userRole == 'ROLE_ADMIN' ? 'bg-danger-subtle text-danger' : (log.userRole == 'ROLE_LIBRARIAN' ? 'bg-warning-subtle text-warning-emphasis' : (log.userRole == 'SYSTEM' ? 'bg-dark-subtle text-dark' : 'bg-primary-subtle text-primary'))}"
+                                              style="font-size: 0.65rem;"
+                                              th:text="${log.userRole == 'ROLE_ADMIN' ? 'Admin' : (log.userRole == 'ROLE_LIBRARIAN' ? 'Quản lý' : (log.userRole == 'SYSTEM' ? 'Hệ thống' : 'Độc giả'))}">
+                                            Admin
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Hành vi & Đối tượng -->
+                        <td>
+                            <div class="mb-1">
+                                <span class="badge py-1 px-2" th:classappend="${log.actionBadgeClass}">
+                                    <i class="bi me-1" th:classappend="${log.actionIcon}"></i>
+                                    <span th:text="${log.actionType != null ? log.actionType.description : log.actionType}">Mượn sách</span>
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                                <span class="text-secondary">Loại:</span>
+                                <span class="badge bg-secondary-subtle text-secondary"
+                                      th:text="${log.targetType != null ? log.targetType.displayName : 'Khác'}">Tài liệu</span>
+                            </div>
+                        </td>
+
+                        <!-- Nội dung thao tác -->
+                        <td>
+                            <div class="text-main" th:text="${log.description}">Mô tả chi tiết hành động thực hiện</div>
+                            <div th:if="${log.targetName != null}" class="text-muted small mt-1" style="font-size: 0.78rem;">
+                                <i class="bi bi-tag me-1"></i>Đối tượng: <strong th:text="${log.targetName}">Tên sách / Độc giả</strong>
+                            </div>
+                            <!-- Xem thêm chi tiết nếu có -->
+                            <div th:if="${log.details != null and !#strings.isEmpty(log.details)}" class="mt-1">
+                                <a href="javascript:void(0)"
+                                   class="text-primary small text-decoration-none"
+                                   th:attr="data-details=${log.details}, data-title=${log.description}"
+                                   onclick="showLogDetailModal(this)">
+                                    <i class="bi bi-info-circle me-1"></i>Xem chi tiết dữ liệu
+                                </a>
+                            </div>
+                        </td>
+
+                        <!-- IP -->
+                        <td class="text-end">
+                            <span class="font-monospace text-muted small" style="font-size: 0.78rem;" th:text="${log.ipAddress ?: '127.0.0.1'}">127.0.0.1</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PHÂN TRANG -->
+        <div th:if="${totalPages > 1}" class="p-3 border-top d-flex justify-content-between align-items-center">
+            <div class="text-muted small">
+                Hiển thị trang <span th:text="${currentPage + 1}">1</span> trong tổng số <span th:text="${totalPages}">1</span> trang
+            </div>
+            <nav aria-label="Phân trang nhật ký">
+                <ul class="pagination pagination-sm m-0">
+                    <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/admin/activity-logs(page=${currentPage - 1}, keyword=${keyword}, actionType=${selectedActionType}, targetType=${selectedTargetType}, dateFilter=${dateFilter})}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    <li class="page-item"
+                        th:each="p : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:if="${p >= currentPage - 2 and p <= currentPage + 2}"
+                        th:classappend="${p == currentPage ? 'active' : ''}">
+                        <a class="page-link"
+                           th:href="@{/admin/activity-logs(page=${p}, keyword=${keyword}, actionType=${selectedActionType}, targetType=${selectedTargetType}, dateFilter=${dateFilter})}"
+                           th:text="${p + 1}">1</a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentPage + 1 >= totalPages ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/admin/activity-logs(page=${currentPage + 1}, keyword=${keyword}, actionType=${selectedActionType}, targetType=${selectedTargetType}, dateFilter=${dateFilter})}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- MODAL XEM CHI TIẾT NHẬT KÝ -->
+    <div class="modal fade" id="logDetailModal" tabindex="-1" aria-labelledby="logDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold" id="logDetailModalLabel">
+                        <i class="bi bi-file-earmark-code me-2 text-primary"></i>Chi Tiết Dữ Liệu Thay Đổi
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalLogTitle" class="fw-semibold mb-2 text-main"></div>
+                    <pre id="modalLogDetails" class="p-3 bg-light rounded-3 text-secondary font-monospace" style="max-height: 380px; overflow-y: auto; font-size: 0.85rem; white-space: pre-wrap; word-break: break-all;"></pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogDetailModal(el) {
+            const details = el.getAttribute('data-details');
+            const title = el.getAttribute('data-title');
+            document.getElementById('modalLogTitle').textContent = title || 'Chi tiết thao tác';
+            document.getElementById('modalLogDetails').textContent = details || 'Không có chi tiết bổ sung.';
+            const modal = new bootstrap.Modal(document.getElementById('logDetailModal'));
+            modal.show();
+        }
+    </script>
+
+</div>
+</body>
+</html>

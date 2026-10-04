@@ -49,4 +49,19 @@ public class Book extends Document {
     public String getIdentifierCode() {
         return this.isbn;
     }
+
+    @Override
+    public String getAuthor() {
+        return (this.author != null && !this.author.isBlank()) ? this.author : "Chưa rõ tác giả";
+    }
+
+    @Override
+    public String getIsbn() {
+        return this.isbn;
+    }
+
+    @Override
+    public boolean isBorrowable() {
+        return true;
+    }
 }

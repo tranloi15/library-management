@@ -22,6 +22,7 @@ import java.io.IOException;
 public class BookFileController {
 
     private final BookFileService bookFileService;
+    private final com.library.service.ActivityLogService activityLogService;
 
     @GetMapping("/export")
     public ResponseEntity<byte[]> exportBooks() {
@@ -66,6 +67,14 @@ public class BookFileController {
 
             int importedCount =
                     bookFileService.importBooks(file);
+
+            activityLogService.log(
+                    com.library.model.ActionType.FILE_IMPORT,
+                    com.library.model.TargetType.DOCUMENT,
+                    null,
+                    file.getOriginalFilename(),
+                    "Nhập thành công " + importedCount + " sách mới từ tệp: " + file.getOriginalFilename()
+            );
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",

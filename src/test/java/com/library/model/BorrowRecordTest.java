@@ -67,4 +67,29 @@ class BorrowRecordTest {
         assertEquals("Thanh toán qua VietQR", record.getNote());
         assertFalse(record.isOverdue());
     }
+
+    @Test
+    @DisplayName("Kiểm thử markOverdueIfApplicable chuyển trạng thái khi quá hạn")
+    void testMarkOverdueIfApplicable() {
+        LocalDate today = LocalDate.now();
+        BorrowRecord record = new BorrowRecord(1L, 1L, today.minusDays(10), today.minusDays(2), BorrowStatus.BORROWING);
+
+        boolean changed = record.markOverdueIfApplicable();
+        assertTrue(changed);
+        assertEquals(BorrowStatus.OVERDUE, record.getStatus());
+
+        // Lần gọi thứ 2 không đổi vì đã là OVERDUE
+        assertFalse(record.markOverdueIfApplicable());
+    }
+
+    @Test
+    @DisplayName("Kiểm thử cancel() ghi nhận trạng thái và lý do hủy")
+    void testCancelRecord() {
+        BorrowRecord record = new BorrowRecord();
+        record.setStatus(BorrowStatus.PENDING);
+
+        record.cancel("Độc giả không còn nhu cầu mượn");
+        assertEquals(BorrowStatus.CANCELLED, record.getStatus());
+        assertEquals("Độc giả không còn nhu cầu mượn", record.getNote());
+    }
 }

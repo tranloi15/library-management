@@ -50,13 +50,6 @@
                     <span>Hồ sơ Độc giả</span>
                 </a>
             </li>
-            <li class="menu-item" th:classappend="${activeMenu == 'roles' ? 'active' : ''}">
-                <a th:href="@{/roles}" class="menu-link" title="Quản lý phân quyền">
-                    <i class="bi bi-shield-check"></i>
-                    <span>Quản lý phân quyền</span>
-                </a>
-            </li>
-
             <li class="menu-category">PHÂN TÍCH & BÁO CÁO</li>
             <li class="menu-item" id="menuItemReports" th:classappend="${activeMenu == 'reports' ? 'active' : ''}">
                 <a th:href="@{/reports}" class="menu-link" title="Báo cáo Thống kê">
@@ -64,14 +57,54 @@
                     <span>Báo cáo Thống kê</span>
                 </a>
             </li>
+
+            <li class="menu-category">QUẢN LÝ HỆ THỐNG</li>
+            <li class="menu-item" th:classappend="${activeMenu == 'settings' ? 'active' : ''}">
+                <a th:href="@{/admin/settings}" class="menu-link" title="Cấu hình quy định">
+                    <i class="bi bi-sliders"></i>
+                    <span>Cấu hình quy định</span>
+                </a>
+            </li>
+            <li class="menu-item" th:classappend="${activeMenu == 'notifications_admin' ? 'active' : ''}">
+                <a th:href="@{/admin/notifications}" class="menu-link" title="Trung tâm thông báo">
+                    <i class="bi bi-megaphone"></i>
+                    <span>Trung tâm thông báo</span>
+                </a>
+            </li>
+            <li class="menu-item" th:classappend="${activeMenu == 'activity_logs' ? 'active' : ''}">
+                <a th:href="@{/admin/activity-logs}" class="menu-link" title="Nhật ký hoạt động">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Nhật ký hoạt động</span>
+                </a>
+            </li>
+            <li class="menu-item" th:classappend="${activeMenu == 'roles' ? 'active' : ''}">
+                <a th:href="@{/roles}" class="menu-link" title="Quản lý phân quyền">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Quản lý phân quyền</span>
+                </a>
+            </li>
         </th:block>
 
         <!-- DANH MỤC CÁ NHÂN -->
         <li class="menu-category">DANH MỤC CÁ NHÂN</li>
+        <li class="menu-item" th:classappend="${activeMenu == 'cart' ? 'active' : ''}">
+            <a th:href="@{/borrow/cart}" class="menu-link" title="Giỏ mượn của tôi">
+                <i class="bi bi-cart3"></i>
+                <span>Giỏ mượn của tôi</span>
+            </a>
+        </li>
         <li class="menu-item" th:classappend="${activeMenu == 'history' ? 'active' : ''}">
-            <a th:href="@{/borrow/history}" class="menu-link" title="Sách tôi đang mượn">
-                <i class="bi bi-clock-history"></i>
-                <span>Sách tôi đang mượn</span>
+            <a th:href="@{/borrow/history}" class="menu-link" title="Sách đang mượn & Lịch sử">
+                <i class="bi bi-journal-bookmark"></i>
+                <span>Sách đang mượn & Lịch sử</span>
+            </a>
+        </li>
+        <li class="menu-item" th:classappend="${activeMenu == 'notifications' ? 'active' : ''}">
+            <a th:href="@{/notifications}" class="menu-link position-relative" title="Hộp thư thông báo">
+                <i class="bi bi-bell"></i>
+                <span>Hộp thư thông báo</span>
+                <span class="badge rounded-pill bg-danger ms-auto sidebar-badge" th:if="${unreadNotificationCount != null and unreadNotificationCount > 0}" th:text="${unreadNotificationCount > 99 ? '99+' : unreadNotificationCount}" style="font-size: 0.65rem;"></span>
+                <span class="sidebar-mini-dot" th:if="${unreadNotificationCount != null and unreadNotificationCount > 0}"></span>
             </a>
         </li>
         <li class="menu-item" th:classappend="${activeMenu == 'profile' ? 'active' : ''}">

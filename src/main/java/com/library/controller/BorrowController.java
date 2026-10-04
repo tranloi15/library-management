@@ -35,6 +35,7 @@ public class BorrowController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final DocumentRepository documentRepository;
+    private final com.library.service.SettingService settingService;
 
     // DANH SÁCH TẤT CẢ PHIẾU MƯỢN (Dành cho Quản lý)
     @GetMapping("/list")
@@ -47,12 +48,14 @@ public class BorrowController {
 
         // Thống kê nhanh
         long totalCount = allRecords.size();
+        long pendingCount = allRecords.stream().filter(r -> r.getStatus() == BorrowStatus.PENDING).count();
         long borrowingCount = allRecords.stream().filter(r -> r.getStatus() == BorrowStatus.BORROWING).count();
         long overdueCount = allRecords.stream().filter(BorrowRecord::isOverdue).count();
         long returnedCount = allRecords.stream().filter(r -> r.getStatus() == BorrowStatus.RETURNED).count();
 
         Map<String, Long> stats = new HashMap<>();
         stats.put("total", totalCount);
+        stats.put("pending", pendingCount);
         stats.put("borrowing", borrowingCount);
         stats.put("overdue", overdueCount);
         stats.put("returned", returnedCount);
@@ -60,7 +63,9 @@ public class BorrowController {
         // Lọc theo trạng thái và từ khóa
         List<BorrowRecord> filteredRecords = allRecords.stream()
                 .filter(r -> {
-                    if ("BORROWING".equalsIgnoreCase(statusFilter)) {
+                    if ("PENDING".equalsIgnoreCase(statusFilter)) {
+                        return r.getStatus() == BorrowStatus.PENDING;
+                    } else if ("BORROWING".equalsIgnoreCase(statusFilter)) {
                         return r.getStatus() == BorrowStatus.BORROWING;
                     } else if ("OVERDUE".equalsIgnoreCase(statusFilter)) {
                         return r.isOverdue();
@@ -153,24 +158,27 @@ public class BorrowController {
         }
     }
 
-    // XỬ LÝ TRẢ SÁCH (Hỗ trợ tiền phạt và thanh toán Tiền mặt / Mã QR)
+    // XỬ LÝ TRẢ SÁCH (Hỗ trợ tiền phạt trễ hạn, phụ phí hư hại và thanh toán Tiền mặt / Mã QR)
     @PostMapping("/{id}/return")
     public String returnBook(
             @PathVariable Long id,
             @ModelAttribute ReturnRequestDto returnDto,
+            jakarta.servlet.http.HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
 
         try {
-            Long fineAmount = (returnDto != null && returnDto.getFineAmount() != null) ? returnDto.getFineAmount() : 0L;
-            String paymentMethod = (returnDto != null && returnDto.getPaymentMethod() != null) ? returnDto.getPaymentMethod() : "NONE";
-            String note = (returnDto != null) ? returnDto.getNote() : null;
+            long totalPayment = returnDto != null ? returnDto.getTotalPayment() : 0L;
+            String note = returnDto != null ? returnDto.buildAuditNote() : null;
+            String paymentMethod = (totalPayment > 0 && returnDto != null && returnDto.getPaymentMethod() != null)
+                    ? returnDto.getPaymentMethod()
+                    : "NONE";
 
-            BorrowRecord record = borrowService.returnBook(id, fineAmount, paymentMethod, note);
+            BorrowRecord record = borrowService.returnBook(id, totalPayment, paymentMethod, note);
 
             String message = "Đã xác nhận trả sách #" + record.getId() + " thành công. Tồn kho tài liệu đã được cập nhật!";
-            if (fineAmount > 0) {
+            if (totalPayment > 0) {
                 String methodText = "QR_CODE".equalsIgnoreCase(paymentMethod) ? "Mã QR chuyển khoản" : "Tiền mặt";
-                message += " (Đã thu phạt " + String.format("%,d", fineAmount) + " VNĐ qua " + methodText + ")";
+                message += " (Đã quyết toán " + String.format("%,d", totalPayment) + " VNĐ qua " + methodText + ")";
             }
             redirectAttributes.addFlashAttribute("successMessage", message);
 
@@ -178,6 +186,10 @@ public class BorrowController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
 
+        String referer = request != null ? request.getHeader("Referer") : null;
+        if (referer != null && referer.contains("/overdue")) {
+            return "redirect:/borrow/overdue";
+        }
         return "redirect:/borrow/list";
     }
 
@@ -186,8 +198,9 @@ public class BorrowController {
     public String overdue(Model model) {
         List<BorrowRecord> overdueRecords = borrowService.getOverdueRecords();
 
+        long fineRate = settingService != null ? settingService.getFinePerDay() : 5000L;
         long totalEstimatedFine = overdueRecords.stream()
-                .mapToLong(r -> r.calculateLateFine(5000L))
+                .mapToLong(r -> r.calculateLateFine(fineRate))
                 .sum();
 
         model.addAttribute("borrowRecords", overdueRecords);
@@ -223,18 +236,27 @@ public class BorrowController {
 
         User user = userService.getUserByUsername(userDetails.getUsername());
 
+        List<BorrowRecord> userHistory = borrowService.getUserHistory(user.getId());
+        List<BorrowRecord> pendingBorrows = userHistory.stream()
+                .filter(r -> r.getStatus() == BorrowStatus.PENDING && !r.isRequestExpired())
+                .toList();
+
         List<BorrowRecord> activeBorrows = borrowService.getUserBorrowing(user.getId());
         List<BorrowRecord> returnedBorrows = borrowService.getUserReturned(user.getId());
 
         long activeBorrowCount = activeBorrows.size();
         long overdueCount = activeBorrows.stream().filter(BorrowRecord::isOverdue).count();
         long returnedCount = returnedBorrows.size();
+        long pendingCount = pendingBorrows.size();
+        long fineRate = settingService != null ? settingService.getFinePerDay() : 5000L;
         long fineAmount = activeBorrows.stream()
                 .filter(BorrowRecord::isOverdue)
-                .mapToLong(r -> r.calculateLateFine(5000L))
+                .mapToLong(r -> r.calculateLateFine(fineRate))
                 .sum();
 
         model.addAttribute("user", user);
+        model.addAttribute("pendingBorrows", pendingBorrows);
+        model.addAttribute("pendingCount", pendingCount);
         model.addAttribute("activeBorrows", activeBorrows);
         model.addAttribute("returnedBorrows", returnedBorrows);
         model.addAttribute("activeBorrowCount", activeBorrowCount);
@@ -242,7 +264,7 @@ public class BorrowController {
         model.addAttribute("returnedCount", returnedCount);
         model.addAttribute("fineAmount", fineAmount);
         model.addAttribute("activeMenu", "history");
-        model.addAttribute("pageTitle", "Sách Tôi Đang Mượn & Lịch Sử");
+        model.addAttribute("pageTitle", "Giỏ Mượn & Sách Tôi Đang Mượn");
 
         return "borrow/history";
     }
@@ -277,5 +299,188 @@ public class BorrowController {
             return "redirect:/borrow/list";
         }
         return "redirect:/borrow/history";
+    }
+
+    // Giao diện xác nhận yêu cầu mượn tự phục vụ qua QR
+    @GetMapping("/qr-request")
+    public String showQrConfirm(
+            @RequestParam("bookId") Long bookId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model) {
+
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.getUserByUsername(userDetails.getUsername());
+        Document document = documentRepository.findById(bookId).orElse(null);
+
+        if (document == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy cuốn sách này trong hệ thống thư viện!");
+            return "borrow/qr_confirm";
+        }
+
+        // Kiểm tra điều kiện mượn
+        boolean canBorrow = true;
+        String reason = null;
+
+        if (!document.isBorrowable()) {
+            canBorrow = false;
+            reason = "Tạp chí chỉ phục vụ đọc tại chỗ trong khuôn viên thư viện, không áp dụng mượn về.";
+        } else if (settingService != null && !settingService.isFeatureQrBorrowEnabled()) {
+            canBorrow = false;
+            reason = "Tính năng mượn sách tự phục vụ qua QR hiện đang tạm dừng để bảo trì hệ thống.";
+        } else if (!user.isActive()) {
+            canBorrow = false;
+            reason = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ ban quản lý thư viện.";
+        }
+ else if (document.getQuantity() <= 0 || !document.isAvailable()) {
+            canBorrow = false;
+            reason = "Cuốn sách này hiện đã hết bản khả dụng trong kho lưu trữ.";
+        } else {
+            List<BorrowRecord> userRecords = borrowService.getUserHistory(user.getId());
+            boolean hasOverdue = userRecords.stream().anyMatch(BorrowRecord::isOverdue);
+            if (hasOverdue) {
+                canBorrow = false;
+                reason = "Bạn đang có tài liệu quá hạn trả. Vui lòng hoàn trả sách tại quầy trước khi mượn tiếp.";
+            } else {
+                int maxLimit = settingService != null ? settingService.getMaxBorrowLimit() : 5;
+                long activeCount = userRecords.stream()
+                        .filter(r -> r.getStatus() == BorrowStatus.BORROWING || r.getStatus() == BorrowStatus.OVERDUE || r.getStatus() == BorrowStatus.PENDING)
+                        .count();
+                if (activeCount >= maxLimit) {
+                    canBorrow = false;
+                    reason = "Bạn đã đạt giới hạn mượn tối đa (" + maxLimit + " cuốn). Vui lòng trả bớt sách trước khi gửi yêu cầu.";
+                } else {
+                    boolean alreadyActive = userRecords.stream()
+                            .anyMatch(r -> r.getBookId().equals(bookId) && (r.getStatus() == BorrowStatus.BORROWING || r.getStatus() == BorrowStatus.PENDING));
+                    if (alreadyActive) {
+                        canBorrow = false;
+                        reason = "Bạn đã gửi yêu cầu mượn hoặc đang giữ cuốn sách này rồi.";
+                    }
+                }
+            }
+        }
+
+        int timeoutMinutes = settingService != null ? settingService.getQrTimeoutMinutes() : 30;
+        int maxBorrowDays = settingService != null ? settingService.getMaxBorrowDays() : 14;
+
+        model.addAttribute("document", document);
+        model.addAttribute("user", user);
+        model.addAttribute("canBorrow", canBorrow);
+        model.addAttribute("reason", reason);
+        model.addAttribute("timeoutMinutes", timeoutMinutes);
+        model.addAttribute("maxBorrowDays", maxBorrowDays);
+        model.addAttribute("pageTitle", "Xác Nhận Yêu Cầu Mượn Sách Qua QR");
+
+        return "borrow/qr_confirm";
+    }
+
+    // Xử lý gửi yêu cầu mượn tự phục vụ qua QR
+    @PostMapping("/qr-request")
+    public String submitQrRequest(
+            @RequestParam("bookId") Long bookId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.getUserByUsername(userDetails.getUsername());
+        Document document = documentRepository.findById(bookId).orElse(null);
+        if (document != null && !document.isBorrowable()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Tạp chí chỉ phục vụ đọc tại chỗ trong khuôn viên thư viện, không áp dụng mượn về.");
+            return "redirect:/borrow/qr-request?bookId=" + bookId;
+        }
+
+        try {
+            BorrowRecord record = borrowService.createPendingQrRequest(user.getId(), bookId);
+            model.addAttribute("record", record);
+            model.addAttribute("document", record.getDocument());
+            model.addAttribute("user", user);
+            model.addAttribute("timeoutMinutes", settingService != null ? settingService.getQrTimeoutMinutes() : 30);
+            return "borrow/qr_success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/borrow/qr-request?bookId=" + bookId;
+        }
+    }
+
+    // Độc giả tự hủy yêu cầu mượn chờ duyệt
+    @PostMapping("/{id}/cancel-request")
+    public String cancelRequest(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.getUserByUsername(userDetails.getUsername());
+        try {
+            borrowService.cancelPendingRequest(id, user.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Đã hủy yêu cầu mượn sách thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        return "redirect:/borrow/history";
+    }
+
+    // Màn hình tiếp nhận và duyệt mượn tại quầy chuyển hướng về danh sách lọc Chờ duyệt
+    @GetMapping("/requests")
+    public String deskRequests() {
+        return "redirect:/borrow/list?status=PENDING";
+    }
+
+    // Quản lý duyệt mượn tại quầy
+    @PostMapping("/requests/{id}/approve")
+    public String approveRequest(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestHeader(value = "Referer", required = false) String referer,
+            RedirectAttributes redirectAttributes) {
+
+        String managerName = (userDetails != null) ? userDetails.getUsername() : "Quản lý";
+        if (userDetails instanceof com.library.config.CustomUserDetails cud) {
+            managerName = cud.getFullName();
+        }
+
+        try {
+            BorrowRecord record = borrowService.approvePendingRequest(id, managerName);
+            String title = (record.getDocument() != null) ? record.getDocument().getTitle() : "Tài liệu";
+            redirectAttributes.addFlashAttribute("successMessage", "Đã duyệt cho mượn thành công tài liệu: '" + title + "'. Hạn trả: " + record.getDueDate());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể duyệt yêu cầu: " + e.getMessage());
+        }
+
+        return "redirect:" + (referer != null ? referer : "/borrow/list?status=PENDING");
+    }
+
+    // Quản lý từ chối yêu cầu mượn tại quầy
+    @PostMapping("/requests/{id}/reject")
+    public String rejectRequest(
+            @PathVariable Long id,
+            @RequestParam(name = "reason", required = false) String reason,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestHeader(value = "Referer", required = false) String referer,
+            RedirectAttributes redirectAttributes) {
+
+        String managerName = (userDetails != null) ? userDetails.getUsername() : "Quản lý";
+        if (userDetails instanceof com.library.config.CustomUserDetails cud) {
+            managerName = cud.getFullName();
+        }
+
+        try {
+            borrowService.rejectPendingRequest(id, reason, managerName);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã từ chối yêu cầu mượn sách và hoàn lại số lượng tồn kho.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+
+        return "redirect:" + (referer != null ? referer : "/borrow/list?status=PENDING");
     }
 }

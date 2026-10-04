@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Cấu Hình Quy Định & Tính Năng - Thư Viện Số</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- TIÊU ĐỀ TRANG -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
+                <i class="bi bi-sliders text-primary me-2"></i>Cấu Hình Quy Định & Tính Năng
+            </h4>
+            <p class="text-secondary small m-0">Quản lý các thông số vận hành mượn trả, thông tin hiển thị chân trang và công tắc bật/tắt tính năng</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="submit" form="settingsForm" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-2 px-3 py-2 fw-semibold">
+                <i class="bi bi-floppy"></i>
+                <span>Lưu Tất Cả Cài Đặt</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- FORM CÀI ĐẶT -->
+    <form th:action="@{/admin/settings}" method="post" id="settingsForm">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <!-- TABS ĐIỀU HƯỚNG -->
+        <ul class="nav nav-pills mb-4 gap-2" id="settingsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-3 px-3 py-2 fw-semibold d-inline-flex align-items-center gap-2"
+                        id="policy-tab" data-bs-toggle="pill" data-bs-target="#policy-pane" type="button" role="tab">
+                    <i class="bi bi-cash-stack"></i>
+                    <span>Quy Định & Mức Phí</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-3 px-3 py-2 fw-semibold d-inline-flex align-items-center gap-2"
+                        id="info-tab" data-bs-toggle="pill" data-bs-target="#info-pane" type="button" role="tab">
+                    <i class="bi bi-info-circle"></i>
+                    <span>Thông Tin & Chân Trang</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-3 px-3 py-2 fw-semibold d-inline-flex align-items-center gap-2"
+                        id="feature-tab" data-bs-toggle="pill" data-bs-target="#feature-pane" type="button" role="tab">
+                    <i class="bi bi-toggle2-on"></i>
+                    <span>Bật / Tắt Tính Năng</span>
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="settingsTabContent">
+
+            <!-- TAB 1: QUY ĐỊNH & MỨC PHÍ -->
+            <div class="tab-pane fade show active" id="policy-pane" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="app-card p-4 h-100">
+                            <h6 class="fw-bold mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                                <i class="bi bi-calculator text-primary"></i>
+                                <span>Thông Số Mượn Trả & Tiền Phạt</span>
+                            </h6>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">
+                                    Tiền phạt trễ hạn mỗi ngày (VNĐ/cuốn/ngày) <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" name="fine_per_day" class="form-control"
+                                           th:value="${settings['fine_per_day'] ?: '5000'}" min="0" step="500" required>
+                                    <span class="input-group-text">VNĐ</span>
+                                </div>
+                                <div class="form-text small">Mức phạt áp dụng tự động khi độc giả trả sách quá ngày hẹn.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">
+                                    Thời hạn mượn sách mặc định (ngày) <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" name="max_borrow_days" class="form-control"
+                                           th:value="${settings['max_borrow_days'] ?: '14'}" min="1" max="90" required>
+                                    <span class="input-group-text">Ngày</span>
+                                </div>
+                                <div class="form-text small">Khoảng thời gian cho phép mượn tính từ ngày lập phiếu.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">
+                                    Số lượng sách được mượn tối đa đồng thời <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" name="max_borrow_limit" class="form-control"
+                                           th:value="${settings['max_borrow_limit'] ?: '5'}" min="1" max="20" required>
+                                    <span class="input-group-text">Cuốn</span>
+                                </div>
+                                <div class="form-text small">Giới hạn tối đa số sách đang mượn trên mỗi tài khoản độc giả.</div>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label small fw-semibold">
+                                    Thời gian giữ phiếu yêu cầu mượn QR tại quầy <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" name="qr_request_timeout" class="form-control"
+                                           th:value="${settings['qr_request_timeout'] ?: '30'}" min="5" max="180" required>
+                                    <span class="input-group-text">Phút</span>
+                                </div>
+                                <div class="form-text small">Sau thời gian này nếu độc giả không đến quầy nhận, yêu cầu sẽ tự động hủy.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="app-card p-4 h-100">
+                            <h6 class="fw-bold mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                                <i class="bi bi-shield-check text-success"></i>
+                                <span>Tác Động Nghiệp Vụ Thực Tế</span>
+                            </h6>
+
+                            <div class="d-flex flex-column gap-3">
+                                <div class="p-3 rounded-3" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                                    <div class="fw-semibold mb-1" style="color: var(--text-primary);">
+                                        <i class="bi bi-cash-coin text-warning me-1"></i>Công thức tính tiền phạt
+                                    </div>
+                                    <p class="text-secondary small m-0 lh-base">
+                                        <code>Tiền phạt = Số ngày trễ hạn × [Tiền phạt mỗi ngày]</code>. Số tiền này sẽ tự động cập nhật ngay trên màn hình thu tiền và biên lai trả sách.
+                                    </p>
+                                </div>
+
+                                <div class="p-3 rounded-3" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                                    <div class="fw-semibold mb-1" style="color: var(--text-primary);">
+                                        <i class="bi bi-calendar-event text-primary me-1"></i>Hạn trả tự động
+                                    </div>
+                                    <p class="text-secondary small m-0 lh-base">
+                                        Khi tạo phiếu mượn mới, hệ thống tự động gán ngày hẹn trả bằng <code>Ngày mượn + [Thời hạn mượn]</code> ngày.
+                                    </p>
+                                </div>
+
+                                <div class="p-3 rounded-3" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                                    <div class="fw-semibold mb-1" style="color: var(--text-primary);">
+                                        <i class="bi bi-person-x text-danger me-1"></i>Kiểm soát số lượng
+                                    </div>
+                                    <p class="text-secondary small m-0 lh-base">
+                                        Ngăn chặn tình trạng 1 độc giả giữ quá nhiều tài liệu cùng lúc, đảm bảo công bằng cho toàn thể bạn đọc.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: THÔNG TIN & CHÂN TRANG FOOTER -->
+            <div class="tab-pane fade" id="info-pane" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="app-card p-4 h-100">
+                            <h6 class="fw-bold mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                                <i class="bi bi-geo-alt text-primary"></i>
+                                <span>Thông Tin Liên Hệ & Đón Tiếp</span>
+                            </h6>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Thời gian mở cửa đón tiếp</label>
+                                <input type="text" name="library_opening_hours" class="form-control form-control-sm"
+                                       th:value="${settings['library_opening_hours'] ?: 'Thứ Hai - Thứ Bảy: 08:00 - 21:00 (Nghỉ Chủ Nhật & Ngày lễ)'}">
+                                <div class="form-text small">Hiển thị ở Chân trang (Footer) và Trang chủ cho độc giả tra cứu.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Đường dây nóng (Hotline)</label>
+                                <input type="text" name="library_hotline" class="form-control form-control-sm"
+                                       th:value="${settings['library_hotline'] ?: '024.3854.4444'}">
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label small fw-semibold">Hộp thư điện tử (Email)</label>
+                                <input type="email" name="library_email" class="form-control form-control-sm"
+                                       th:value="${settings['library_email'] ?: 'hotro@thuvienso.edu.vn'}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="app-card p-4 h-100">
+                            <h6 class="fw-bold mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                                <i class="bi bi-card-text text-primary"></i>
+                                <span>Nội Quy & Quy Định Bảo Quản Tài Liệu</span>
+                            </h6>
+
+                            <div class="mb-0">
+                                <label class="form-label small fw-semibold">Nội dung chi tiết nội quy thư viện</label>
+                                <textarea name="library_regulations_text" class="form-control font-monospace" rows="9"
+                                          style="font-size: 0.85rem;"
+                                          th:text="${settings['library_regulations_text']}"></textarea>
+                                <div class="form-text small">Đoạn văn bản quy định này sẽ được hiển thị khi người dùng bấm vào liên kết "Nội quy thư viện" ở Chân trang.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: BẬT / TẮT TÍNH NĂNG -->
+            <div class="tab-pane fade" id="feature-pane" role="tabpanel">
+                <div class="app-card p-4">
+                    <h6 class="fw-bold mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                        <i class="bi bi-toggles text-primary"></i>
+                        <span>Công Tắc Bật / Tắt Các Phân Hệ (Feature Toggles)</span>
+                    </h6>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 d-flex align-items-start justify-content-between gap-3" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                                <div>
+                                    <div class="fw-bold" style="color: var(--text-primary);">Cho phép đăng ký tài khoản trực tuyến</div>
+                                    <p class="text-secondary small mb-0 mt-1">
+                                        Cho phép độc giả tự tạo tài khoản mới từ trang đăng ký. Khi tắt, chỉ Quản lý mới có quyền tạo tài khoản độc giả.
+                                    </p>
+                                </div>
+                                <div class="form-check form-switch fs-4 m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           name="feature_online_registration" value="true"
+                                           th:checked="${settings['feature_online_registration'] == 'true'}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 d-flex align-items-start justify-content-between gap-3" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                                <div>
+                                    <div class="fw-bold" style="color: var(--text-primary);">Quét mã QR gửi yêu cầu mượn sách</div>
+                                    <p class="text-secondary small mb-0 mt-1">
+                                        Kích hoạt tính năng quét QR và nút gửi yêu cầu mượn tự phục vụ cho độc giả tại kho sách.
+                                    </p>
+                                </div>
+                                <div class="form-check form-switch fs-4 m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           name="feature_qr_borrow" value="true"
+                                           th:checked="${settings['feature_qr_borrow'] == 'true'}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 d-flex align-items-start justify-content-between gap-3" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                                <div>
+                                    <div class="fw-bold" style="color: var(--text-primary);">Cho phép tự gia hạn mượn trực tuyến</div>
+                                    <p class="text-secondary small mb-0 mt-1">
+                                        Độc giả có thể tự bấm nút gia hạn trong mục "Sách tôi đang mượn" khi chưa quá hạn.
+                                    </p>
+                                </div>
+                                <div class="form-check form-switch fs-4 m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           name="feature_self_extension" value="true"
+                                           th:checked="${settings['feature_self_extension'] == 'true'}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3 d-flex align-items-start justify-content-between gap-3" style="background: var(--bg-subtle); border: var(--border-hairline);">
+                                <div>
+                                    <div class="fw-bold text-danger">Chế độ bảo trì hệ thống</div>
+                                    <p class="text-secondary small mb-0 mt-1">
+                                        Tạm dừng các thao tác của độc giả, chỉ cho phép tài khoản Quản trị viên đăng nhập để nâng cấp dữ liệu.
+                                    </p>
+                                </div>
+                                <div class="form-check form-switch fs-4 m-0">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           name="feature_maintenance_mode" value="true"
+                                           th:checked="${settings['feature_maintenance_mode'] == 'true'}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2 fw-semibold">
+                <i class="bi bi-floppy"></i>
+                <span>Lưu Tất Cả Cài Đặt</span>
+            </button>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

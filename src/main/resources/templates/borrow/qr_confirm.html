@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Xác Nhận Mượn Sách - Thư Viện Số</title>
+    <style>
+        .book-checkout-card {
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle, #E2E8F0);
+            background: var(--bg-card, #FFFFFF);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .step-bubble {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(54, 164, 247, 0.12);
+            color: #36A4F7;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .checkout-box {
+            background: var(--bg-subtle, #F8FAFC);
+            border: 1px solid var(--border-subtle, #E2E8F0);
+            border-radius: 10px;
+        }
+        [data-bs-theme="dark"] .book-checkout-card {
+            background: #151A23 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-bs-theme="dark"] .checkout-box,
+        [data-bs-theme="dark"] .bg-subtle {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        [data-bs-theme="dark"] .alert-warning {
+            background: rgba(245, 158, 11, 0.12) !important;
+            border-color: rgba(245, 158, 11, 0.3) !important;
+            color: #FDE68A !important;
+        }
+        [data-bs-theme="dark"] .alert-success {
+            background: rgba(16, 185, 129, 0.12) !important;
+            border-color: rgba(16, 185, 129, 0.3) !important;
+            color: #A7F3D0 !important;
+        }
+        [data-bs-theme="dark"] .alert-danger {
+            background: rgba(239, 68, 68, 0.12) !important;
+            border-color: rgba(239, 68, 68, 0.3) !important;
+            color: #FCA5A5 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <div class="container py-3" style="max-width: 800px;">
+
+        <!-- TIÊU ĐỀ BƯỚC -->
+        <div class="text-center mb-4">
+            <span class="badge bg-primary-subtle text-primary px-3 py-1.5 rounded-pill fw-semibold mb-2" style="font-size: 0.8rem;">
+                <i class="bi bi-qr-code-scan me-1"></i>MƯỢN TỰ PHỤC VỤ TẠI QUẦY
+            </span>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Xác Nhận Yêu Cầu Mượn Sách</h4>
+            <p class="text-secondary small">Vui lòng kiểm tra thông tin tài liệu và điều kiện mượn trước khi gửi yêu cầu tới quầy tiếp nhận</p>
+        </div>
+
+        <!-- THÔNG BÁO LỖI NẾU CÓ -->
+        <div th:if="${errorMessage}" class="alert alert-danger d-flex align-items-center justify-content-between gap-2 mb-4 p-3 rounded-3" role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                <div th:text="${errorMessage}">Đã xảy ra lỗi!</div>
+            </div>
+            <a th:href="@{/catalog}" class="btn btn-sm btn-outline-danger">Quay lại kho sách</a>
+        </div>
+
+        <div th:if="${document != null}" class="book-checkout-card p-4 mb-4">
+            <div class="row g-4 align-items-center">
+                <!-- ẢNH BÌA SÁCH -->
+                <div class="col-sm-4 text-center">
+                    <img th:if="${document.imageUrl != null and !document.imageUrl.isEmpty()}" 
+                         th:src="@{${document.imageUrl}}" 
+                         alt="Bìa sách" 
+                         class="img-fluid rounded shadow-sm"
+                         style="max-height: 220px; object-fit: cover; border: 1px solid var(--border-subtle, #E2E8F0);">
+                    <div th:unless="${document.imageUrl != null and !document.imageUrl.isEmpty()}"
+                         class="d-flex flex-column align-items-center justify-content-center rounded shadow-sm mx-auto"
+                         style="width: 150px; height: 210px; background: rgba(54, 164, 247, 0.08); border: 1px dashed #36A4F7;">
+                        <i class="bi bi-book fs-1 text-primary mb-1"></i>
+                        <span class="small text-secondary fw-medium">Chưa có bìa</span>
+                    </div>
+                </div>
+
+                <!-- THÔNG TIN TÀI LIỆU -->
+                <div class="col-sm-8">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-secondary-subtle text-secondary font-mono" th:text="${'BK-' + #numbers.formatInteger(document.id, 4)}">BK-0001</span>
+                        <span class="badge" th:classappend="${document.quantity > 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}"
+                              th:text="${document.quantity > 0 ? 'Còn ' + document.quantity + ' cuốn khả dụng' : 'Tạm hết sách'}">Khả dụng</span>
+                    </div>
+
+                    <h5 class="fw-bold mb-2" th:text="${document.title}">Tên cuốn sách</h5>
+
+                    <div class="text-secondary small mb-3">
+                        <div class="mb-1"><i class="bi bi-person me-2"></i>Tác giả: <strong class="text-body" th:text="${document.author}">Tác giả</strong></div>
+                        <div class="mb-1"><i class="bi bi-building me-2"></i>Nhà xuất bản: <span th:text="${document.publisher}">NXB</span> (<span th:text="${document.publishYear}">2024</span>)</div>
+                        <div th:if="${document.shelfLocation != null and !document.shelfLocation.isBlank()}" class="mb-1"><i class="bi bi-geo-alt me-2"></i>Vị trí kệ: <strong class="text-primary" th:text="${document.shelfLocation}">Kệ A1</strong></div>
+                        <div th:if="${document.isbn != null}"><i class="bi bi-upc-scan me-2"></i>Mã ISBN: <span class="font-mono text-body" th:text="${document.isbn}">978-0123456789</span></div>
+                    </div>
+
+                    <!-- THÔNG TIN QUY ĐỊNH MƯỢN -->
+                    <div class="p-2.5 rounded checkout-box small">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary">Thời hạn mượn:</span>
+                            <span class="fw-bold text-primary" th:text="${maxBorrowDays + ' ngày'}">14 ngày</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-secondary">Thời gian giữ tại quầy:</span>
+                            <span class="fw-bold text-warning" th:text="${timeoutMinutes + ' phút'}">30 phút</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4" style="opacity: 0.15;">
+
+            <!-- THÔNG TIN ĐỘC GIẢ & KIỂM TRA ĐIỀU KIỆN -->
+            <div class="mb-4">
+                <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-person-check text-primary"></i>Thông Tin Độc Giả & Điều Kiện Mượn
+                </h6>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <div class="p-2.5 rounded checkout-box">
+                            <div class="text-secondary small">Họ và tên độc giả:</div>
+                            <div class="fw-bold text-body" th:text="${user.fullName}">Nguyễn Văn An</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-2.5 rounded checkout-box">
+                            <div class="text-secondary small">Mã thẻ độc giả:</div>
+                            <div class="fw-bold font-mono text-primary" th:text="${user.readerCode != null ? user.readerCode : 'DG-' + user.id}">DG-0001</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CẢNH BÁO NẾU KHÔNG ĐỦ ĐIỀU KIỆN -->
+                <div th:if="${!canBorrow}" class="alert alert-warning d-flex align-items-start gap-2 mb-0 rounded-3" role="alert">
+                    <i class="bi bi-shield-exclamation fs-5 text-warning flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <div class="fw-bold">Chưa đủ điều kiện gửi yêu cầu mượn:</div>
+                        <div class="small" th:text="${reason}">Lý do từ chối mượn.</div>
+                    </div>
+                </div>
+
+                <!-- ĐỦ ĐIỀU KIỆN -->
+                <div th:if="${canBorrow}" class="alert alert-success d-flex align-items-center gap-2 mb-0 rounded-3" role="alert">
+                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                    <div class="small">
+                        Tài khoản hợp lệ! Bạn có thể gửi yêu cầu mượn và mang sách tới quầy để nhận ngay.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 BƯỚC HƯỚNG DẪN NHANH -->
+            <div class="p-3 rounded checkout-box mb-4">
+                <h6 class="fw-bold small mb-2 text-secondary">Quy trình mượn tự phục vụ:</h6>
+                <div class="d-flex flex-column gap-2 small">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="step-bubble">1</div>
+                        <span>Bấm nút <strong>"Xác nhận gửi yêu cầu mượn"</strong> bên dưới.</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="step-bubble">2</div>
+                        <span>Cầm cuốn sách này đến <strong>Quầy tiếp đón thư viện</strong> trong vòng <strong th:text="${timeoutMinutes + ' phút'}">30 phút</strong>.</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="step-bubble">3</div>
+                        <span>Quản lý đối chiếu trên màn hình và bấm <strong>Duyệt mượn trong 5 giây</strong>. Bạn có thể mang sách về!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NÚT HÀNH ĐỘNG -->
+            <div class="d-flex justify-content-between align-items-center">
+                <a th:href="@{/catalog}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Quay lại kho sách
+                </a>
+
+                <form th:if="${canBorrow}" th:action="@{/borrow/qr-request}" method="post" class="m-0">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="hidden" name="bookId" th:value="${document.id}" />
+                    <button type="submit" class="btn btn-primary px-4 d-inline-flex align-items-center gap-2 shadow-sm">
+                        <i class="bi bi-send-check-fill"></i>
+                        <span class="fw-bold">Xác nhận gửi yêu cầu mượn</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -5,7 +5,11 @@ import com.library.model.Document;
 import com.library.model.DocumentType;
 import com.library.model.Magazine;
 import com.library.service.DocumentService;
+import com.library.service.QrCodeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +23,7 @@ import java.util.List;
 public class DocumentController {
 
     private final DocumentService documentService;
+    private final QrCodeService qrCodeService;
 
     @GetMapping
     public String listDocuments(
@@ -70,10 +75,12 @@ public class DocumentController {
             @RequestParam(value = "quantity", defaultValue = "5") int quantity,
             @RequestParam(value = "imageUrl", required = false) String imageUrl,
             @RequestParam(value = "summary", required = false) String summary,
+            @RequestParam(value = "shelfLocation", required = false) String shelfLocation,
             RedirectAttributes redirectAttributes) {
 
         try {
             Book book = new Book(title, publisher, publishYear, quantity, imageUrl, author, isbn, pageCount, genre, summary);
+            book.setShelfLocation(shelfLocation);
             documentService.saveBook(book);
             redirectAttributes.addFlashAttribute("successMessage", "Đã thêm sách mới thành công! (Mã ISBN: " + isbn + ")");
         } catch (Exception e) {
@@ -93,14 +100,32 @@ public class DocumentController {
             @RequestParam(value = "quantity", defaultValue = "10") int quantity,
             @RequestParam(value = "imageUrl", required = false) String imageUrl,
             @RequestParam(value = "summary", required = false) String summary,
+            @RequestParam(value = "shelfLocation", required = false) String shelfLocation,
             RedirectAttributes redirectAttributes) {
 
         try {
             Magazine magazine = new Magazine(title, publisher, publishYear, quantity, imageUrl, issueNumber, publishMonth, summary);
+            magazine.setShelfLocation(shelfLocation);
             documentService.saveMagazine(magazine);
             redirectAttributes.addFlashAttribute("successMessage", "Đã thêm tạp chí mới thành công! (Số phát hành: #" + issueNumber + ")");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi thêm tạp chí: " + e.getMessage());
+        }
+
+        return "redirect:/documents";
+    }
+
+    @PostMapping("/{id}/update-shelf")
+    public String updateShelfLocation(
+            @PathVariable("id") Long id,
+            @RequestParam(value = "shelfLocation", required = false) String shelfLocation,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            documentService.updateShelfLocation(id, shelfLocation);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật vị trí kệ cho tài liệu #" + id + " thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi cập nhật vị trí: " + e.getMessage());
         }
 
         return "redirect:/documents";
@@ -137,5 +162,56 @@ public class DocumentController {
         }
 
         return "redirect:/documents";
+    }
+
+    @GetMapping(value = "/{id}/qr", produces = MediaType.IMAGE_PNG_VALUE)
+    @ResponseBody
+    public ResponseEntity<byte[]> getDocumentQrCode(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "300") int size) {
+        try {
+            Document doc = documentService.getDocumentById(id);
+            byte[] qrBytes = qrCodeService.generateDocumentQrCode(doc, size, size);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG)
+                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=86400")
+                    .body(qrBytes);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping(value = "/{id}/qr/download")
+    public ResponseEntity<byte[]> downloadDocumentQrCode(@PathVariable Long id) {
+        try {
+            Document doc = documentService.getDocumentById(id);
+            byte[] qrBytes = qrCodeService.generateDocumentQrCode(doc, 400, 400);
+            String filename = String.format("QR_BK_%04d.png", doc.getId());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                    .body(qrBytes);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/qr/bulk-zip")
+    public ResponseEntity<byte[]> downloadBulkQrZip(@RequestParam(name = "documentIds", required = false) List<Long> documentIds) {
+        try {
+            List<Document> docs;
+            if (documentIds == null || documentIds.isEmpty()) {
+                docs = documentService.getAllDocuments();
+            } else {
+                docs = documentIds.stream().map(documentService::getDocumentById).toList();
+            }
+            byte[] zipBytes = qrCodeService.generateBulkQrZip(docs);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/zip"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"qr_codes_library.zip\"")
+                    .body(zipBytes);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

@@ -1,9 +1,11 @@
 package com.library.service;
 
+import com.library.model.ActionType;
 import com.library.model.Book;
 import com.library.model.BorrowStatus;
 import com.library.model.Document;
 import com.library.model.Magazine;
+import com.library.model.TargetType;
 import com.library.repository.BookRepository;
 import com.library.repository.BorrowRecordRepository;
 import com.library.repository.DocumentRepository;
@@ -20,6 +22,7 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
     private final BookRepository bookRepository;
     private final BorrowRecordRepository borrowRecordRepository;
+    private final ActivityLogService activityLogService;
 
     public List<Document> getAllDocuments() {
         return documentRepository.findAll();
@@ -43,19 +46,7 @@ public class DocumentService {
         List<Document> allDocs = documentRepository.findAll();
 
         return allDocs.stream()
-                .filter(d -> {
-                    if (keyword == null || keyword.trim().isEmpty())
-                        return true;
-                    String k = keyword.trim().toLowerCase();
-                    boolean matchTitle = d.getTitle() != null && d.getTitle().toLowerCase().contains(k);
-                    boolean matchPublisher = d.getPublisher() != null && d.getPublisher().toLowerCase().contains(k);
-                    boolean matchCode = d.getIdentifierCode() != null
-                            && d.getIdentifierCode().toLowerCase().contains(k);
-                    boolean matchDetails = d.getDocumentDetails() != null
-                            && d.getDocumentDetails().toLowerCase().contains(k);
-                    boolean matchId = String.valueOf(d.getId()).equals(k) || ("#doc-" + d.getId()).equalsIgnoreCase(k);
-                    return matchTitle || matchPublisher || matchCode || matchDetails || matchId;
-                })
+                .filter(d -> d.matchesKeyword(keyword))
                 .filter(d -> {
                     if (type == null || type.trim().isEmpty() || "ALL".equalsIgnoreCase(type))
                         return true;
@@ -78,10 +69,19 @@ public class DocumentService {
         if (book == null) {
             throw new IllegalArgumentException("Thông tin sách không được để trống!");
         }
-        if (book.getIsbn() != null && book.getId() == null && bookRepository.existsByIsbn(book.getIsbn())) {
+        boolean isNew = (book.getId() == null);
+        if (book.getIsbn() != null && isNew && bookRepository.existsByIsbn(book.getIsbn())) {
             throw new IllegalArgumentException("Mã ISBN '" + book.getIsbn() + "' đã tồn tại trong hệ thống!");
         }
-        return documentRepository.save(book);
+        Book saved = documentRepository.save(book);
+        if (isNew) {
+            activityLogService.log(ActionType.BOOK_CREATE, TargetType.DOCUMENT, saved.getId(), saved.getTitle(),
+                    "Thêm mới sách: " + saved.getTitle() + " (ISBN: " + saved.getIsbn() + ")");
+        } else {
+            activityLogService.log(ActionType.BOOK_UPDATE, TargetType.DOCUMENT, saved.getId(), saved.getTitle(),
+                    "Cập nhật thông tin sách: " + saved.getTitle());
+        }
+        return saved;
     }
 
     @Transactional
@@ -89,7 +89,16 @@ public class DocumentService {
         if (magazine == null) {
             throw new IllegalArgumentException("Thông tin tạp chí không được để trống!");
         }
-        return documentRepository.save(magazine);
+        boolean isNew = (magazine.getId() == null);
+        Magazine saved = documentRepository.save(magazine);
+        if (isNew) {
+            activityLogService.log(ActionType.BOOK_CREATE, TargetType.DOCUMENT, saved.getId(), saved.getTitle(),
+                    "Thêm mới tạp chí: " + saved.getTitle() + " (Số phát hành: " + saved.getIssueNumber() + ")");
+        } else {
+            activityLogService.log(ActionType.BOOK_UPDATE, TargetType.DOCUMENT, saved.getId(), saved.getTitle(),
+                    "Cập nhật thông tin tạp chí: " + saved.getTitle());
+        }
+        return saved;
     }
 
     @Transactional
@@ -107,6 +116,8 @@ public class DocumentService {
         Document doc = getDocumentById(docId);
         doc.adjustQuantity(quantityChange);
         documentRepository.save(doc);
+        activityLogService.log(ActionType.STOCK_ADJUST, TargetType.DOCUMENT, doc.getId(), doc.getTitle(),
+                "Điều chỉnh số lượng kho tài liệu '" + doc.getTitle() + "' thay đổi: " + (quantityChange >= 0 ? "+" : "") + quantityChange + " (Tồn: " + doc.getQuantity() + ")");
     }
 
     @Transactional
@@ -114,6 +125,19 @@ public class DocumentService {
         Document doc = getDocumentById(docId);
         doc.setStockQuantity(newQuantity);
         documentRepository.save(doc);
+        activityLogService.log(ActionType.STOCK_ADJUST, TargetType.DOCUMENT, doc.getId(), doc.getTitle(),
+                "Thiết lập số lượng tồn kho tài liệu '" + doc.getTitle() + "' thành " + newQuantity);
+    }
+
+    @Transactional
+    public void updateShelfLocation(Long docId, String shelfLocation) {
+        Document doc = getDocumentById(docId);
+        doc.setShelfLocation(shelfLocation);
+        documentRepository.save(doc);
+        String desc = (doc.getShelfLocation() != null)
+                ? "Cập nhật vị trí kệ tài liệu '" + doc.getTitle() + "' thành: " + doc.getShelfLocation()
+                : "Tắt/xóa vị trí kệ tài liệu '" + doc.getTitle() + "'";
+        activityLogService.log(ActionType.BOOK_UPDATE, TargetType.DOCUMENT, doc.getId(), doc.getTitle(), desc);
     }
 
     @Transactional
@@ -122,6 +146,10 @@ public class DocumentService {
         if (isBorrowing) {
             throw new IllegalStateException("Không thể xóa tài liệu đang có người mượn!");
         }
+        Document doc = documentRepository.findById(docId).orElse(null);
+        String title = doc != null ? doc.getTitle() : ("Tài liệu #" + docId);
         documentRepository.deleteById(docId);
+        activityLogService.log(ActionType.BOOK_DELETE, TargetType.DOCUMENT, docId, title,
+                "Xóa tài liệu khỏi hệ thống: " + title);
     }
 }

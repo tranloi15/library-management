@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Tiếp Nhận & Duyệt Mượn Sách - Quản Lý Thư Viện</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- TIÊU ĐỀ TRANG -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
+                <i class="bi bi-qr-code-scan text-primary me-2"></i>Tiếp Nhận & Duyệt Mượn Sách Tại Quầy
+            </h4>
+            <p class="text-secondary small m-0">Xử lý tức thì các yêu cầu mượn sách tự phục vụ do độc giả quét mã QR gửi đến</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill fw-semibold" style="font-size: 0.8rem;">
+                <i class="bi bi-hourglass-split me-1"></i>
+                <span th:text="${pendingRequests != null ? pendingRequests.size() : 0}">0</span> yêu cầu chờ duyệt
+            </span>
+            <a th:href="@{/borrow/requests}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Làm mới</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- THÔNG BÁO FLASH MESSAGE -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="bi bi-check-circle-fill fs-5"></i>
+        <div th:text="${successMessage}">Thao tác thành công!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+        <div th:text="${errorMessage}">Đã xảy ra lỗi!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- BẢNG DANH SÁCH YÊU CẦU CHỜ DUYỆT -->
+    <div class="app-card p-3 p-md-4 mb-4">
+        
+        <div th:if="${#lists.isEmpty(pendingRequests)}" class="text-center py-5 text-secondary">
+            <div class="py-4">
+                <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                <h5 class="fw-bold mb-1">Không có yêu cầu nào đang chờ</h5>
+                <p class="small text-secondary m-0">Khi độc giả quét mã QR dán trên gáy sách và gửi yêu cầu, thông tin sẽ lập tức xuất hiện tại đây.</p>
+            </div>
+        </div>
+        <div class="table-responsive" th:unless="${#lists.isEmpty(pendingRequests)}">
+            <table class="craft-table">
+                <thead>
+                    <tr>
+                        <th>Mã yêu cầu</th>
+                        <th>Độc giả</th>
+                        <th>Tài liệu mượn</th>
+                        <th>Vị trí kệ</th>
+                        <th>Thời gian gửi</th>
+                        <th class="text-end" style="min-width: 170px;">Thao tác quầy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="req : ${pendingRequests}">
+                        <td>
+                            <div class="fw-bold font-mono text-primary" th:text="${'#RQ-' + #numbers.formatInteger(req.id, 4)}">#RQ-0001</div>
+                            <span class="badge bg-warning-subtle text-warning mt-1" style="font-size: 0.7rem;">Chờ tại quầy</span>
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold text-body" th:text="${req.user != null ? req.user.fullName : ('Độc giả #' + req.userId)}">Nguyễn Văn A</div>
+                            <div class="text-secondary small font-mono" th:text="${req.user != null ? req.user.readerCode : ''}">DG-0001</div>
+                            <div class="text-secondary opacity-75" style="font-size: 0.74rem;" th:text="${req.user != null ? req.user.phone : ''}">0901234567</div>
+                        </td>
+
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img th:if="${req.document != null and req.document.imageUrl != null and !req.document.imageUrl.isEmpty()}" 
+                                     th:src="@{${req.document.imageUrl}}" 
+                                     alt="Bìa" 
+                                     class="rounded flex-shrink-0"
+                                     style="width: 38px; height: 50px; object-fit: cover; border: 1px solid var(--border-subtle);">
+                                <div class="min-w-0">
+                                    <div class="fw-semibold text-truncate" style="max-width: 260px;" th:text="${req.document != null ? req.document.title : ('Tài liệu #' + req.bookId)}">
+                                        Tên tài liệu
+                                    </div>
+                                    <div class="text-secondary small" th:text="${req.document != null ? req.document.author : ''}">Tác giả</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span th:if="${req.document != null and req.document.shelfLocation != null and !req.document.shelfLocation.isBlank()}" 
+                                  class="badge bg-light text-dark border fw-medium" th:text="${req.document.shelfLocation}">
+                                Kệ A1
+                            </span>
+                            <span th:if="${req.document == null or req.document.shelfLocation == null or req.document.shelfLocation.isBlank()}" 
+                                  class="text-muted small fst-italic">
+                                --
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="text-body fw-medium" th:text="${#temporals.format(req.createdAt, 'HH:mm:ss')}">10:30:15</div>
+                            <div class="text-secondary" style="font-size: 0.74rem;" th:text="${#temporals.format(req.createdAt, 'dd/MM/yyyy')}">15/09/2026</div>
+                        </td>
+
+                        <td class="text-end">
+                            <div class="d-flex align-items-center justify-content-end gap-1">
+                                <!-- NÚT DUYỆT MƯỢN TỨC THÌ -->
+                                <form th:action="@{/borrow/requests/{id}/approve(id=${req.id})}" method="post" class="d-inline m-0"
+                                      onsubmit="return confirm('Xác nhận độc giả đã có mặt tại quầy và duyệt cho mượn cuốn sách này?');">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1" title="Duyệt cho mượn">
+                                        <i class="bi bi-check-lg"></i>
+                                        <span>Duyệt</span>
+                                    </button>
+                                </form>
+
+                                <!-- NÚT TỪ CHỐI (MỞ MODAL) -->
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        data-bs-toggle="modal" 
+                                        th:data-bs-target="${'#rejectModal' + req.id}"
+                                        title="Từ chối yêu cầu">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+
+                            <!-- MODAL NHẬP LÝ DO TỪ CHỐI -->
+                            <div class="modal fade text-start" th:id="${'rejectModal' + req.id}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form th:action="@{/borrow/requests/{id}/reject(id=${req.id})}" method="post" class="m-0">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <div class="modal-header">
+                                                <h6 class="modal-title fw-bold">Từ chối yêu cầu mượn sách</h6>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="small text-secondary mb-3">
+                                                    Độc giả: <strong th:text="${req.user != null ? req.user.fullName : req.userId}">Nguyễn Văn A</strong><br>
+                                                    Tài liệu: <strong th:text="${req.document != null ? req.document.title : req.bookId}">Tên sách</strong>
+                                                </p>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-semibold">Lý do từ chối:</label>
+                                                    <select class="form-select form-select-sm mb-2" 
+                                                            onchange="const ta = this.nextElementSibling; if (this.value !== 'OTHER') { ta.value = this.value; } else { ta.value = ''; ta.focus(); }">
+                                                        <option value="Sách bị rách hoặc hỏng gáy cần bảo trì" selected>Sách bị rách hoặc hỏng gáy cần bảo trì</option>
+                                                        <option value="Độc giả chưa xuất trình thẻ thư viện đối chiếu">Độc giả chưa xuất trình thẻ thư viện đối chiếu</option>
+                                                        <option value="Độc giả không có mặt tại quầy sau thời hạn quy định">Độc giả không có mặt tại quầy sau thời hạn</option>
+                                                        <option value="OTHER">Lý do khác...</option>
+                                                    </select>
+                                                    <textarea name="reason" th:id="${'customReason' + req.id}" class="form-control form-control-sm" rows="2" placeholder="Ghi chú lý do cụ thể gửi độc giả..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                <button type="submit" class="btn btn-sm btn-danger">Xác nhận từ chối</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SCRIPT TỰ ĐỘNG LÀM MỚI MỖI 30 GIÂY -->
+<th:block layout:fragment="scripts">
+<script>
+    (function() {
+        // Tự động reload trang sau mỗi 30s để cập nhật yêu cầu mượn mới
+        setTimeout(function() {
+            window.location.reload();
+        }, 30000);
+    })();
+</script>
+</th:block>
+
+</body>
+</html>
