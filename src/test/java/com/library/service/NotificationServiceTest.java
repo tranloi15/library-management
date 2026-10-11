@@ -89,8 +89,7 @@ class NotificationServiceTest {
         User u3 = new User();
         u3.setId(3L);
         u3.setFullName("Độc giả 2");
-        u3.setActive(false); // Tài khoản đã bị khóa không nhận broadcast
-
+        u3.setActive(false);
         when(userRepository.findAll()).thenReturn(List.of(u1, u2, u3));
 
         int sentCount = notificationService.sendBroadcast(

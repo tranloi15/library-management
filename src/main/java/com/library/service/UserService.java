@@ -76,14 +76,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // Xử lý quên mật khẩu
-
-    /**
-     * Tạo token reset mật khẩu cho user (giả lập gửi email, thực tế trả token về để hiển thị).
-     * Trong môi trường thực tế: gửi email chứa link reset.
-     * @return token nếu email hợp lệ, null nếu không tìm thấy
-     */
-    @Transactional
+        @Transactional
     public String generatePasswordResetToken(String email) {
         return userRepository.findByEmail(email.trim().toLowerCase()).map(user -> {
             String token = UUID.randomUUID().toString();
@@ -120,8 +113,6 @@ public class UserService {
         user.setPasswordResetTokenExpiry(null);
         userRepository.save(user);
     }
-
-    // Truy vấn danh sách người dùng
 
     public List<User> getAllReaders() {
         return userRepository.findByRole(RoleName.ROLE_READER);

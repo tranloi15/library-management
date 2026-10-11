@@ -47,7 +47,6 @@ public class DataSeeder implements CommandLineRunner {
         if (notificationRepository.count() == 0) {
             seedNotifications();
         }
-        // Chạy mỗi lần khởi động: gán ảnh bìa cho các sách chưa có ảnh (ví dụ sách nhập từ CSV)
         fillMissingBookCovers();
     }
 
@@ -97,7 +96,6 @@ public class DataSeeder implements CommandLineRunner {
         Book b4 = new Book("Refactoring", "Addison-Wesley", 2018, 1, "/images/refactor.jpg", "Martin Fowler",
                 "9780134757599", 448, "Refactoring",
                 "Phương pháp luận chuẩn mực về cải tiến cấu trúc bên trong của mã nguồn mà không thay đổi hành vi bên ngoài, giúp hệ thống luôn linh hoạt trước yêu cầu mới.");
-        // b4 không thiết lập vị trí (để trống) nhằm kiểm thử tính năng ẩn/tắt vị trí
 
         Book b5 = new Book("Head First Java", "O'Reilly", 2022, 8, "/images/hf_java.jpg", "Kathy Sierra",
                 "9781491910771", 750, "Education",
@@ -112,7 +110,6 @@ public class DataSeeder implements CommandLineRunner {
         Book b7 = new Book("Dế Mèn Phiêu Lưu Ký", "NXB Kim Đồng", 2020, 12, "/images/demen.jpg", "Tô Hoài",
                 "9786042188888", 188, "Văn học thiếu nhi",
                 "Kiệt tác văn học thiếu nhi Việt Nam kể về hành trình chu du, trưởng thành của chú Dế Mèn và thông điệp cao đẹp về tình hữu ái, hòa bình và lý tưởng sống tích cực.");
-        // b7 không thiết lập vị trí (để trống)
 
         Magazine m1 = new Magazine("Tạp chí Tin học & Điều khiển", "Viện Hàn Lâm KH&CN", 2026, 8, "/images/cntt.jpg", 1, 3,
                 "Số đặc biệt công bố các công trình nghiên cứu mới về Trí tuệ nhân tạo (AI), Hệ thống nhúng tự động hóa và An toàn không gian mạng.");
@@ -137,29 +134,22 @@ public class DataSeeder implements CommandLineRunner {
         if (readers.size() >= 6 && docs.size() >= 10) {
             LocalDate today = LocalDate.now();
 
-            // Độc giả reader1 (Nguyễn Văn An)
-            // Sách đang mượn còn hạn, có thể xin gia hạn trực tuyến
             BorrowRecord b1 = new BorrowRecord(
-                    docs.get(0), // Clean Code
-                    readers.get(0),
+                    docs.get(0),                    readers.get(0),
                     today.minusDays(3),
                     today.plusDays(11),
                     BorrowStatus.BORROWING);
             docs.get(0).adjustQuantity(-1);
 
-            // Sách đang mượn đã quá hạn, hệ thống tính phạt tự động
             BorrowRecord b2 = new BorrowRecord(
-                    docs.get(4), // Head First Java
-                    readers.get(0),
+                    docs.get(4),                    readers.get(0),
                     today.minusDays(16),
                     today.minusDays(2),
                     BorrowStatus.OVERDUE);
             docs.get(4).adjustQuantity(-1);
 
-            // Sách đã trả đúng thời hạn hôm nay, không phạt
             BorrowRecord b3 = new BorrowRecord(
-                    docs.get(1), // Effective Java
-                    readers.get(0),
+                    docs.get(1),                    readers.get(0),
                     today.minusDays(10),
                     today.plusDays(4),
                     today,
@@ -168,10 +158,8 @@ public class DataSeeder implements CommandLineRunner {
             b3.setFineAmount(0L);
             b3.setNote("Sách nguyên vẹn, trả đúng thời hạn");
 
-            // Sách đã trả trễ hạn, đã nộp phạt qua mã QR VietQR
             BorrowRecord b4 = new BorrowRecord(
-                    docs.get(5), // Spring Boot in Action
-                    readers.get(0),
+                    docs.get(5),                    readers.get(0),
                     today.minusDays(18),
                     today.minusDays(4),
                     today.minusDays(1),
@@ -180,20 +168,15 @@ public class DataSeeder implements CommandLineRunner {
             b4.setFineAmount(15000L);
             b4.setNote("Đã thanh toán 15.000đ qua VietQR MB Bank");
 
-            // Độc giả reader2 (Trần Thị Bình)
-            // Sách đang mượn quá hạn
             BorrowRecord b5 = new BorrowRecord(
-                    docs.get(2), // Design Patterns
-                    readers.get(1),
+                    docs.get(2),                    readers.get(1),
                     today.minusDays(17),
                     today.minusDays(3),
                     BorrowStatus.OVERDUE);
             docs.get(2).adjustQuantity(-1);
 
-            // Sách đã trả đúng hạn hôm nay
             BorrowRecord b6 = new BorrowRecord(
-                    docs.get(6), // Dế Mèn Phiêu Lưu Ký
-                    readers.get(1),
+                    docs.get(6),                    readers.get(1),
                     today.minusDays(14),
                     today,
                     today,
@@ -202,29 +185,22 @@ public class DataSeeder implements CommandLineRunner {
             b6.setFineAmount(0L);
             b6.setNote("Trả sách nguyên vẹn tại quầy");
 
-            // Độc giả reader3 (Lê Hoàng Nam)
-            // Sách mới mượn hôm nay còn hạn tiêu chuẩn
             BorrowRecord b7 = new BorrowRecord(
-                    docs.get(3), // Refactoring
-                    readers.get(2),
+                    docs.get(3),                    readers.get(2),
                     today,
                     today.plusDays(14),
                     BorrowStatus.BORROWING);
             docs.get(3).adjustQuantity(-1);
 
-            // Sách đang mượn quá hạn
             BorrowRecord b8 = new BorrowRecord(
-                    docs.get(5), // Spring Boot in Action
-                    readers.get(2),
+                    docs.get(5),                    readers.get(2),
                     today.minusDays(19),
                     today.minusDays(5),
                     BorrowStatus.OVERDUE);
             docs.get(5).adjustQuantity(-1);
 
-            // Sách đã trả đúng hạn gần đây
             BorrowRecord b9 = new BorrowRecord(
-                    docs.get(0), // Clean Code
-                    readers.get(2),
+                    docs.get(0),                    readers.get(2),
                     today.minusDays(12),
                     today.plusDays(2),
                     today.minusDays(2),
@@ -232,20 +208,15 @@ public class DataSeeder implements CommandLineRunner {
             b9.setPaymentMethod("NONE");
             b9.setFineAmount(0L);
 
-            // Độc giả reader4 (Phạm Minh Châu)
-            // Tạp chí đang mượn còn hạn
             BorrowRecord b10 = new BorrowRecord(
-                    docs.get(7), // Tạp chí Tin học & Điều khiển
-                    readers.get(3),
+                    docs.get(7),                    readers.get(3),
                     today.minusDays(2),
                     today.plusDays(12),
                     BorrowStatus.BORROWING);
             docs.get(7).adjustQuantity(-1);
 
-            // Sách đã trả trễ hạn, đã nộp phạt tiền mặt tại quầy
             BorrowRecord b11 = new BorrowRecord(
-                    docs.get(0), // Clean Code
-                    readers.get(3),
+                    docs.get(0),                    readers.get(3),
                     today.minusDays(20),
                     today.minusDays(6),
                     today.minusDays(2),
@@ -254,32 +225,20 @@ public class DataSeeder implements CommandLineRunner {
             b11.setFineAmount(20000L);
             b11.setNote("Đã thu 20.000đ tiền mặt tại quầy");
 
-            // Độc giả reader5 (Vũ Hải Đăng)
-            // Tạp chí mới mượn hôm qua còn hạn
             BorrowRecord b12 = new BorrowRecord(
-                    docs.get(8), // National Geographic
-                    readers.get(4),
+                    docs.get(8),                    readers.get(4),
                     today.minusDays(1),
                     today.plusDays(13),
                     BorrowStatus.BORROWING);
             docs.get(8).adjustQuantity(-1);
 
-            // Cập nhật lại số lượng tồn kho của tài liệu sau khi trừ các sách đang mượn
             documentRepository.saveAll(docs);
 
             borrowRecordRepository.saveAll(List.of(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12));
         }
     }
 
-    /**
-     * Gắn ảnh bìa đúng với từng cuốn sách theo ISBN:
-     *  - Nếu có file static/images/covers/{ISBN}.jpg trong dự án -> dùng ảnh trong máy
-     *     (chạy được cả khi không có mạng).
-     *  - Nếu không có file -> dùng link Open Library theo ISBN.
-     * Chỉ thay ảnh cho sách chưa có ảnh hoặc đang dùng link Open Library;
-     * ảnh của sách mẫu (/images/clean_code.jpg, ...) và tạp chí giữ nguyên.
-     */
-    private void fillMissingBookCovers() {
+        private void fillMissingBookCovers() {
         List<Document> changed = new ArrayList<>();
 
         for (Document d : documentRepository.findAll()) {
@@ -296,8 +255,7 @@ public class DataSeeder implements CommandLineRunner {
             boolean noImage = current == null || current.isBlank();
             boolean onlineCover = !noImage && current.startsWith("https://covers.openlibrary.org");
             if (!noImage && !onlineCover) {
-                continue; // đã có ảnh riêng, không đụng tới
-            }
+                continue;            }
 
             String newUrl = hasLocalCover(isbn) ? "/images/covers/" + isbn + ".jpg" : coverUrlFromIsbn(isbn);
 
@@ -312,16 +270,11 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    /** Kiểm tra dự án có file ảnh bìa static/images/covers/{ISBN}.jpg hay không. */
     private boolean hasLocalCover(String isbn) {
         return new ClassPathResource("static/images/covers/" + isbn + ".jpg").exists();
     }
 
-    /**
-     * Link ảnh bìa trên Open Library theo ISBN.
-     * default=false: nếu không có bìa sẽ trả lỗi 404 để giao diện hiện ảnh mặc định.
-     */
-    private String coverUrlFromIsbn(String isbn) {
+        private String coverUrlFromIsbn(String isbn) {
         return "https://covers.openlibrary.org/b/isbn/" + isbn.trim() + "-L.jpg?default=false";
     }
 
@@ -526,7 +479,6 @@ public class DataSeeder implements CommandLineRunner {
 
         List<com.library.model.Notification> sampleNotifications = new ArrayList<>();
 
-        // Thông báo hệ thống gửi toàn bộ người dùng
         for (User u : List.of(admin, reader1, reader2 != null ? reader2 : reader1)) {
             sampleNotifications.add(
                     com.library.model.Notification.builder()
@@ -546,7 +498,6 @@ public class DataSeeder implements CommandLineRunner {
             );
         }
 
-        // Thông báo cảnh báo quá hạn cho reader1
         sampleNotifications.add(
                 com.library.model.Notification.builder()
                         .senderId(admin.getId())
@@ -564,7 +515,6 @@ public class DataSeeder implements CommandLineRunner {
                         .build()
         );
 
-        // Thông báo cập nhật mượn trả cho reader1
         sampleNotifications.add(
                 com.library.model.Notification.builder()
                         .senderId(admin.getId())
@@ -583,7 +533,6 @@ public class DataSeeder implements CommandLineRunner {
                         .build()
         );
 
-        // Thông báo nhắc phí phạt cho reader2 nếu có
         if (reader2 != null) {
             sampleNotifications.add(
                     com.library.model.Notification.builder()

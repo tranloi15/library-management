@@ -38,17 +38,14 @@ public class ActivityLogController {
         model.addAttribute("totalPages", logPage.getTotalPages());
         model.addAttribute("totalItems", logPage.getTotalElements());
 
-        // Tiêu chí tìm kiếm giữ lại trên giao diện
         model.addAttribute("selectedActionType", actionType);
         model.addAttribute("selectedTargetType", targetType);
         model.addAttribute("keyword", keyword);
         model.addAttribute("dateFilter", dateFilter);
 
-        // Danh mục lọc
         model.addAttribute("allActionTypes", ActionType.values());
         model.addAttribute("allTargetTypes", TargetType.values());
 
-        // Thống kê nhanh trên đầu trang
         model.addAttribute("countToday", activityLogService.countToday());
         model.addAttribute("countUsersToday", activityLogService.countUsersToday());
         model.addAttribute("countBorrowToday", activityLogService.countBorrowToday());

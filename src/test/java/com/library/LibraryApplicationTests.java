@@ -8,7 +8,7 @@ class LibraryApplicationTests {
 
     @Test
     void contextLoads() {
-        // Kiểm thử khởi động toàn bộ Spring Context thành công
+        
     }
 
 }

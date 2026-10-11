@@ -7,7 +7,6 @@
     <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
     <title>Kho Tài Liệu & Ấn Phẩm - Thư Viện Số</title>
 
-    <!-- SCRIPT KHỞI TẠO THEME SỚM (Chống giật chớp màn hình khi F5) -->
     <script>
         (function () {
             const savedTheme = localStorage.getItem('library_theme') || 'light';
@@ -15,14 +14,11 @@
         })();
     </script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
@@ -51,7 +47,7 @@
             flex-direction: column;
         }
 
-        /* Top Navbar */
+        
         .site-navbar {
             background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(14px);
@@ -142,7 +138,7 @@
             cursor: pointer;
         }
 
-        /* Container */
+        
         .catalog-container {
             max-width: 1240px;
             margin: 0 auto;
@@ -167,7 +163,7 @@
             margin-bottom: 0;
         }
 
-        /* Filter Toolbar Card trong trang */
+        
         .filter-toolbar {
             background: var(--bg-surface, #FFFFFF);
             border: 1px solid var(--border-color);
@@ -189,7 +185,7 @@
             border-color: var(--border-color);
         }
 
-        /* Công cụ tìm kiếm & bộ lọc chìm vào giữa Navbar trên cùng khi cuộn (Giống hệt Trang chủ) */
+        
         .nav-middle-tools {
             display: flex;
             align-items: center;
@@ -436,7 +432,7 @@
             box-shadow: 0 2px 6px rgba(54, 164, 247, 0.25);
         }
 
-        /* View Switcher */
+        
         .view-switch-btn {
             border: 1px solid transparent;
             background: transparent;
@@ -458,7 +454,7 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
-        /* Cards Grid */
+        
         .pub-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -485,7 +481,7 @@
             border-color: var(--primary-border);
         }
 
-        /* Khung bìa sách đứng căn giữa tuyệt đối */
+        
         .book-cover-stage {
             width: 100%;
             height: 160px;
@@ -666,7 +662,7 @@
             color: var(--primary);
         }
 
-        /* Table View */
+        
         .catalog-table-card {
             background: #FFFFFF;
             border: 1px solid var(--border-color);
@@ -708,7 +704,7 @@
             margin-top: auto;
         }
 
-        /* --- DARK MODE OVERRIDES FOR CATALOG --- */
+        
         [data-bs-theme="dark"] {
             --bg-app: #0F172A;
             --surface: #1E293B;
@@ -964,7 +960,7 @@
             color: #94A3B8 !important;
         }
 
-        /* MODALS */
+        
         .doc-modal-content {
             border-radius: 18px;
             border: 1px solid var(--border-color);
@@ -1128,7 +1124,7 @@
             color: #CBD5E1 !important;
         }
 
-        /* Ẩn dấu caret mũi tên thứ hai trên user-pill */
+        
         .user-pill::after,
         .user-pill.dropdown-toggle::after {
             display: none !important;
@@ -1138,7 +1134,6 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <header class="site-navbar">
         <div class="container-fluid px-lg-5 py-2 d-flex justify-content-between align-items-center">
             <a href="/" class="brand-logo flex-shrink-0">
@@ -1148,7 +1143,6 @@
                 <span>Thư Viện Số</span>
             </a>
 
-            <!-- THANH TÌM KIẾM & BỘ LỌC CHÌM LÊN NAVBAR TRÊN CÙNG KHI CUỘN -->
             <div class="nav-middle-tools" id="navMiddleTools">
                 <form action="/catalog" method="get" class="m-0" id="navSearchForm">
                     <div class="nav-search-wrap">
@@ -1159,7 +1153,6 @@
                     </div>
                 </form>
 
-                <!-- Dropdown lọc thể loại gọn gàng theo yêu cầu người dùng -->
                 <div class="dropdown">
                     <button class="nav-chip dropdown-toggle" type="button" id="navCategoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-funnel text-primary"></i>
@@ -1172,7 +1165,6 @@
                     </ul>
                 </div>
 
-                <!-- Nút chuyển chế độ hiển thị (Lưới / Bảng) kèm tooltip chú thích khi trỏ vào -->
                 <div class="d-none d-xl-flex align-items-center ms-1">
                     <button type="button" class="nav-view-btn" id="navViewToggleBtn" onclick="toggleCatalogView()" 
                             data-bs-toggle="tooltip" data-bs-placement="bottom" title="Chuyển sang chế độ xem dạng Bảng">
@@ -1181,15 +1173,12 @@
                 </div>
             </div>
 
-            <!-- Navigation Links: Không rớt dòng (nowrap) -->
             <div class="d-flex align-items-center flex-shrink-0" style="white-space: nowrap; gap: 0.85rem;">
-                <!-- Nút Trang chủ kèm icon -->
                 <a href="/" class="nav-btn nav-btn-primary">
                     <i class="bi bi-house-door-fill"></i>
                     <span>Trang chủ</span>
                 </a>
 
-                <!-- Khi CHƯA đăng nhập -->
                 <div sec:authorize="isAnonymous()" class="d-flex align-items-center gap-2 ms-1">
                     <a href="/login" class="nav-btn nav-btn-ghost">
                         <i class="bi bi-box-arrow-in-right"></i>
@@ -1197,7 +1186,6 @@
                     </a>
                 </div>
 
-                <!-- Khi ĐÃ đăng nhập: Chỉ hiện ảnh mặt người dùng và mũi tên nhỏ trên mobile -->
                 <div sec:authorize="isAuthenticated()" class="d-flex align-items-center" style="gap: 0.75rem;">
                     <a href="/borrow/cart" class="nav-btn nav-btn-ghost d-none d-sm-inline-flex position-relative" title="Giỏ mượn của tôi" style="padding: 0.38rem 0.75rem; gap: 0.45rem;">
                         <i class="bi bi-cart3"></i>
@@ -1280,7 +1268,6 @@
         </div>
     </header>
 
-    <!-- MAIN CATALOG CONTAINER -->
     <main class="catalog-container">
         <div class="page-header-box d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
@@ -1295,7 +1282,6 @@
             </div>
         </div>
 
-        <!-- Filter & Search Toolbar -->
         <div class="filter-toolbar">
             <form action="/catalog" method="GET" class="m-0">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -1321,7 +1307,6 @@
                         </div>
                     </div>
 
-                    <!-- Switch Views -->
                     <div class="d-flex align-items-center gap-1 border p-1 rounded-2 view-switch-wrapper">
                         <button type="button" id="btnViewGrid" class="view-switch-btn active" onclick="switchView('grid')" title="Dạng Lưới Thẻ Sách">
                             <i class="bi bi-grid-fill me-1"></i> Lưới
@@ -1334,7 +1319,6 @@
             </form>
         </div>
 
-        <!-- GRID VIEW -->
         <div id="catalogGridView" class="pub-grid">
             <div th:each="doc : ${documents}" 
                  class="pub-card" 
@@ -1343,16 +1327,13 @@
                  onclick="handleCardClick(this, event)">
                 
                 <div>
-                    <!-- Khung bìa sách đứng căn giữa tuyệt đối -->
                     <div class="book-cover-stage">
-                        <!-- Ảnh bìa dọc nếu có -->
                         <img th:if="${doc.imageUrl != null and !doc.imageUrl.isEmpty()}" 
                              th:src="${doc.imageUrl}" 
                              th:alt="${doc.title}" 
                              class="book-cover-img" 
                              loading="lazy"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                        <!-- 3D Tactile Cover Spine Metaphor (Dự phòng khi ảnh lỗi hoặc không có ảnh) -->
                         <div th:class="'book-cover-preview ' + (${doc.documentType.name() == 'MAGAZINE'} ? 'magazine-cover' : '')"
                              th:style="${doc.imageUrl != null and !doc.imageUrl.isEmpty()} ? 'display: none;' : 'display: flex;'">
                             <div class="book-spine-line"></div>
@@ -1363,7 +1344,6 @@
                         </div>
                     </div>
 
-                    <!-- Meta & Details -->
                     <span th:class="'pub-type-badge ' + (${doc.documentType.name() == 'BOOK'} ? 'type-book' : 'type-magazine')"
                           th:text="${doc.documentType.name() == 'BOOK' ? 'Sách' : 'Tạp chí'}"></span>
 
@@ -1375,7 +1355,6 @@
                     <p class="pub-details-snippet" th:text="${doc.getDocumentDetails()}">Thông tin chi tiết</p>
                 </div>
 
-                <!-- Footer & Actions -->
                 <div class="pub-footer">
                     <div th:class="'stock-indicator ' + (${doc.isAvailable()} ? 'stock-in' : 'stock-out')">
                         <span class="stock-dot"></span>
@@ -1401,7 +1380,6 @@
             </div>
         </div>
 
-        <!-- TABLE VIEW -->
         <div id="catalogTableView" class="catalog-table-card d-none">
             <div class="table-responsive">
                 <table>
@@ -1466,7 +1444,6 @@
             </div>
         </div>
 
-        <!-- Empty State -->
         <div th:if="${documents == null or documents.isEmpty()}" class="text-center py-5">
             <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
             <h4>Không tìm thấy tài liệu nào!</h4>
@@ -1475,7 +1452,6 @@
         </div>
     </main>
 
-    <!-- Modal Chi Tiết Tài Liệu -->
     <div class="modal fade" id="docDetailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content doc-modal-content">
@@ -1486,7 +1462,6 @@
                     </div>
 
                     <div class="row g-4">
-                        <!-- Cột Trái: Ảnh bìa sách & Trạng thái tồn kho -->
                         <div class="col-12 col-md-4 text-center">
                             <div class="position-relative mx-auto" style="max-width: 220px;">
                                 <img id="modalCoverImg" src="" alt="Bìa sách" 
@@ -1506,25 +1481,21 @@
                             </div>
                         </div>
 
-                        <!-- Cột Phải: Thông tin chi tiết, Đoạn Preview tóm tắt và Thông số -->
                         <div class="col-12 col-md-8">
                             <h4 id="modalTitle" class="fw-bold mb-1 doc-modal-title">Tên tài liệu</h4>
                             <p class="text-secondary small mb-3">
                                 <span id="modalPublisher"></span> • Năm xuất bản: <span id="modalYear"></span>
                             </p>
 
-                            <!-- PHẦN NỘI DUNG CƠ BẢN (PREVIEW TÓM TẮT SÁCH NÓI VỀ GÌ) -->
                             <div class="doc-summary-card">
                                 <div class="summary-title">
                                     <i class="bi bi-card-text fs-6"></i>
                                     <span>Tóm tắt & Giới thiệu nội dung:</span>
                                 </div>
                                 <p id="modalSummary" class="lh-base">
-                                    <!-- Nội dung tóm tắt sách -->
                                 </p>
                             </div>
 
-                            <!-- Thông số kỹ thuật / chi tiết -->
                             <div class="doc-details-card p-2.5 rounded-3 mb-3 border">
                                 <span class="details-label">
                                     <i class="bi bi-info-circle me-1"></i>Thông số tài liệu:
@@ -1532,7 +1503,6 @@
                                 <p id="modalDetails" class="mb-0"></p>
                             </div>
 
-                            <!-- Hướng dẫn mượn sách -->
                             <div class="doc-notice-card py-2.5 px-3 rounded-3 small d-flex align-items-center gap-2 mb-0">
                                 <i class="bi bi-info-circle-fill flex-shrink-0"></i>
                                 <span>Độc giả vui lòng xuất trình thẻ thư viện hoặc mã tài liệu tại quầy quản lý để mượn sách.</span>
@@ -1567,7 +1537,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
             <p class="mb-1"><strong>Thư Viện Số</strong> — Nền tảng tra cứu và quản lý thư viện điện tử thông minh</p>
@@ -1575,7 +1544,6 @@
         </div>
     </footer>
 
-    <!-- Bootstrap 5.3.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -1630,13 +1598,11 @@
 
             updateToggleBtnState(view);
 
-            // Đồng bộ param ?view= trên URL mà không load lại trang
             try {
                 const url = new URL(window.location.href);
                 url.searchParams.set('view', view);
                 window.history.replaceState({}, '', url);
 
-                // Cập nhật các liên kết tab thể loại
                 document.querySelectorAll('.filter-chips a, .dropdown-menu a').forEach(a => {
                     if (a.href && !a.href.startsWith('javascript:')) {
                         const aUrl = new URL(a.href, window.location.origin);
@@ -1647,7 +1613,6 @@
             } catch (err) {}
         }
 
-        // Hiện thanh công cụ tìm kiếm và bộ lọc trên Navbar khi cuộn qua phần header / filter toolbar
         const navMiddleTools = document.getElementById('navMiddleTools');
         const filterToolbar = document.querySelector('.filter-toolbar');
         
@@ -1661,7 +1626,6 @@
             }
         }, { passive: true });
 
-        // Đồng bộ 2 chiều giữa ô tìm kiếm trong trang và trên Navbar
         const pageSearchInput = document.querySelector('.filter-toolbar input[name="keyword"]');
         const navSearchInput = document.getElementById('navSearchInput');
         if (pageSearchInput && navSearchInput) {
@@ -1673,7 +1637,6 @@
             });
         }
 
-        // Tự động khôi phục chế độ xem đã lưu & khởi tạo Bootstrap Tooltips
         document.addEventListener('DOMContentLoaded', () => {
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
             [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
@@ -1688,7 +1651,6 @@
             }
         });
 
-        // Click vào thẻ để mở Modal chi tiết
         function handleCardClick(cardElement, event) {
             if (event.target.closest('a') || event.target.closest('button')) {
                 return;
@@ -1720,13 +1682,11 @@
                 typeBadge.className = 'pub-type-badge type-magazine';
             }
 
-            // Ảnh bìa duy nhất
             const coverImg = document.getElementById('modalCoverImg');
             const imageUrl = btn.getAttribute('data-image');
             coverImg.src = (imageUrl && imageUrl.trim() !== '') ? imageUrl : '/images/clean_code.jpg';
             coverImg.style.display = 'block';
 
-            // Đoạn preview tóm tắt nội dung sách/tạp chí
             const summary = btn.getAttribute('data-summary');
             const modalSummary = document.getElementById('modalSummary');
             if (summary && summary.trim() !== '') {
@@ -1743,13 +1703,11 @@
             const borrowBtnText = document.getElementById('modalBorrowBtnText');
             const borrowBtnIcon = document.getElementById('modalBorrowBtnIcon');
 
-            // Ẩn tất cả các nút hành động trước khi kiểm tra điều kiện
             if (anonLoginBtn) anonLoginBtn.classList.add('d-none');
             if (onsiteBtn) onsiteBtn.classList.add('d-none');
             if (borrowBtn) borrowBtn.classList.add('d-none');
 
             if (type === 'Tạp chí') {
-                // Tạp chí: luôn hiện DUY NHẤT nút "Chỉ đọc tại chỗ" cho cả độc giả và khách vãng lai
                 if (onsiteBtn) {
                     onsiteBtn.classList.remove('d-none');
                     onsiteBtn.onclick = function (e) {
@@ -1758,12 +1716,9 @@
                     };
                 }
             } else {
-                // Sách
                 if (anonLoginBtn) {
-                    // Chưa đăng nhập -> hiện nút đăng nhập
                     anonLoginBtn.classList.remove('d-none');
                 } else if (borrowBtn && borrowBtnText) {
-                    // Đã đăng nhập -> hiện nút giỏ mượn
                     borrowBtn.classList.remove('d-none');
                     if (qty > 0 && docId) {
                         borrowBtn.className = 'btn btn-primary btn-sm px-3 d-inline-flex align-items-center shadow-sm';
@@ -1786,7 +1741,6 @@
             modal.show();
         }
 
-        // Thêm tài liệu vào giỏ mượn cá nhân qua AJAX
         function addToBorrowCart(docId) {
             const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content') || 'X-CSRF-TOKEN';
@@ -1835,7 +1789,6 @@
             });
         }
 
-        // Cập nhật số lượng trên các badge giỏ mượn
         function updateCartBadge(count) {
             const badges = [document.getElementById('navCartBadge'), document.getElementById('navbarCartBadge')];
             badges.forEach(badge => {
@@ -1850,7 +1803,6 @@
             });
         }
 
-        // Khởi tạo số lượng giỏ khi tải trang (chỉ gọi khi đã đăng nhập)
         document.addEventListener('DOMContentLoaded', function () {
             const hasCartBadge = document.getElementById('navCartBadge') || document.getElementById('navbarCartBadge');
             if (hasCartBadge) {
@@ -1868,7 +1820,6 @@
             }
         });
 
-        // Hiển thị thông báo Toast trang nhã
         function showToastNotification(message, type = 'success', showCartLink = false) {
             let container = document.getElementById('appToastContainer');
             if (!container) {

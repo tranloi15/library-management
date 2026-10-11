@@ -14,7 +14,6 @@ class DocumentPolymorphismTest {
         Document book = new Book("Clean Code", "Prentice Hall", 2008, 10, "/img.jpg",
                 "Robert C. Martin", "9780132350884", 464, "Software Engineering");
 
-        // Gọi phương thức đa hình thông qua biến tham chiếu Document
         assertEquals("9780132350884", book.getIdentifierCode());
         assertTrue(book.getDocumentDetails().contains("Robert C. Martin"));
         assertTrue(book.getDocumentDetails().contains("464"));
@@ -27,7 +26,6 @@ class DocumentPolymorphismTest {
     void testMagazinePolymorphism() {
         Document mag = new Magazine("Tạp chí Tin học & Điều khiển", "Viện Hàn Lâm KH&CN", 2026, 5, "/mag.jpg", 1, 3);
 
-        // Gọi phương thức đa hình thông qua biến tham chiếu Document
         assertEquals("MAG-2026-01", mag.getIdentifierCode());
         assertTrue(mag.getDocumentDetails().contains("Số phát hành: 1"));
         assertTrue(mag.getDocumentDetails().contains("Tháng 3/2026"));

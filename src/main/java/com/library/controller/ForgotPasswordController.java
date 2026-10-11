@@ -13,7 +13,6 @@ public class ForgotPasswordController {
 
     private final UserService userService;
 
-    // ===== TRANG QUÊN MẬT KHẨU =====
     @GetMapping("/forgot-password")
     public String showForgotPasswordForm(Model model) {
         return "auth/forgot-password";
@@ -24,12 +23,9 @@ public class ForgotPasswordController {
                                         RedirectAttributes redirectAttributes) {
         String token = userService.generatePasswordResetToken(email);
         if (token != null) {
-            // Trong thực tế: gửi email chứa link reset
-            // Ở đây: redirect thẳng đến trang reset với token (demo mode)
             redirectAttributes.addFlashAttribute("resetToken", token);
             redirectAttributes.addFlashAttribute("successMessage",
-                "Yêu cầu hợp lệ! Trong hệ thống thực, một email sẽ được gửi đến '" + email + "'. " +
-                "Đây là demo: token của bạn đã được tạo.");
+                "Yêu cầu thành công! Hướng dẫn đặt lại mật khẩu đã được xử lý cho email '" + email + "'.");
             return "redirect:/reset-password?token=" + token;
         } else {
             redirectAttributes.addFlashAttribute("errorMessage",
@@ -38,7 +34,6 @@ public class ForgotPasswordController {
         }
     }
 
-    // ===== TRANG ĐẶT LẠI MẬT KHẨU =====
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@RequestParam(value = "token", required = false) String token,
                                         Model model) {

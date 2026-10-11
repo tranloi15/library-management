@@ -40,10 +40,8 @@ public class ReportController {
 
     private static final DateTimeFormatter VN_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    /** Mức phạt trả trễ mỗi ngày (đồng). */
     private static final long FINE_PER_DAY = 5000L;
 
-    /** Số kỳ hiển thị trong bảng so sánh (kỳ đang xem + 3 kỳ trước), dùng cho Top sách và Tiền phạt. */
     private static final int COMPARE_PERIODS = 4;
 
     private final ReportService reportService;
@@ -67,7 +65,6 @@ public class ReportController {
         return "home/dashboard";
     }
 
-    // Top sách mượn nhiều nhất
     @GetMapping("/top-books")
     public String topBooks(
             @RequestParam(defaultValue = "10") int limit,
@@ -90,7 +87,6 @@ public class ReportController {
         addPeriodAttributes(model, range);
 
         if (range.from() == null) {
-            // Toàn bộ thời gian: không có kỳ trước để so sánh
             model.addAttribute("totalBorrows", null);
             model.addAttribute("borrowHistory", List.of());
             model.addAttribute("previousRanks", null);
@@ -106,7 +102,6 @@ public class ReportController {
         return "reports/top_books";
     }
 
-    /** Tổng lượt mượn và sách đứng đầu của kỳ đang xem và các kỳ liền trước (mới nhất trước). */
     private List<BorrowPeriodSummary> loadBorrowHistory(PeriodRange range) {
 
         List<PeriodRange> periods = new ArrayList<>();
@@ -135,7 +130,6 @@ public class ReportController {
         return history;
     }
 
-    /** Thứ hạng của từng sách ở kỳ trước: bookId -> hạng (1 = cao nhất). */
     private Map<Long, Integer> previousRanks(PeriodRange range) {
         PeriodRange prev = previousPeriod(range);
         Map<Long, Integer> ranks = new HashMap<>();
@@ -149,7 +143,6 @@ public class ReportController {
         return ranks;
     }
 
-    /** Ví dụ: "+43% so với quý trước (7 lượt)". */
     private String borrowComparisonText(List<BorrowPeriodSummary> history, PeriodRange range) {
         if (history.size() < 2) {
             return null;
@@ -162,7 +155,6 @@ public class ReportController {
                 + " (" + previousTotal + " lượt)";
     }
 
-    /** Lượt mượn của một kỳ, kèm mức thay đổi so với kỳ liền trước. */
     @Getter
     public static class BorrowPeriodSummary {
 
@@ -180,7 +172,6 @@ public class ReportController {
             this.previousTotal = previousTotal;
         }
 
-        /** UP, DOWN hoặc SAME, dùng để tô màu. */
         public String getChangeDirection() {
             if (previousTotal == null || total == previousTotal) {
                 return "SAME";
@@ -188,7 +179,6 @@ public class ReportController {
             return total > previousTotal ? "UP" : "DOWN";
         }
 
-        /** Ví dụ: "+43%", "-10%", "Không đổi", "Kỳ trước chưa có". */
         public String getChangeText() {
             if (previousTotal == null) {
                 return "—";
@@ -203,7 +193,6 @@ public class ReportController {
         }
     }
 
-    /** Xuất bảng Top sách của đúng kỳ đang xem ra file Excel. */
     @GetMapping("/top-books/export")
     public ResponseEntity<byte[]> exportTopBooks(
             @RequestParam(defaultValue = "10") int limit,
@@ -229,7 +218,6 @@ public class ReportController {
         return reportService.getTopBorrowedBooks(range.from(), range.to(), limit);
     }
 
-    // Danh sách phiếu quá hạn
     @GetMapping("/overdue-list")
     public String overdueList(Model model) {
 
@@ -249,7 +237,6 @@ public class ReportController {
         return "reports/overdue_list";
     }
 
-    /** Xuất danh sách phiếu quá hạn (kèm số điện thoại, tiền phạt) để liên hệ thu hồi sách. */
     @GetMapping("/overdue-list/export")
     public ResponseEntity<byte[]> exportOverdueList() throws IOException {
 
@@ -258,7 +245,6 @@ public class ReportController {
         return excelResponse(file, "phieu-qua-han_" + LocalDate.now() + ".xlsx");
     }
 
-    // Báo cáo tiền phạt
     @GetMapping("/fines")
     public String fines(
             @RequestParam(required = false) String period,
@@ -283,7 +269,6 @@ public class ReportController {
         return "reports/fines";
     }
 
-    /** Xuất báo cáo tiền phạt của đúng kỳ đang xem (kèm sheet so sánh các kỳ). */
     @GetMapping("/fines/export")
     public ResponseEntity<byte[]> exportFines(
             @RequestParam(required = false) String period,
@@ -305,7 +290,6 @@ public class ReportController {
         return excelResponse(file, "tien-phat_" + fileSuffix(range) + ".xlsx");
     }
 
-    /** Kỳ đang xem và các kỳ liền trước (mới nhất trước). Rỗng nếu xem toàn bộ thời gian. */
     private List<PeriodSummary> loadFineHistory(PeriodRange range) {
         if (range.from() == null) {
             return List.of();
@@ -319,7 +303,6 @@ public class ReportController {
         return fineReportService.compareLastPeriods(periods);
     }
 
-    /** Ví dụ: "+25% so với quý trước (40.000 đ)". Null nếu không so sánh. */
     private String comparisonText(List<PeriodSummary> history, PeriodRange range) {
         if (history.size() < 2) {
             return null;
@@ -334,12 +317,10 @@ public class ReportController {
                 + " (" + String.format("%,d", previousTotal).replace(',', '.') + " đ)";
     }
 
-    // Xử lý khoảng thời gian báo cáo
     private record PeriodRange(String type, int quarter, int year,
                                LocalDate from, LocalDate to, String name, String label) {
     }
 
-    /** Tính khoảng ngày từ tham số lọc trên URL. */
     private PeriodRange resolvePeriod(String period, Integer quarter, Integer year,
                                       LocalDate from, LocalDate to) {
 
@@ -362,7 +343,6 @@ public class ReportController {
         };
     }
 
-    /** Kỳ liền trước có cùng độ dài. Null nếu đang xem toàn bộ thời gian. */
     private PeriodRange previousPeriod(PeriodRange r) {
         return switch (r.type()) {
             case "WEEK" -> weekRange(r.from().minusWeeks(1));
@@ -413,8 +393,7 @@ public class ReportController {
     }
 
     private PeriodRange customRange(LocalDate start, LocalDate end) {
-        if (start.isAfter(end)) {           // nhập ngược thì tự đảo lại
-            LocalDate tmp = start;
+        if (start.isAfter(end)) {            LocalDate tmp = start;
             start = end;
             end = tmp;
         }
@@ -432,7 +411,6 @@ public class ReportController {
         return (date.getMonthValue() - 1) / 3 + 1;
     }
 
-    /** Đưa bộ lọc kỳ đang chọn lên giao diện (để giữ lựa chọn và tạo link). */
     private void addPeriodAttributes(Model model, PeriodRange range) {
         model.addAttribute("period", range.type());
         model.addAttribute("quarter", range.quarter());
@@ -446,12 +424,10 @@ public class ReportController {
         return range.from() == null ? "toan-bo" : range.from() + "_" + range.to();
     }
 
-    // Tiện ích chung
     private int normalizeLimit(int limit) {
         return (limit == 5 || limit == 10) ? limit : 10;
     }
 
-    /** Trả file Excel về trình duyệt để tải xuống. */
     private ResponseEntity<byte[]> excelResponse(byte[] file, String fileName) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,

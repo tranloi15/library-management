@@ -164,7 +164,6 @@ public class BorrowServiceImpl implements BorrowService {
         BorrowRecord record = borrowRecordRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phiếu mượn với mã #" + id));
 
-        // Kiểm tra quyền sở hữu phiếu mượn
         if (!isAdmin && (record.getUser() == null || !record.getUser().getId().equals(userId))) {
             throw new org.springframework.security.access.AccessDeniedException("Bạn không có quyền gia hạn phiếu mượn này!");
         }
@@ -177,7 +176,6 @@ public class BorrowServiceImpl implements BorrowService {
             throw new IllegalStateException("Sách đã quá hạn, không thể gia hạn. Vui lòng mang sách đến quầy để hoàn trả!");
         }
 
-        // Gia hạn thêm 7 ngày vào ngày hẹn trả
         LocalDate currentDueDate = record.getDueDate() != null ? record.getDueDate() : LocalDate.now();
         record.setDueDate(currentDueDate.plusDays(7));
         BorrowRecord saved = borrowRecordRepository.save(record);
@@ -280,21 +278,18 @@ public class BorrowServiceImpl implements BorrowService {
             throw new IllegalStateException("Tài liệu '" + document.getTitle() + "' hiện đã hết bản khả dụng trong kho");
         }
 
-        // Kiểm tra độc giả có sách quá hạn không
         List<BorrowRecord> userRecords = borrowRecordRepository.findByUserId(userId);
         boolean hasOverdue = userRecords.stream().anyMatch(BorrowRecord::isOverdue);
         if (hasOverdue) {
             throw new IllegalStateException("Bạn đang có sách mượn quá hạn chưa hoàn trả. Vui lòng trả sách tại quầy trước khi mượn thêm!");
         }
 
-        // Kiểm tra nợ phí phạt
         boolean hasUnpaidFine = userRecords.stream().anyMatch(r ->
                 (r.getFineAmount() != null && r.getFineAmount() > 0 && "NONE".equalsIgnoreCase(r.getPaymentMethod())));
         if (hasUnpaidFine) {
             throw new IllegalStateException("Bạn có khoản phí phạt trễ hạn chưa quyết toán. Vui lòng thanh toán tại quầy trước khi gửi yêu cầu mượn!");
         }
 
-        // Kiểm tra giới hạn mượn tối đa
         int maxLimit = settingService != null ? settingService.getMaxBorrowLimit() : 5;
         long activeBorrowCount = userRecords.stream()
                 .filter(r -> r.getStatus() == BorrowStatus.BORROWING || r.getStatus() == BorrowStatus.OVERDUE || r.getStatus() == BorrowStatus.PENDING)
@@ -303,7 +298,6 @@ public class BorrowServiceImpl implements BorrowService {
             throw new IllegalStateException("Bạn đã đạt giới hạn mượn tối đa (" + maxLimit + " cuốn bao gồm cả yêu cầu chờ duyệt)!");
         }
 
-        // Kiểm tra xem độc giả đã gửi yêu cầu hoặc đang mượn chính cuốn sách này chưa
         boolean alreadyHasBook = userRecords.stream()
                 .anyMatch(r -> r.getBookId().equals(bookId) && (r.getStatus() == BorrowStatus.BORROWING || r.getStatus() == BorrowStatus.PENDING));
         if (alreadyHasBook) {
@@ -345,7 +339,6 @@ public class BorrowServiceImpl implements BorrowService {
             }
         }
 
-        // Ghi nhật ký
         if (activityLogService != null) {
             try {
                 activityLogService.log(
@@ -380,7 +373,6 @@ public class BorrowServiceImpl implements BorrowService {
         record.approveRequest(borrowDays, managerName != null ? managerName : "Quản lý");
         BorrowRecord saved = borrowRecordRepository.save(record);
 
-        // Gửi thông báo cho độc giả
         if (notificationService != null) {
             try {
                 notificationService.sendToUser(
@@ -396,7 +388,6 @@ public class BorrowServiceImpl implements BorrowService {
             }
         }
 
-        // Ghi nhật ký
         if (activityLogService != null) {
             try {
                 activityLogService.log(

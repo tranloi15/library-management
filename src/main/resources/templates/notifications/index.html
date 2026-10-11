@@ -71,7 +71,6 @@
 
 <div layout:fragment="content">
 
-    <!-- TIÊU ĐỀ TRANG & NÚT HÀNH ĐỘNG -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
@@ -95,7 +94,6 @@
         </div>
     </div>
 
-    <!-- BỘ LỌC THÔNG BÁO DẠNG PILLS -->
     <div class="d-flex flex-wrap align-items-center gap-2 mb-4 pb-2 border-bottom">
         <span class="text-secondary small fw-medium me-1"><i class="bi bi-funnel me-1"></i>Bộ lọc:</span>
         <a th:href="@{/notifications(filter='ALL')}" 
@@ -131,7 +129,6 @@
         </a>
     </div>
 
-    <!-- DANH SÁCH THÔNG BÁO -->
     <div th:if="${#lists.isEmpty(notifications)}" class="app-card text-center py-5">
         <div class="py-4">
             <i class="bi bi-bell-slash text-secondary opacity-50" style="font-size: 3.5rem;"></i>
@@ -149,7 +146,6 @@
                  th:classappend="${!n.read ? ('unread ' + (n.type.name() == 'OVERDUE_ALERT' ? 'type-overdue' : (n.type.name() == 'FINE_REMINDER' ? 'type-fine' : ''))) : ''}">
                 <div class="d-flex align-items-start gap-3">
                     
-                    <!-- Icon phân loại -->
                     <div class="notif-icon-circle"
                          th:style="${n.type.name() == 'OVERDUE_ALERT' ? 'background: rgba(239, 68, 68, 0.12); color: #EF4444;' : 
                                    (n.type.name() == 'FINE_REMINDER' ? 'background: rgba(245, 158, 11, 0.12); color: #F59E0B;' : 
@@ -161,7 +157,6 @@
                                            (n.type.name() == 'BORROW_UPDATE' ? 'bi-journal-check' : 'bi-megaphone-fill'))}"></i>
                     </div>
 
-                    <!-- Nội dung thông báo -->
                     <div class="flex-grow-1 min-w-0">
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
                             <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -187,14 +182,12 @@
                             Nội dung chi tiết của thông báo.
                         </p>
 
-                        <!-- Thanh điều hướng và nút thao tác -->
                         <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 border-top gap-2">
                             <div class="text-secondary small" style="font-size: 0.78rem;">
                                 <i class="bi bi-person-check me-1"></i>Người gửi: <span class="fw-medium text-body" th:text="${n.senderName != null ? n.senderName : 'Ban Quản lý'}">Quản lý</span>
                             </div>
 
                             <div class="d-flex align-items-center gap-2">
-                                <!-- Nút liên kết chuyển tiếp nếu có -->
                                 <a th:if="${n.targetUrl != null and !n.targetUrl.isEmpty()}" 
                                    th:href="@{${n.targetUrl}}" 
                                    class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1" 
@@ -203,7 +196,6 @@
                                     <i class="bi bi-arrow-up-right"></i>
                                 </a>
 
-                                <!-- Nút đánh dấu đã đọc nếu chưa đọc -->
                                 <form th:if="${!n.read}" th:action="@{/notifications/{id}/read(id=${n.id})}" method="post" class="m-0">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                     <button type="submit" class="btn btn-xs btn-outline-secondary d-inline-flex align-items-center gap-1"
@@ -213,7 +205,6 @@
                                     </button>
                                 </form>
 
-                                <!-- Nút xóa thông báo -->
                                 <form th:action="@{/notifications/{id}/delete(id=${n.id})}" method="post" class="m-0"
                                       onsubmit="return confirm('Bạn có chắc chắn muốn xóa thông báo này khỏi hộp thư?');">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -230,7 +221,6 @@
         </th:block>
     </div>
 
-    <!-- PHÂN TRANG -->
     <div th:if="${totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4">
         <div class="text-secondary small">
             Hiển thị trang <span class="fw-bold" th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>

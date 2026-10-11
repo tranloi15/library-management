@@ -1,26 +1,21 @@
-/* ==========================================================================
-   CRAFT UI - HỆ THỐNG QUẢN LÝ THƯ VIỆN
-   Triết lý: Contemporary Academic & Refined Craftsmanship (Chống phong cách AI slop)
-   Lấy cảm hứng từ: Linear, Stripe, Apple Books & Thư viện số quốc tế
-   Hỗ trợ: Light Theme (Mặc định) & Refined Dark Slate
-   ========================================================================== */
+/* Hệ thống quản lý thư viện - Stylesheet */
 
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-/* --- 1. DESIGN TOKENS --- */
+/* Biến CSS dùng chung */
 :root {
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-heading: var(--font-sans);
     --font-mono: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* Light Palette: Warm, Crisp & Editorial (Không chói, không generic) */
+    /* Bảng màu sáng */
     --bg-app: #F8F9FA;
     --bg-surface: #FFFFFF;
     --bg-surface-elevated: #FFFFFF;
     --bg-subtle: #F3F4F6;
     --bg-muted: #E5E7EB;
 
-    /* Sidebar Light Mode (Hòa quyện tinh tế, không tương phản đen kịt) */
+    /* Sidebar */
     --sidebar-bg: #FFFFFF;
     --sidebar-border: #E5E7EB;
     --sidebar-text: #374151;
@@ -29,12 +24,12 @@
     --sidebar-active-text: #0E73BD;
     --sidebar-active-indicator: #36A4F7;
 
-    /* Typography Hierarchy */
+    /* Màu chữ */
     --text-primary: #111827;
     --text-secondary: #4B5563;
     --text-tertiary: #9CA3AF;
 
-    /* Single Refined Accent: Bright Vivid Sky Cerulean (#36A4F7) */
+    /* Màu chủ đạo */
     --accent-primary: #36A4F7;
     --accent-hover: #178DE5;
     --accent-light: #F0F8FF;
@@ -46,12 +41,12 @@
     --bs-link-color: var(--accent-primary);
     --bs-link-hover-color: var(--accent-hover);
 
-    /* Borders & Dividers */
+    /* Đường viền */
     --border-hairline: 1px solid #E5E7EB;
     --border-subtle: 1px solid #F3F4F6;
     --border-focus: #36A4F7;
 
-    /* Refined Semantic Colors (Tiết chế, không lòe loẹt) */
+    /* Màu trạng thái */
     --state-success-text: #065F46;
     --state-success-bg: #ECFDF5;
     --state-success-border: #A7F3D0;
@@ -68,12 +63,12 @@
     --state-info-bg: #EFF6FF;
     --state-info-border: #BFDBFE;
 
-    /* Shadows: Subtle, Multi-layer natural lighting */
+    /* Đổ bóng */
     --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
     --shadow-card-hover: 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
     --shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 
-    /* Radii: Hài hòa, không bong bóng */
+    /* Bo góc */
     --radius-sm: 6px;
     --radius-md: 8px;
     --radius-lg: 12px;
@@ -82,7 +77,7 @@
     --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Dark Palette: Midnight Obsidian & Slate */
+/* Giao diện tối (Dark mode) */
 [data-bs-theme="dark"] {
     --bg-app: #0B0E14;
     --bg-surface: #121722;
@@ -131,11 +126,9 @@
     --shadow-dropdown: 0 12px 30px -5px rgba(0, 0, 0, 0.6);
 }
 
-/* ==========================================================================
-   MULTI-PALETTE ARCHITECTURE (5 PHONG CÁCH & BẢNG MÀU CHUYÊN NGHIỆP)
-   ========================================================================== */
+/* Các bảng màu giao diện */
 
-/* NORDIC WARM AMBER & CEDAR (Thư viện Bắc Âu / Gỗ sồi & Hổ phách) */
+/* Theme Amber */
 [data-theme-palette="nordic"] {
     --bg-app: #FAF8F5;
     --bg-surface: #FFFFFF;
@@ -155,7 +148,7 @@
     --text-secondary: #57534E;
     --text-tertiary: #A8A29E;
 
-    --accent-primary: #C2410C; /* Warm Cedar / Terracotta */
+    --accent-primary: #C2410C;
     --accent-hover: #9A3412;
     --accent-light: #FFF7ED;
     --accent-border: #FED7AA;
@@ -193,7 +186,7 @@
     --border-subtle: 1px solid #201C19;
 }
 
-/* TOKYO CRIMSON & SUMI INK (Tạp chí Monocle & Phong cách Đỏ Son) */
+/* Theme Red */
 [data-theme-palette="crimson"] {
     --bg-app: #F6F6F9;
     --bg-surface: #FFFFFF;
@@ -213,7 +206,7 @@
     --text-secondary: #52525B;
     --text-tertiary: #A1A1AA;
 
-    --accent-primary: #BE123C; /* Crimson Carmine */
+    --accent-primary: #BE123C;
     --accent-hover: #9F1239;
     --accent-light: #FFF1F2;
     --accent-border: #FECDD3;
@@ -251,7 +244,7 @@
     --border-subtle: 1px solid #191920;
 }
 
-/* OXFORD FOREST EMERALD (Di sản Hàn lâm Xanh Ngọc Lục Bảo) */
+/* Theme Green */
 [data-theme-palette="emerald"], [data-theme-style="editorial"] {
     --bg-app: #F8FAFC;
     --bg-surface: #FFFFFF;
@@ -311,7 +304,7 @@
     --border-subtle: 1px solid #14221C;
 }
 
-/* SWISS TITANIUM & ELECTRIC CYAN (Tối giản Công nghệ cao / Linear-Vercel) */
+/* Theme Blue */
 [data-theme-palette="obsidian"] {
     --bg-app: #F4F5F7;
     --bg-surface: #FFFFFF;
@@ -331,7 +324,7 @@
     --text-secondary: #334155;
     --text-tertiary: #64748B;
 
-    --accent-primary: #0284C7; /* Electric Cobalt Sky */
+    --accent-primary: #0284C7;
     --accent-hover: #0369A1;
     --accent-light: #F0F9FF;
     --accent-border: #BAE6FD;
@@ -403,7 +396,7 @@
 }
 
 
-/* --- 2. GLOBAL RESET & BASE --- */
+/* Reset & base styles */
 body {
     font-family: var(--font-sans);
     background-color: var(--bg-app);
@@ -420,7 +413,7 @@ body {
     letter-spacing: 0.01em;
 }
 
-/* --- REFINED BUTTONS & BOOTSTRAP OVERRIDES --- */
+/* Buttons */
 .btn-primary {
     background-color: var(--accent-primary) !important;
     border-color: var(--accent-primary) !important;
@@ -472,7 +465,7 @@ body {
     min-height: 100vh;
 }
 
-/* --- 3. REFINED SIDEBAR (TỐI GIẢN, KHÔNG ĐEN KỊT NẶNG NỀ) --- */
+/* Sidebar */
 .app-sidebar {
     width: 250px;
     background-color: var(--sidebar-bg);
@@ -625,7 +618,7 @@ body {
     color: var(--text-tertiary);
 }
 
-/* --- SIDEBAR MINI / THU NHỎ TRÊN MÀN HÌNH LỚN --- */
+/* Sidebar thu nhỏ trên màn hình lớn */
 body.sidebar-collapsed .app-sidebar {
     width: 72px;
 }
@@ -682,7 +675,7 @@ body.sidebar-collapsed .app-main {
     margin-left: 72px;
 }
 
-/* --- 4. TOP NAVBAR (CRAFT COMMAND BAR) --- */
+/* Top Navbar */
 .app-main {
     flex-grow: 1;
     margin-left: 250px;
@@ -705,7 +698,7 @@ body.sidebar-collapsed .app-main {
     z-index: 1020;
 }
 
-/* Search Box with <kbd> Command Shortcut */
+/* Search Box */
 .header-search {
     position: relative;
     width: 480px;
@@ -761,7 +754,7 @@ body.sidebar-collapsed .app-main {
     gap: 1rem;
 }
 
-/* Notification Bell: Minimalist Dot Indicator */
+/* Notification Bell */
 .notif-btn {
     position: relative;
     width: 36px;
@@ -842,7 +835,7 @@ body.sidebar-collapsed .app-main {
     padding: 0.4rem;
 }
 
-/* Hide default Bootstrap caret arrow on user profile pills and dropdown buttons */
+/* Profile button */
 .profile-dropdown-btn::after,
 .profile-dropdown-btn.dropdown-toggle::after,
 .user-pill::after,
@@ -851,7 +844,7 @@ body.sidebar-collapsed .app-main {
     content: none !important;
 }
 
-/* User Info Header inside Profile Dropdown */
+/* User header */
 .dropdown-user-header {
     background-color: var(--bg-subtle, #F8FAFC);
     border-bottom: 1px solid var(--border-subtle, #E2E8F0);
@@ -891,7 +884,7 @@ body.sidebar-collapsed .app-main {
     border-color: rgba(148, 163, 184, 0.3) !important;
 }
 
-/* General Dark Mode Dropdown Enhancements */
+/* Dark mode dropdown */
 [data-bs-theme="dark"] .dropdown-menu {
     background-color: #121722 !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -912,7 +905,7 @@ body.sidebar-collapsed .app-main {
     border-top-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Fallback for any .bg-light and .text-dark inside dark mode */
+/* Dark mode fallback */
 [data-bs-theme="dark"] .bg-light {
     background-color: rgba(255, 255, 255, 0.05) !important;
     color: var(--text-secondary, #CBD5E1) !important;
@@ -935,7 +928,7 @@ body.sidebar-collapsed .app-main {
     border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Theme Switch Segmented Control */
+/* Theme switch */
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
@@ -946,7 +939,7 @@ body.sidebar-collapsed .app-main {
     margin: 0.2rem 0 0.4rem;
 }
 
-/* --- 5. TACTILE BOOK COVERS (GÁY SÁCH 3D CHÂN THỰC) --- */
+/* Bìa sách */
 .content-body {
     padding: 1.75rem;
     flex-grow: 1;
@@ -984,16 +977,16 @@ body.sidebar-collapsed .app-main {
     box-shadow: var(--shadow-card-hover);
 }
 
-/* TACTILE REALISTIC 3D BOOK COVER */
+/* 3D cover */
 .book-cover-stage {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1.45; /* Tỉ lệ bìa sách chuẩn 1:1.45 */
+    aspect-ratio: 1 / 1.45;
     border-radius: 4px 8px 8px 4px;
     overflow: hidden;
     margin-bottom: 0.85rem;
     background-color: var(--bg-muted);
-    /* Đổ bóng vật lý như cuốn sách thật nằm trên kệ */
+    /* Book shadow */
     box-shadow: 
         0 4px 10px -2px rgba(15, 23, 42, 0.16),
         -2px 0 4px rgba(0, 0, 0, 0.08),
@@ -1001,7 +994,7 @@ body.sidebar-collapsed .app-main {
     flex-shrink: 0;
 }
 
-/* Thumbnail cố định cho Card mượn sách ngang hoặc danh sách */
+/* Thumbnail */
 .book-cover-thumb,
 .book-cover-stage.stage-sm {
     position: relative !important;
@@ -1034,7 +1027,7 @@ body.sidebar-collapsed .app-main {
     display: block;
 }
 
-/* Hiệu ứng gáy sách (Spine Lighting Effect) */
+/* Book spine */
 .book-cover-thumb::before,
 .book-cover-stage::before {
     content: '';
@@ -1081,7 +1074,7 @@ body.sidebar-collapsed .app-main {
     display: inline-block;
 }
 
-/* Status Pill Indicators (Tinh tế, không chói lóa) */
+/* Status pills */
 .status-pill {
     font-size: 0.72rem;
     font-weight: 600;
@@ -1119,7 +1112,7 @@ body.sidebar-collapsed .app-main {
     border-color: var(--state-info-border);
 }
 
-/* Craft Code Token */
+/* Code token */
 .craft-code {
     font-family: var(--font-mono);
     font-size: 0.76rem;
@@ -1131,12 +1124,12 @@ body.sidebar-collapsed .app-main {
     display: inline-block;
 }
 
-/* Grid Layout App Card Normalization */
+/* App cards */
 .row .app-card {
     margin-bottom: 0;
 }
 
-/* --- CUSTOM NAV TABS (Craft UI Tabs) --- */
+/* Custom nav tabs */
 .custom-nav-tabs {
     display: flex;
     flex-wrap: nowrap !important;
@@ -1190,7 +1183,7 @@ body.sidebar-collapsed .app-main {
     border-bottom: 2px solid var(--accent-primary);
 }
 
-/* --- 6. CRAFT DATA TABLE --- */
+/* Bảng dữ liệu */
 .craft-table {
     width: 100%;
     border-collapse: separate;
@@ -1227,7 +1220,7 @@ body.sidebar-collapsed .app-main {
     color: var(--text-secondary);
 }
 
-/* Ghost Action Button */
+/* Action buttons */
 .btn-ghost-action {
     background: transparent;
     border: var(--border-hairline);
@@ -1255,8 +1248,7 @@ body.sidebar-collapsed .app-main {
     align-items: center;
 }
 
-/* --- 7. TASTESKILL DIRECTIVES: TACTILE FEEDBACK & BUTTON DISCIPLINE --- */
-/* (Ref: tasteskill.dev / Leonxlnx/taste-skill Section 4.5) */
+/* Buttons */
 .btn,
 .btn-ghost-action,
 .btn-switch-style,
@@ -1270,14 +1262,14 @@ body.sidebar-collapsed .app-main {
                 box-shadow 0.15s ease;
 }
 
-/* Tactile push: physical feedback on :active */
+/* Button active */
 .btn:active:not(:disabled),
 .btn-ghost-action:active:not(:disabled),
 .btn-switch-style:active:not(:disabled) {
     transform: scale(0.98) translateY(1px) !important;
 }
 
-/* CTA Wrap Ban & Contrast Lock: No wrapped buttons on desktop */
+/* Button nowrap */
 .btn {
     white-space: nowrap !important;
     letter-spacing: -0.01em;
@@ -1305,7 +1297,7 @@ body.sidebar-collapsed .app-main {
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.35) !important;
 }
 
-/* --- 8. DASHBOARD KPI & CIRCULATION DESK STYLES --- */
+/* Dashboard stats */
 .stat-card {
     background-color: var(--bg-surface);
     border: var(--border-hairline);
@@ -1374,7 +1366,7 @@ body.sidebar-collapsed .app-main {
 .stat-trend.warning { color: var(--state-warning-text); }
 .stat-trend.danger { color: var(--state-danger-text); }
 
-/* Circulation Desk Barcode Scanner Area */
+/* Barcode scanner */
 .scanner-box {
     background-color: var(--bg-subtle);
     border: 2px dashed var(--accent-border);
@@ -1398,7 +1390,7 @@ body.sidebar-collapsed .app-main {
     font-weight: 600;
 }
 
-/* Patron / Book Preview Card inside Circulation */
+/* Book preview */
 .patron-card-preview {
     background-color: var(--bg-surface);
     border: var(--border-hairline);
@@ -1417,7 +1409,7 @@ body.sidebar-collapsed .app-main {
     border: var(--border-hairline);
 }
 
-/* Mini Progress Bar */
+/* Progress bar */
 .craft-progress {
     height: 6px;
     border-radius: var(--radius-pill);
@@ -1461,7 +1453,7 @@ body.sidebar-collapsed .app-main {
     margin-top: 0.1rem;
 }
 
-/* Modal Craft UI */
+/* Modal */
 .modal-content {
     border: var(--border-hairline);
     border-radius: var(--radius-lg);
@@ -1479,7 +1471,7 @@ body.sidebar-collapsed .app-main {
     padding: 1rem 1.5rem;
 }
 
-/* Responsive Drawer & Mobile Overlay */
+/* Mobile drawer */
 #sidebarBackdrop {
     display: none;
     position: fixed;
@@ -1569,9 +1561,7 @@ body.sidebar-collapsed .app-main {
     }
 }
 
-/* ==========================================================================
-   SHELF LOCATOR & BOOK DETAIL ENHANCEMENTS
-   ========================================================================== */
+/* Shelf location */
 .shelf-locator-box {
     background: var(--bg-subtle);
     border: var(--border-hairline);
@@ -1616,9 +1606,7 @@ body.sidebar-collapsed .app-main {
     border: var(--border-hairline);
 }
 
-/* ==========================================================================
-   COMMAND PALETTE (CTRL + K)
-   ========================================================================== */
+/* Search modal */
 .command-dialog .modal-content {
     background: var(--bg-surface);
     border: var(--border-hairline);
@@ -1688,9 +1676,7 @@ body.sidebar-collapsed .app-main {
     width: 24px;
 }
 
-/* ==========================================================================
-   VIETQR PAYMENT & PRINTABLE RECEIPT
-   ========================================================================== */
+/* VietQR */
 .qr-payment-card {
     background: #FFFFFF;
     border: 1px solid #E5E7EB;
@@ -1742,7 +1728,7 @@ body.sidebar-collapsed .app-main {
     font-size: 0.82rem;
 }
 
-/* Block Alert Banner */
+/* Alerts */
 .borrow-block-banner {
     background: #FEF2F2;
     border: 1px solid #FECACA;
@@ -1759,9 +1745,7 @@ body.sidebar-collapsed .app-main {
     color: #FCA5A5;
 }
 
-/* ==========================================================================
-   FAQ SECTION (CÂU HỎI THƯỜNG GẶP ACCORDION)
-   ========================================================================== */
+/* FAQ */
 .faq-container {
     max-width: 860px !important;
     margin: 0 auto !important;
@@ -1870,7 +1854,7 @@ body.sidebar-collapsed .app-main {
     }
 }
 
-/* Book Cover Thumbnail in Borrow History & Circulation */
+/* Cover thumbnail */
 .book-cover-thumb {
     position: relative;
     width: 84px;
@@ -1901,7 +1885,7 @@ body.sidebar-collapsed .app-main {
     }
 }
 
-/* Dark Mode Book Cover Stage & View Detail Button */
+/* Dark mode cover */
 [data-bs-theme="dark"] .book-cover-stage {
     background-color: #080B10 !important;
     border-color: rgba(255, 255, 255, 0.08) !important;
@@ -1925,7 +1909,7 @@ body.sidebar-collapsed .app-main {
     color: #38BDF8 !important;
 }
 
-/* Dark Mode Catalog Filter Toolbar & Controls */
+/* Catalog filter */
 [data-bs-theme="dark"] .filter-toolbar {
     background-color: #1E293B !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
@@ -1986,7 +1970,7 @@ body.sidebar-collapsed .app-main {
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Stat Icon Badges - Thích ứng hoàn hảo giữa giao diện Sáng & Tối */
+/* Badges */
 .stat-badge-box {
     width: 48px;
     height: 48px;
@@ -2048,7 +2032,7 @@ body.sidebar-collapsed .app-main {
     color: #F8FAFC !important;
 }
 
-/* Đảm bảo nút màu vàng (btn-warning) luôn có chữ đen đậm rõ nét trong cả Dark Mode & Light Mode */
+/* Button warning */
 .btn-warning,
 [data-bs-theme="dark"] .btn-warning,
 .btn-warning.text-dark,
@@ -2063,7 +2047,7 @@ body.sidebar-collapsed .app-main {
     color: #0F172A !important;
 }
 
-/* Nút Chỉ đọc tại chỗ (Tạp chí) - Chuẩn tương phản cao chống chói */
+/* Reading badge */
 .btn-onsite-magazine,
 [data-bs-theme="dark"] .btn-onsite-magazine {
     background-color: #F59E0B !important;
@@ -2100,7 +2084,7 @@ body.sidebar-collapsed .app-main {
     background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Card chọn phương thức thanh toán trong modal trả sách */
+/* Payment option */
 .form-check-card {
     transition: all 0.2s ease;
     cursor: pointer;
@@ -2127,7 +2111,7 @@ body.sidebar-collapsed .app-main {
     cursor: pointer;
 }
 
-/* Phóng to mã QR VietQR ra giữa màn hình */
+/* QR dialog */
 .qr-zoomable-wrapper {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: zoom-in;
@@ -2145,7 +2129,7 @@ body.sidebar-collapsed .app-main {
     pointer-events: none;
 }
 
-/* Lightbox Modal phóng to mã QR */
+/* Lightbox modal */
 .qr-lightbox-overlay {
     position: fixed;
     top: 0;
@@ -2224,7 +2208,7 @@ body.sidebar-collapsed .app-main {
     }
 }
 
-/* --- CART STAT CARDS (Ô thống kê hạn mức & giỏ mượn) --- */
+/* Cart stats */
 .cart-stat-card {
     height: 100% !important;
     margin-bottom: 0 !important;
@@ -2232,11 +2216,7 @@ body.sidebar-collapsed .app-main {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* GIAO DIỆN MOBILE (< 768px):
-   1. Icon nhỏ ở trên
-   2. Chữ (tiêu đề)
-   3. Số lượng
-   Các ô đều nhau 100% về kích thước, chiều cao và căn hàng */
+/* Giao diện mobile (< 768px) */
 @media (max-width: 767.98px) {
     .cart-stat-card {
         flex-direction: column !important;
@@ -2302,8 +2282,7 @@ body.sidebar-collapsed .app-main {
     }
 }
 
-/* GIAO DIỆN DESKTOP (>= 768px):
-   Cân đối, rộng rãi, các ô đều nhau */
+/* Giao diện desktop (>= 768px) */
 @media (min-width: 768px) {
     .cart-stat-card {
         flex-direction: row !important;

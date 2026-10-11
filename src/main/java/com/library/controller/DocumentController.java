@@ -34,7 +34,6 @@ public class DocumentController {
 
         List<Document> allDocs = documentService.getAllDocuments();
 
-        // Thống kê KPI tổng thể
         long totalDocuments = allDocs.size();
         long totalBooks = allDocs.stream().filter(d -> d.getDocumentType() == DocumentType.BOOK).count();
         long totalMagazines = allDocs.stream().filter(d -> d.getDocumentType() == DocumentType.MAGAZINE).count();
@@ -42,7 +41,6 @@ public class DocumentController {
         long inStockCount = allDocs.stream().filter(Document::isAvailable).count();
         long outOfStockCount = allDocs.stream().filter(d -> !d.isAvailable()).count();
 
-        // Lọc đa hình qua Service
         List<Document> filtered = documentService.searchDocuments(keyword, type, status);
 
         model.addAttribute("documents", filtered);

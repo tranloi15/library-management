@@ -25,7 +25,6 @@ public class BookFileService {
 
     private final BookRepository bookRepository;
 
-    // Tên cột chuẩn (đã chuẩn hóa: chữ thường, bỏ khoảng trắng thừa)
     private static final String COL_TITLE = "tên sách";
     private static final String COL_AUTHOR = "tác giả";
     private static final String COL_ISBN = "isbn";
@@ -35,7 +34,6 @@ public class BookFileService {
     private static final String COL_PAGES = "số trang";
     private static final String COL_GENRE = "thể loại";
 
-    // Một vài tên gọi khác của cùng một cột, để file CSV viết hơi khác vẫn nhận được
     private static final Map<String, String> ALIASES = Map.ofEntries(
             Map.entry("tên sách", COL_TITLE),
             Map.entry("tiêu đề", COL_TITLE),
@@ -56,8 +54,6 @@ public class BookFileService {
             Map.entry("thể loại", COL_GENRE),
             Map.entry("genre", COL_GENRE)
     );
-
-    // ======================= EXPORT =======================
 
     public byte[] exportBooks() throws IOException {
 
@@ -112,8 +108,6 @@ public class BookFileService {
         return s != null ? s : "";
     }
 
-    // ======================= IMPORT =======================
-
     @Transactional
     public int importBooks(MultipartFile file) throws IOException {
 
@@ -139,7 +133,6 @@ public class BookFileService {
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
 
-                // Bỏ ký tự BOM (Excel hay thêm vào đầu file UTF-8)
                 if (lineNumber == 1 && line.startsWith("\uFEFF")) {
                     line = line.substring(1);
                 }
@@ -150,7 +143,6 @@ public class BookFileService {
 
                 String[] columns = parseCsvLine(line);
 
-                // Dòng không rỗng đầu tiên là dòng tiêu đề -> xác định vị trí từng cột
                 if (columnIndex == null) {
                     columnIndex = buildColumnIndex(columns);
                     continue;
@@ -200,8 +192,7 @@ public class BookFileService {
                         publisher.isEmpty() ? null : publisher,
                         publishYear,
                         quantity,
-                        null,                               // imageUrl
-                        author.isEmpty() ? null : author,
+                        null,                        author.isEmpty() ? null : author,
                         isbn,
                         pageCount,
                         genre.isEmpty() ? null : genre
@@ -219,7 +210,6 @@ public class BookFileService {
         return books.size();
     }
 
-    /** Đọc dòng tiêu đề, trả về map: tên cột chuẩn -> vị trí cột trong file. */
     private Map<String, Integer> buildColumnIndex(String[] headerColumns) {
         Map<String, Integer> index = new HashMap<>();
 
@@ -229,7 +219,6 @@ public class BookFileService {
             if (standard != null && !index.containsKey(standard)) {
                 index.put(standard, i);
             }
-            // Cột không nhận ra (ví dụ "ID") sẽ bị bỏ qua
         }
 
         List<String> missing = new ArrayList<>();
@@ -245,7 +234,6 @@ public class BookFileService {
         return index;
     }
 
-    /** Lấy giá trị của một cột theo tên; trả về "" nếu file không có cột đó hoặc dòng bị thiếu ô. */
     private String get(String[] columns, Map<String, Integer> index, String columnName) {
         Integer i = index.get(columnName);
         if (i == null || i >= columns.length) {
@@ -254,7 +242,6 @@ public class BookFileService {
         return columns[i].trim();
     }
 
-    /** Parse số nguyên; ô trống thì trả về giá trị mặc định. */
     private int parseInt(String text, int lineNumber, String fieldName, int defaultValue) {
         if (text.isEmpty()) {
             if (defaultValue < 0) {

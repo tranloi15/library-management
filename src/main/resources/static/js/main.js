@@ -1,8 +1,3 @@
-/**
- * HỆ THỐNG QUẢN LÝ THƯ VIỆN - CLIENT SCRIPTS
- * Phụ trách: Hưng (Khung Giao diện Master Layout & UX)
- */
-
 document.addEventListener('DOMContentLoaded', function () {
     try { initThemeToggle(); } catch (e) { console.error('Theme toggle error:', e); }
     try { initMobileSidebar(); } catch (e) { console.error('Mobile sidebar error:', e); }
@@ -12,22 +7,18 @@ document.addEventListener('DOMContentLoaded', function () {
     try { initAutoHideAlerts(); } catch (e) { console.error('Alerts error:', e); }
     try { initKeyboardShortcuts(); } catch (e) { console.error('Shortcuts error:', e); }
 
-    // Dọn dẹp trạng thái bảng màu cũ nếu có, luôn giữ mặc định Sapphire Tech
     localStorage.removeItem('library_palette');
     document.documentElement.removeAttribute('data-theme-palette');
     document.documentElement.removeAttribute('data-theme-style');
 });
 
-/* ==========================================================================
-   1. THEME TOGGLE (LIGHT / DARK SLATE)
-   ========================================================================== */
+// Theme
 function initThemeToggle() {
     const themeCheckbox = document.getElementById('themeToggleCheckbox');
     const themeLabel = document.getElementById('themeLabel');
     const themeIcon = document.getElementById('themeIcon');
     const switchWrapper = document.querySelector('.theme-switch-wrapper');
 
-    // Đọc theme đã lưu, mặc định là light
     const currentTheme = localStorage.getItem('library_theme') || 'light';
     applyTheme(currentTheme);
 
@@ -41,7 +32,6 @@ function initThemeToggle() {
     }
 
     if (switchWrapper) {
-        // Ngăn sự kiện click làm đóng menu dropdown của Bootstrap
         switchWrapper.addEventListener('click', function (e) {
             e.stopPropagation();
         });
@@ -69,9 +59,7 @@ function initThemeToggle() {
     }
 }
 
-/* ==========================================================================
-   2. SIDEBAR TOGGLE (THU NHỎ TRÊN DESKTOP & MENU DRAWER TRÊN MOBILE)
-   ========================================================================== */
+// Mobile sidebar
 function initMobileSidebar() {
     const toggleBtn = document.getElementById('btnToggleSidebar');
     const closeBtn = document.getElementById('btnCloseSidebarMobile');
@@ -92,7 +80,6 @@ function initMobileSidebar() {
         document.body.style.overflow = 'hidden';
     }
 
-    // Khôi phục trạng thái thu nhỏ sidebar desktop đã lưu
     if (window.innerWidth >= 992) {
         const isCollapsed = localStorage.getItem('library_sidebar_collapsed') === 'true';
         if (isCollapsed) {
@@ -131,7 +118,6 @@ function initMobileSidebar() {
         });
     }
 
-    // Tự động đóng sidebar mobile khi nhấn vào bất kỳ link điều hướng nào
     const menuLinks = sidebar.querySelectorAll('.menu-link');
     menuLinks.forEach(link => {
         link.addEventListener('click', function () {
@@ -148,9 +134,7 @@ function initMobileSidebar() {
     });
 }
 
-/* ==========================================================================
-   3. CHUYỂN ĐỔI CHẾ ĐỘ XEM SÁCH: THẺ LƯỚI (CARD) & BẢNG (TABLE)
-   ========================================================================== */
+// View mode
 function initViewModeToggle() {
     const btnGrid = document.getElementById('btnViewGrid');
     const btnTable = document.getElementById('btnViewTable');
@@ -159,7 +143,6 @@ function initViewModeToggle() {
 
     if (!btnGrid || !btnTable || !gridContainer || !tableContainer) return;
 
-    // Đọc chế độ xem đã lưu (Mặc định là Card Grid)
     const savedView = localStorage.getItem('library_view_mode') || 'grid';
     setView(savedView);
 
@@ -186,9 +169,7 @@ function initViewModeToggle() {
     }
 }
 
-/* ==========================================================================
-   4. MODAL XÁC NHẬN XÓA DÙNG CHUNG (SAFE CONFIRM MODAL)
-   ========================================================================== */
+// Delete modal
 function initDeleteConfirmModal() {
     const deleteModalEl = document.getElementById('deleteConfirmModal');
     if (!deleteModalEl) return;
@@ -211,9 +192,7 @@ function initDeleteConfirmModal() {
     });
 }
 
-/* ==========================================================================
-   5. TỰ ĐỘNG ĐÓNG THÔNG BÁO FLASH MESSAGE SAU 4.5 GIÂY
-   ========================================================================== */
+// Auto hide alerts
 function initAutoHideAlerts() {
     const alerts = document.querySelectorAll('.auto-dismiss-alert');
     alerts.forEach(alert => {
@@ -224,9 +203,7 @@ function initAutoHideAlerts() {
     });
 }
 
-/* ==========================================================================
-   6. BÀN PHÍM PHÍM TẮT COMMAND BAR (CTRL + K / CMD + K)
-   ========================================================================== */
+// Shortcuts
 function initKeyboardShortcuts() {
     window.addEventListener('keydown', function (e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -246,9 +223,7 @@ function initKeyboardShortcuts() {
     });
 }
 
-/* ==========================================================================
-   SIDEBAR ACTIVE STATE HIGHLIGHT (CLIENT-SIDE BACKUP)
-   ========================================================================== */
+// Sidebar active
 function initSidebarActiveState() {
     const path = window.location.pathname;
     const sidebar = document.querySelector('.app-sidebar');

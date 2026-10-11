@@ -54,8 +54,7 @@ public class HomeController {
         org.springframework.security.web.csrf.CsrfToken csrf =
             (org.springframework.security.web.csrf.CsrfToken) request.getAttribute(org.springframework.security.web.csrf.CsrfToken.class.getName());
         if (csrf != null) {
-            csrf.getToken(); // Eagerly initialize token and session before template commits response
-        }
+            csrf.getToken();        }
         return "login";
     }
 

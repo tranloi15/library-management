@@ -9,7 +9,6 @@
 <body>
 <div layout:fragment="content">
 
-    <!-- TIÊU ĐỀ & NÚT TÁC VỤ NHANH -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Quản Lý Hồ Sơ Độc Giả (Patrons)</h4>
@@ -25,7 +24,6 @@
         </div>
     </div>
 
-    <!-- HÀNG THỐNG KÊ KPI NHANH -->
     <div class="row g-3 mb-4">
         <div class="col-sm-6 col-lg-4">
             <div class="app-card p-3 d-flex align-items-center gap-3">
@@ -62,7 +60,6 @@
         </div>
     </div>
 
-    <!-- BỘ LỌC TÌM KIẾM ĐỘC GIẢ -->
     <div class="app-card p-3 mb-4">
         <form th:action="@{/users}" method="get" class="m-0">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -87,7 +84,6 @@
         </form>
     </div>
 
-    <!-- BẢNG DANH SÁCH ĐỘC GIẢ (CRAFT UI TABLE) -->
     <div class="app-card p-0 overflow-hidden mb-4">
         <div class="table-responsive">
             <table class="craft-table mb-0">
@@ -159,7 +155,6 @@
         </div>
     </div>
 
-    <!-- MODAL CẤP THẺ ĐỘC GIẢ MỚI (TÍCH HỢP TỪ PREVIEW) -->
     <div class="modal fade" id="addPatronModal" tabindex="-1" aria-labelledby="addPatronModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">

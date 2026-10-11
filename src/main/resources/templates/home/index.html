@@ -8,7 +8,6 @@
 <body>
 <div layout:fragment="content">
 
-    <!-- TIÊU ĐỀ TRANG & NÚT TÁC VỤ NHANH -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1 tracking-tight">Danh mục Tài liệu Thư viện</h4>
@@ -24,7 +23,6 @@
         </div>
     </div>
 
-    <!-- THANH BỘ LỌC TỐI GIẢN (FILTER BAR) -->
     <div class="app-card p-3 mb-4">
         <form th:action="@{/}" method="get" class="m-0">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -54,7 +52,6 @@
                     </button>
                 </div>
 
-                <!-- CHUYỂN VIEW LƯỚI / BẢNG -->
                 <div class="d-flex align-items-center gap-1 border p-1 rounded-2 bg-body-tertiary">
                     <button type="button" id="btnViewGrid" class="btn btn-sm btn-primary px-2 py-1 small active" title="Dạng lưới thẻ sách">
                         <i class="bi bi-grid-fill me-1"></i> Lưới (Độc giả)
@@ -67,9 +64,7 @@
         </form>
     </div>
 
-    <!-- DẠNG LƯỚI CARD SÁCH VỚI HIỆU ỨNG GÁY 3D (READER VIEW) -->
     <div id="bookGridView" class="book-grid mb-4">
-        <!-- Cuốn 1 -->
         <div class="book-card">
             <div class="book-cover-stage">
                 <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
@@ -86,7 +81,6 @@
             </div>
         </div>
 
-        <!-- Cuốn 2 -->
         <div class="book-card">
             <div class="book-cover-stage">
                 <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
@@ -103,7 +97,6 @@
             </div>
         </div>
 
-        <!-- Cuốn 3: Hết kho -->
         <div class="book-card">
             <div class="book-cover-stage" style="opacity: 0.75; filter: grayscale(30%);">
                 <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
@@ -120,7 +113,6 @@
             </div>
         </div>
 
-        <!-- Cuốn 4: Tạp chí -->
         <div class="book-card">
             <div class="book-cover-stage">
                 <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&auto=format&fit=crop&q=80" alt="Cover" class="book-cover-img">
@@ -138,7 +130,6 @@
         </div>
     </div>
 
-    <!-- DẠNG BẢNG QUẢN LÝ (ADMIN CRAFT TABLE) -->
     <div id="bookTableView" class="app-card p-0 d-none overflow-hidden">
         <div class="table-responsive">
             <table class="craft-table">
