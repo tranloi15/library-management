@@ -87,7 +87,6 @@ class BorrowServiceQrTest {
         assertNotNull(record.getRequestExpiresAt());
         assertTrue(record.getRequestExpiresAt().isAfter(LocalDateTime.now()));
 
-        // Sách trong kho phải giảm đi 1
         assertEquals(2, sampleBook.getQuantity());
         verify(documentRepository).save(sampleBook);
         verify(borrowRecordRepository).save(any(BorrowRecord.class));
@@ -214,7 +213,6 @@ class BorrowServiceQrTest {
 
         assertEquals(BorrowStatus.REJECTED, rejected.getStatus());
         assertEquals("Độc giả chưa xuất trình thẻ sinh viên", rejected.getRejectReason());
-        // Số lượng trong kho được hoàn trả
         assertEquals(3, sampleBook.getQuantity());
         verify(documentRepository).save(sampleBook);
         verify(borrowRecordRepository).save(pendingRecord);

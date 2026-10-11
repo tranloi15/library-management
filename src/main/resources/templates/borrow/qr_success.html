@@ -48,7 +48,6 @@
 
         <div class="success-box p-4 p-md-5 text-center">
             
-            <!-- BIỂU TƯỢNG HOÀN THÀNH -->
             <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" 
                  style="width: 72px; height: 72px; background: rgba(16, 185, 129, 0.12); color: #10B981; font-size: 2.2rem;">
                 <i class="bi bi-check-lg"></i>
@@ -57,7 +56,6 @@
             <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Yêu Cầu Mượn Sách Đã Gửi Thành Công!</h4>
             <p class="text-secondary small mb-4">Vui lòng cầm sách tới quầy quản lý để hoàn tất thủ tục nhận sách</p>
 
-            <!-- ĐỒNG HỒ ĐẾM NGƯỢC THỜI HẠN GIỮ SÁCH -->
             <div class="countdown-circle mb-3">
                 <span class="countdown-time" id="countdownDisplay">30:00</span>
                 <span class="text-secondary" style="font-size: 0.65rem; text-transform: uppercase; font-weight: 600; margin-top: 4px;">Thời hạn giữ</span>
@@ -67,7 +65,6 @@
                 Sách sẽ được giữ riêng cho bạn tại quầy trong vòng <strong class="text-warning" th:text="${timeoutMinutes + ' phút'}">30 phút</strong>. Sau thời gian này yêu cầu sẽ tự động hủy.
             </p>
 
-            <!-- TÓM TẮT THÔNG TIN PHIẾU MƯỢN -->
             <div class="p-3 rounded bg-subtle text-start mb-4 border">
                 <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
                     <span class="text-secondary small">Mã yêu cầu:</span>
@@ -87,7 +84,6 @@
                 </div>
             </div>
 
-            <!-- NÚT HÀNH ĐỘNG -->
             <div class="d-flex flex-wrap justify-content-center gap-2">
                 <a th:href="@{/borrow/history}" class="btn btn-sm btn-primary px-3 d-inline-flex align-items-center gap-1">
                     <i class="bi bi-clock-history"></i>
@@ -111,7 +107,6 @@
 
 </div>
 
-<!-- SCRIPT ĐỒNG HỒ ĐẾM NGƯỢC -->
 <th:block layout:fragment="scripts">
 <script th:inline="javascript">
     (function() {

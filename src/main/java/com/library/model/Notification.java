@@ -37,10 +37,7 @@ public class Notification extends BaseEntity {
     @Column(name = "recipient_code")
     private String recipientCode;
 
-    /**
-     * Mã định danh nhóm phát tin broadcast hoặc gửi hàng loạt
-     */
-    @Column(name = "broadcast_id")
+        @Column(name = "broadcast_id")
     private String broadcastId;
 
     @Column(name = "is_broadcast", nullable = false)

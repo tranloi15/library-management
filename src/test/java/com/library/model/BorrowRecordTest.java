@@ -78,7 +78,6 @@ class BorrowRecordTest {
         assertTrue(changed);
         assertEquals(BorrowStatus.OVERDUE, record.getStatus());
 
-        // Lần gọi thứ 2 không đổi vì đã là OVERDUE
         assertFalse(record.markOverdueIfApplicable());
     }
 

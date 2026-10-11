@@ -36,7 +36,6 @@ public interface BorrowService {
 
     List<Object[]> getTopBorrowedBooks();
 
-    // Quy trình mượn tự phục vụ qua QR tại quầy
     BorrowRecord createPendingQrRequest(Long userId, Long bookId);
 
     BorrowRecord approvePendingRequest(Long recordId, String managerName);

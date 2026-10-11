@@ -9,7 +9,6 @@
 <body>
 <div layout:fragment="content">
 
-    <!-- TIÊU ĐỀ TRANG -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">Hồ Sơ & Cài Đặt Tài Khoản</h4>
@@ -25,9 +24,7 @@
         </div>
     </div>
 
-    <!-- NỘI DUNG CHÍNH: 2 CỘT CRAFT CARD -->
     <div class="row g-4">
-        <!-- CỘT TRÁI: THÔNG TIN CÁ NHÂN -->
         <div class="col-lg-6">
             <div class="app-card h-100 p-4">
                 <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
@@ -40,7 +37,6 @@
                     </div>
                 </div>
 
-                <!-- Thông báo riêng cho profile -->
                 <div th:if="${profileSuccess}" class="alert alert-success d-flex align-items-center gap-2 mb-3 py-2 px-3 small border-0 rounded-3" style="background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0;">
                     <i class="bi bi-check-circle-fill"></i>
                     <span th:text="${profileSuccess}"></span>
@@ -87,7 +83,6 @@
             </div>
         </div>
 
-        <!-- CỘT PHẢI: ĐỔI MẬT KHẨU -->
         <div class="col-lg-6">
             <div class="app-card h-100 p-4">
                 <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
@@ -100,7 +95,6 @@
                     </div>
                 </div>
 
-                <!-- Thông báo riêng cho password -->
                 <div th:if="${passwordSuccess}" class="alert alert-success d-flex align-items-center gap-2 mb-3 py-2 px-3 small border-0 rounded-3" style="background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0;">
                     <i class="bi bi-check-circle-fill"></i>
                     <span th:text="${passwordSuccess}"></span>

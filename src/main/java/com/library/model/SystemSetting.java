@@ -25,8 +25,7 @@ public class SystemSetting {
     private String settingValue;
 
     @Column(name = "setting_group", nullable = false, length = 50)
-    private String settingGroup; // POLICY, INFO, TOGGLE
-
+    private String settingGroup;
     @Column(length = 255)
     private String description;
 

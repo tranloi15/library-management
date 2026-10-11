@@ -37,12 +37,7 @@ public class DocumentService {
         return searchDocuments(keyword, null, null);
     }
 
-    /**
-     * Tìm kiếm và lọc tài liệu áp dụng đa hình OOP (Polymorphism)
-     * Tận dụng getIdentifierCode(), getDocumentDetails() và isAvailable() của các
-     * lớp con
-     */
-    public List<Document> searchDocuments(String keyword, String type, String status) {
+        public List<Document> searchDocuments(String keyword, String type, String status) {
         List<Document> allDocs = documentRepository.findAll();
 
         return allDocs.stream()

@@ -13,7 +13,6 @@
 
 <div layout:fragment="content">
 
-    <!-- TIÊU ĐỀ TRANG -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
@@ -29,7 +28,6 @@
         </div>
     </div>
 
-    <!-- THỐNG KÊ NHANH HÔM NAY -->
     <div class="row g-3 mb-4">
         <div class="col-sm-6 col-xl-3">
             <div class="app-card p-3 d-flex align-items-center gap-3 h-100">
@@ -77,7 +75,6 @@
         </div>
     </div>
 
-    <!-- THANH BỘ LỌC TÌM KIẾM -->
     <div class="app-card p-3 mb-4">
         <form th:action="@{/admin/activity-logs}" method="get" class="m-0" id="filterForm">
             <div class="row g-2 align-items-end">
@@ -139,7 +136,6 @@
         </form>
     </div>
 
-    <!-- BẢNG DỮ LIỆU NHẬT KÝ -->
     <div class="app-card overflow-hidden">
         <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
             <div class="small text-secondary">
@@ -170,7 +166,6 @@
                     </tr>
 
                     <tr th:each="log : ${logs}">
-                        <!-- Thời điểm -->
                         <td>
                             <div class="fw-semibold text-main" th:text="${#temporals.format(log.createdAt, 'dd/MM/yyyy HH:mm:ss')}">01/01/2026 10:00:00</div>
                             <div class="text-muted" style="font-size: 0.75rem;">
@@ -179,7 +174,6 @@
                             </div>
                         </td>
 
-                        <!-- Người thực hiện -->
                         <td>
                             <div class="d-flex align-items-center gap-2">
                                 <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(54, 164, 247, 0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0;"
@@ -199,7 +193,6 @@
                             </div>
                         </td>
 
-                        <!-- Hành vi & Đối tượng -->
                         <td>
                             <div class="mb-1">
                                 <span class="badge py-1 px-2" th:classappend="${log.actionBadgeClass}">
@@ -214,13 +207,11 @@
                             </div>
                         </td>
 
-                        <!-- Nội dung thao tác -->
                         <td>
                             <div class="text-main" th:text="${log.description}">Mô tả chi tiết hành động thực hiện</div>
                             <div th:if="${log.targetName != null}" class="text-muted small mt-1" style="font-size: 0.78rem;">
                                 <i class="bi bi-tag me-1"></i>Đối tượng: <strong th:text="${log.targetName}">Tên sách / Độc giả</strong>
                             </div>
-                            <!-- Xem thêm chi tiết nếu có -->
                             <div th:if="${log.details != null and !#strings.isEmpty(log.details)}" class="mt-1">
                                 <a href="javascript:void(0)"
                                    class="text-primary small text-decoration-none"
@@ -231,7 +222,6 @@
                             </div>
                         </td>
 
-                        <!-- IP -->
                         <td class="text-end">
                             <span class="font-monospace text-muted small" style="font-size: 0.78rem;" th:text="${log.ipAddress ?: '127.0.0.1'}">127.0.0.1</span>
                         </td>
@@ -240,7 +230,6 @@
             </table>
         </div>
 
-        <!-- PHÂN TRANG -->
         <div th:if="${totalPages > 1}" class="p-3 border-top d-flex justify-content-between align-items-center">
             <div class="text-muted small">
                 Hiển thị trang <span th:text="${currentPage + 1}">1</span> trong tổng số <span th:text="${totalPages}">1</span> trang
@@ -272,7 +261,6 @@
         </div>
     </div>
 
-    <!-- MODAL XEM CHI TIẾT NHẬT KÝ -->
     <div class="modal fade" id="logDetailModal" tabindex="-1" aria-labelledby="logDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">

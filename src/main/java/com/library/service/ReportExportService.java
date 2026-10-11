@@ -23,16 +23,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * Xuất các báo cáo ra file Excel (.xlsx).
- * Mỗi file gồm: tiêu đề, dòng thông tin, ngày xuất, rồi đến bảng dữ liệu.
- */
 @Service
 public class ReportExportService {
 
     private static final DateTimeFormatter VN_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    // Top sách mượn nhiều nhất
     public byte[] exportTopBooks(List<TopBookDto> books, String periodLabel) throws IOException {
 
         try (Workbook wb = new XSSFWorkbook();
@@ -68,7 +63,6 @@ public class ReportExportService {
         }
     }
 
-    // Phiếu mượn quá hạn
     public byte[] exportOverdue(List<BorrowRecord> records, long finePerDay) throws IOException {
 
         try (Workbook wb = new XSSFWorkbook();
@@ -114,7 +108,6 @@ public class ReportExportService {
                 sheet.createRow(rowIndex++).createCell(0).setCellValue("Không có phiếu mượn quá hạn.");
             }
 
-            // Dòng tổng tiền phạt
             Cell total = sheet.createRow(rowIndex + 1).createCell(0);
             total.setCellValue("Tổng tiền phạt tạm tính: " + money(totalFine) + " đ");
             total.setCellStyle(boldStyle(wb));
@@ -125,7 +118,6 @@ public class ReportExportService {
         }
     }
 
-    // Tiền phạt đã thu
     public byte[] exportFines(FineReport report, String periodLabel, String comparisonText,
                               List<PeriodSummary> history) throws IOException {
 
@@ -135,7 +127,6 @@ public class ReportExportService {
             CellStyle moneyStyle = wb.createCellStyle();
             moneyStyle.setDataFormat(wb.createDataFormat().getFormat("#,##0"));
 
-            // ---------- Sheet 1: chi tiết các khoản phạt ----------
             Sheet sheet = wb.createSheet("Chi tiết");
             String summary = "Tổng đã thu: " + money(report.getTotal()) + " đ";
             if (comparisonText != null) {
@@ -171,7 +162,6 @@ public class ReportExportService {
                 sheet.createRow(rowIndex++).createCell(0).setCellValue("Không có khoản phạt nào trong kỳ này.");
             }
 
-            // Dòng tổng theo phương thức
             CellStyle bold = boldStyle(wb);
             rowIndex++;
             sheet.createRow(rowIndex++).createCell(0).setCellValue(
@@ -189,7 +179,6 @@ public class ReportExportService {
 
             finish(sheet, headers.length, headerRow);
 
-            // ---------- Sheet 2: so sánh các kỳ ----------
             if (!history.isEmpty()) {
                 Sheet compare = wb.createSheet("So sánh các kỳ");
                 int r = writeTitle(wb, compare,
@@ -222,7 +211,6 @@ public class ReportExportService {
         }
     }
 
-    // Tiện ích hỗ trợ xuất file
     private int writeTitle(Workbook wb, Sheet sheet, String title, String info) {
         Font font = wb.createFont();
         font.setBold(true);
@@ -237,10 +225,8 @@ public class ReportExportService {
         sheet.createRow(1).createCell(0).setCellValue(info);
         sheet.createRow(2).createCell(0).setCellValue("Ngày xuất: " + LocalDate.now().format(VN_DATE));
 
-        return 4; // dòng 3 để trống
-    }
+        return 4;    }
 
-    /** Dòng tiêu đề cột: in đậm, nền xám. */
     private void writeHeader(Workbook wb, Sheet sheet, int rowIndex, String[] headers) {
         CellStyle style = boldStyle(wb);
         style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -254,7 +240,6 @@ public class ReportExportService {
         }
     }
 
-    /** Căn độ rộng cột và cố định dòng tiêu đề khi cuộn. */
     private void finish(Sheet sheet, int columnCount, int headerRow) {
         for (int i = 0; i < columnCount; i++) {
             sheet.autoSizeColumn(i);
@@ -278,7 +263,6 @@ public class ReportExportService {
         return d != null ? d.format(VN_DATE) : "";
     }
 
-    /** 15000 -> "15.000" */
     private String money(long amount) {
         return String.format("%,d", amount).replace(',', '.');
     }

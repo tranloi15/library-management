@@ -44,7 +44,6 @@ public class ReportServiceImpl implements ReportService {
         );
     }
 
-    /** Top sách mượn nhiều nhất trên toàn bộ lịch sử. */
     @Override
     public List<TopBookDto> getTopBorrowedBooks(int limit) {
 
@@ -55,7 +54,6 @@ public class ReportServiceImpl implements ReportService {
         return toTopBookDtos(borrowRecordRepository.findTopBorrowedBooks(), limit);
     }
 
-    /** Top sách mượn nhiều nhất trong khoảng ngày [from, to]. */
     @Override
     public List<TopBookDto> getTopBorrowedBooks(LocalDate from, LocalDate to, int limit) {
 
@@ -66,7 +64,6 @@ public class ReportServiceImpl implements ReportService {
         return toTopBookDtos(borrowRecordRepository.findTopBorrowedBooksBetween(from, to), limit);
     }
 
-    /** Tổng số lượt mượn trong khoảng ngày [from, to]. */
     @Override
     public long countBorrowsBetween(LocalDate from, LocalDate to) {
 
@@ -86,11 +83,7 @@ public class ReportServiceImpl implements ReportService {
                 .findByStatus(BorrowStatus.OVERDUE);
     }
 
-    /**
-     * Chuyển kết quả truy vấn [Document, số lượt mượn] thành danh sách TopBookDto.
-     * Chỉ lấy Sách (bỏ Tạp chí), kèm ISBN và ảnh bìa để giao diện hiển thị.
-     */
-    private List<TopBookDto> toTopBookDtos(List<Object[]> rows, int limit) {
+        private List<TopBookDto> toTopBookDtos(List<Object[]> rows, int limit) {
 
         return rows.stream()
                 .filter(row -> row[0] instanceof Book)

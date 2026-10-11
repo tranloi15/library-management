@@ -37,7 +37,6 @@ public class BorrowController {
     private final DocumentRepository documentRepository;
     private final com.library.service.SettingService settingService;
 
-    // DANH SÁCH TẤT CẢ PHIẾU MƯỢN (Dành cho Quản lý)
     @GetMapping("/list")
     public String list(
             @RequestParam(value = "status", required = false, defaultValue = "ALL") String statusFilter,
@@ -46,7 +45,6 @@ public class BorrowController {
 
         List<BorrowRecord> allRecords = borrowService.getAll();
 
-        // Thống kê nhanh
         long totalCount = allRecords.size();
         long pendingCount = allRecords.stream().filter(r -> r.getStatus() == BorrowStatus.PENDING).count();
         long borrowingCount = allRecords.stream().filter(r -> r.getStatus() == BorrowStatus.BORROWING).count();
@@ -60,7 +58,6 @@ public class BorrowController {
         stats.put("overdue", overdueCount);
         stats.put("returned", returnedCount);
 
-        // Lọc theo trạng thái và từ khóa
         List<BorrowRecord> filteredRecords = allRecords.stream()
                 .filter(r -> {
                     if ("PENDING".equalsIgnoreCase(statusFilter)) {
@@ -103,28 +100,23 @@ public class BorrowController {
         return "borrow/list";
     }
 
-    // TRANG LẬP PHIẾU MƯỢN MỚI
     @GetMapping("/create")
     public String createForm(Model model) {
-        // Chỉ lấy các tài khoản Độc giả (ROLE_READER) đang hoạt động
         List<User> activeReaders = userRepository.findByRole(RoleName.ROLE_READER).stream()
                 .filter(User::isActive)
                 .toList();
 
-        // Lấy tất cả tài liệu kèm thông tin tồn kho
         List<Document> documents = documentRepository.findAll();
 
         model.addAttribute("users", activeReaders);
         model.addAttribute("documents", documents);
         model.addAttribute("borrowDate", LocalDate.now());
-        model.addAttribute("defaultDueDate", LocalDate.now().plusDays(14)); // Mặc định 14 ngày
-        model.addAttribute("activeMenu", "borrow");
+        model.addAttribute("defaultDueDate", LocalDate.now().plusDays(14));        model.addAttribute("activeMenu", "borrow");
         model.addAttribute("pageTitle", "Lập Phiếu Mượn Tài Liệu");
 
         return "borrow/create";
     }
 
-    // XỬ LÝ TẠO PHIẾU MƯỢN
     @PostMapping("/create")
     public String create(
             @ModelAttribute BorrowRequestDto request,
@@ -158,7 +150,6 @@ public class BorrowController {
         }
     }
 
-    // XỬ LÝ TRẢ SÁCH (Hỗ trợ tiền phạt trễ hạn, phụ phí hư hại và thanh toán Tiền mặt / Mã QR)
     @PostMapping("/{id}/return")
     public String returnBook(
             @PathVariable Long id,
@@ -193,7 +184,6 @@ public class BorrowController {
         return "redirect:/borrow/list";
     }
 
-    // DANH SÁCH PHIẾU QUÁ HẠN
     @GetMapping("/overdue")
     public String overdue(Model model) {
         List<BorrowRecord> overdueRecords = borrowService.getOverdueRecords();
@@ -212,7 +202,6 @@ public class BorrowController {
         return "borrow/overdue";
     }
 
-    // XẾP HẠNG TOP TÀI LIỆU ĐƯỢC MƯỢN NHIỀU NHẤT
     @GetMapping("/top-books")
     public String topBooks(Model model) {
         List<Object[]> topBooks = borrowService.getTopBorrowedBooks();
@@ -224,7 +213,6 @@ public class BorrowController {
         return "borrow/top-books";
     }
 
-    // LỊCH SỬ MƯỢN CỦA ĐỘC GIẢ ĐANG ĐĂNG NHẬP
     @GetMapping("/history")
     public String viewBorrowHistory(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -269,7 +257,6 @@ public class BorrowController {
         return "borrow/history";
     }
 
-    // XỬ LÝ GIA HẠN THỜI HẠN MƯỢN SÁCH
     @PostMapping("/{id}/renew")
     public String renewBook(
             @PathVariable Long id,
@@ -301,7 +288,6 @@ public class BorrowController {
         return "redirect:/borrow/history";
     }
 
-    // Giao diện xác nhận yêu cầu mượn tự phục vụ qua QR
     @GetMapping("/qr-request")
     public String showQrConfirm(
             @RequestParam("bookId") Long bookId,
@@ -320,7 +306,6 @@ public class BorrowController {
             return "borrow/qr_confirm";
         }
 
-        // Kiểm tra điều kiện mượn
         boolean canBorrow = true;
         String reason = null;
 
@@ -376,7 +361,6 @@ public class BorrowController {
         return "borrow/qr_confirm";
     }
 
-    // Xử lý gửi yêu cầu mượn tự phục vụ qua QR
     @PostMapping("/qr-request")
     public String submitQrRequest(
             @RequestParam("bookId") Long bookId,
@@ -408,7 +392,6 @@ public class BorrowController {
         }
     }
 
-    // Độc giả tự hủy yêu cầu mượn chờ duyệt
     @PostMapping("/{id}/cancel-request")
     public String cancelRequest(
             @PathVariable Long id,
@@ -430,13 +413,11 @@ public class BorrowController {
         return "redirect:/borrow/history";
     }
 
-    // Màn hình tiếp nhận và duyệt mượn tại quầy chuyển hướng về danh sách lọc Chờ duyệt
     @GetMapping("/requests")
     public String deskRequests() {
         return "redirect:/borrow/list?status=PENDING";
     }
 
-    // Quản lý duyệt mượn tại quầy
     @PostMapping("/requests/{id}/approve")
     public String approveRequest(
             @PathVariable Long id,
@@ -460,7 +441,6 @@ public class BorrowController {
         return "redirect:" + (referer != null ? referer : "/borrow/list?status=PENDING");
     }
 
-    // Quản lý từ chối yêu cầu mượn tại quầy
     @PostMapping("/requests/{id}/reject")
     public String rejectRequest(
             @PathVariable Long id,

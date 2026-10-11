@@ -43,7 +43,6 @@ class QrCodeServiceTest {
         assertNotNull(qrBytes);
         assertTrue(qrBytes.length > 0);
 
-        // Đọc lại nội dung từ ảnh byte array để xác thực tính toàn vẹn
         BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(qrBytes));
         assertNotNull(bufferedImage);
         assertEquals(300, bufferedImage.getWidth());
@@ -98,7 +97,6 @@ class QrCodeServiceTest {
         assertNotNull(zipBytes);
         assertTrue(zipBytes.length > 0);
 
-        // Giải nén kiểm tra các file bên trong ZIP
         int entryCount = 0;
         try (ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipBytes))) {
             ZipEntry entry;

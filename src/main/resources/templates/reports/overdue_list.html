@@ -12,7 +12,6 @@
 
 <div layout:fragment="content">
 
-    <!-- CHỨC NĂNG CHUYỂN ĐỔI BÁO CÁO -->
     <div class="d-flex flex-wrap gap-2 mb-4">
         <a th:href="@{/reports/top-books}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-trophy me-1"></i> Top Sách Mượn
@@ -25,7 +24,6 @@
         </a>
     </div>
 
-    <!-- HEADER -->
     <div class="d-flex flex-column flex-md-row
                 justify-content-between
                 align-items-start align-items-md-center
@@ -45,7 +43,6 @@
 
         <div class="d-flex flex-wrap gap-2">
 
-            <!-- XUẤT EXCEL: tắt khi không có phiếu quá hạn -->
             <a th:href="@{/reports/overdue-list/export}"
                class="btn btn-success"
                th:classappend="${#lists.isEmpty(overdueRecords)} ? 'disabled' : ''"
@@ -69,11 +66,8 @@
 
     </div>
 
-
-    <!-- THỐNG KÊ -->
     <div class="row g-3 mb-4">
 
-        <!-- SỐ PHIẾU QUÁ HẠN -->
         <div class="col-12 col-md-4">
 
             <div class="stat-card">
@@ -92,14 +86,12 @@
 
                 </div>
 
-
                 <div class="stat-value text-danger"
                      th:text="${#lists.size(overdueRecords)}">
 
                     0
 
                 </div>
-
 
                 <div class="stat-trend">
 
@@ -113,8 +105,6 @@
 
         </div>
 
-
-        <!-- MỨC PHẠT -->
         <div class="col-12 col-md-4">
 
             <div class="stat-card">
@@ -133,7 +123,6 @@
 
                 </div>
 
-
                 <div class="stat-value"
                      style="font-size: 1.45rem;">
 
@@ -146,7 +135,6 @@
 
                 </div>
 
-
                 <div class="stat-trend">
 
                     Tiền phạt theo ngày quá hạn
@@ -157,8 +145,6 @@
 
         </div>
 
-
-        <!-- TỔNG TIỀN PHẠT -->
         <div class="col-12 col-md-4">
 
             <div class="stat-card">
@@ -177,7 +163,6 @@
 
                 </div>
 
-
                 <div class="stat-value text-danger"
                      style="font-size: 1.45rem;">
 
@@ -189,7 +174,6 @@
                     </span>
 
                 </div>
-
 
                 <div class="stat-trend">
 
@@ -203,8 +187,6 @@
 
     </div>
 
-
-    <!-- CẢNH BÁO -->
     <div class="app-card mb-4 border-danger-subtle">
 
         <div class="d-flex
@@ -223,7 +205,6 @@
 
                 </div>
 
-
                 <div>
 
                     <h6 class="fw-bold mb-1 text-danger">
@@ -241,7 +222,6 @@
 
             </div>
 
-
             <span class="status-pill danger"
                   th:if="${!#lists.isEmpty(overdueRecords)}">
 
@@ -250,7 +230,6 @@
                 Có phiếu quá hạn
 
             </span>
-
 
             <span class="status-pill success"
                   th:if="${#lists.isEmpty(overdueRecords)}">
@@ -265,8 +244,6 @@
 
     </div>
 
-
-    <!-- BẢNG -->
     <div class="app-card p-2 p-sm-4">
 
         <div class="d-flex flex-column flex-md-row
@@ -287,7 +264,6 @@
 
             </div>
 
-
             <span class="craft-code"
                   th:text="${#lists.size(overdueRecords)} + ' phiếu'">
 
@@ -296,7 +272,6 @@
             </span>
 
         </div>
-
 
         <div class="table-responsive">
 
@@ -342,10 +317,8 @@
 
                 </thead>
 
-
                 <tbody>
 
-                <!-- KHÔNG CÓ DỮ LIỆU -->
                 <tr th:if="${overdueRecords == null
                             || overdueRecords.isEmpty()}">
 
@@ -373,11 +346,8 @@
 
                 </tr>
 
-
-                <!-- DANH SÁCH -->
                 <tr th:each="borrow : ${overdueRecords}">
 
-                    <!-- MÃ PHIẾU -->
                     <td>
 
                         <span class="craft-code"
@@ -389,8 +359,6 @@
 
                     </td>
 
-
-                    <!-- ĐỘC GIẢ -->
                     <td>
 
                         <div class="fw-medium"
@@ -419,8 +387,6 @@
 
                     </td>
 
-
-                    <!-- SÁCH -->
                     <td>
 
                         <div class="d-flex
@@ -449,8 +415,6 @@
 
                     </td>
 
-
-                    <!-- NGÀY MƯỢN -->
                     <td class="font-mono">
 
                         <span th:if="${borrow.borrowDate != null}"
@@ -468,8 +432,6 @@
 
                     </td>
 
-
-                    <!-- HẠN TRẢ -->
                     <td class="font-mono">
 
                         <span class="text-danger fw-medium"
@@ -488,8 +450,6 @@
 
                     </td>
 
-
-                    <!-- SỐ NGÀY QUÁ HẠN -->
                     <td>
 
                         <span class="status-pill danger">
@@ -507,8 +467,6 @@
 
                     </td>
 
-
-                    <!-- TIỀN PHẠT -->
                     <td>
 
                         <div class="fw-bold text-danger">
@@ -539,8 +497,6 @@
 
                     </td>
 
-
-                    <!-- TRẠNG THÁI -->
                     <td>
 
                         <span class="status-pill danger">
@@ -563,8 +519,6 @@
 
     </div>
 
-
-    <!-- GHI CHÚ -->
     <div class="app-card mt-4">
 
         <div class="d-flex
@@ -577,7 +531,6 @@
                 <i class="bi bi-info-circle"></i>
 
             </div>
-
 
             <div>
 

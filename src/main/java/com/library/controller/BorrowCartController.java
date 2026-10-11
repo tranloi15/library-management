@@ -27,7 +27,6 @@ public class BorrowCartController {
     private final BorrowCartService borrowCartService;
     private final UserService userService;
 
-    // Xem giỏ mượn cá nhân
     @GetMapping
     public String viewCart(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -55,7 +54,6 @@ public class BorrowCartController {
         return "borrow/cart";
     }
 
-    // AJAX thêm tài liệu vào giỏ
     @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> addToCart(
@@ -75,7 +73,6 @@ public class BorrowCartController {
         return ResponseEntity.ok(result);
     }
 
-    // Xóa khỏi giỏ
     @PostMapping("/remove")
     public String removeFromCart(
             @RequestParam("bookId") Long bookId,
@@ -87,7 +84,6 @@ public class BorrowCartController {
         return "redirect:/borrow/cart";
     }
 
-    // Xóa sạch giỏ
     @PostMapping("/clear")
     public String clearCart(HttpSession session, RedirectAttributes redirectAttributes) {
         borrowCartService.clearCart(session);
@@ -95,7 +91,6 @@ public class BorrowCartController {
         return "redirect:/borrow/cart";
     }
 
-    // Xác nhận mượn tất cả sách trong giỏ
     @PostMapping("/checkout")
     public String checkout(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -118,7 +113,6 @@ public class BorrowCartController {
         }
     }
 
-    // AJAX lấy số lượng giỏ
     @GetMapping("/count")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getCartCount(

@@ -14,20 +14,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Báo cáo tiền phạt trả sách trễ hạn đã thu, tính theo NGÀY TRẢ sách.
- */
 @Service
 @RequiredArgsConstructor
 public class FineReportService {
 
     private final BorrowRecordRepository borrowRecordRepository;
 
-    /**
-     * Các khoản phạt có ngày trả trong khoảng [from, to].
-     * from = null nghĩa là toàn bộ thời gian.
-     */
-    @Transactional(readOnly = true)
+        @Transactional(readOnly = true)
     public FineReport getReport(LocalDate from, LocalDate to) {
 
         List<BorrowRecord> returned = (from == null)
@@ -37,22 +30,16 @@ public class FineReportService {
         List<FineRow> rows = returned.stream()
                 .filter(r -> r.getFineAmount() != null && r.getFineAmount() > 0)
                 .sorted(Comparator.comparing(BorrowRecord::getReturnDate,
-                        Comparator.nullsLast(Comparator.reverseOrder())))   // mới nhất trước
-                .map(FineRow::new)
+                        Comparator.nullsLast(Comparator.reverseOrder())))                .map(FineRow::new)
                 .toList();
 
         return new FineReport(rows);
     }
 
-    /** Một kỳ báo cáo: tên hiển thị và khoảng ngày. */
     public record Period(String name, LocalDate from, LocalDate to) {
     }
 
-    /**
-     * So sánh nhiều kỳ liên tiếp. Danh sách truyền vào sắp từ kỳ mới nhất đến cũ nhất
-     * (kỳ đang xem, kỳ trước, kỳ trước nữa...). Mỗi kỳ được so với kỳ liền trước nó.
-     */
-    @Transactional(readOnly = true)
+        @Transactional(readOnly = true)
     public List<PeriodSummary> compareLastPeriods(List<Period> periods) {
 
         List<FineReport> reports = periods.stream()
@@ -67,7 +54,6 @@ public class FineReportService {
         return result;
     }
 
-    // Kết quả báo cáo tổng hợp
     @Getter
     public static class FineReport {
 
@@ -78,7 +64,6 @@ public class FineReportService {
         private final long qrTotal;
         private final long qrCount;
 
-        /** Có tiền phạt nhưng chưa ghi nhận phương thức (cần kiểm tra khi đối soát) */
         private final long otherTotal;
         private final long otherCount;
 
@@ -105,14 +90,12 @@ public class FineReportService {
         }
     }
 
-    /** Tiền phạt của một kỳ, kèm mức thay đổi so với kỳ liền trước. */
     @Getter
     public static class PeriodSummary {
 
         private final String name;
         private final FineReport report;
 
-        /** Tổng kỳ liền trước, null nếu không có kỳ để so sánh */
         private final Long previousTotal;
 
         public PeriodSummary(String name, FineReport report, Long previousTotal) {
@@ -125,7 +108,6 @@ public class FineReportService {
             return report.getTotal();
         }
 
-        /** UP, DOWN hoặc SAME, dùng để tô màu. */
         public String getChangeDirection() {
             if (previousTotal == null || getTotal() == previousTotal) {
                 return "SAME";
@@ -133,7 +115,6 @@ public class FineReportService {
             return getTotal() > previousTotal ? "UP" : "DOWN";
         }
 
-        /** Ví dụ: "+25%", "-10%", "Không đổi", "Kỳ trước chưa có". */
         public String getChangeText() {
             if (previousTotal == null) {
                 return "—";
@@ -149,7 +130,6 @@ public class FineReportService {
         }
     }
 
-    /** Một khoản phạt (thông tin độc giả được lấy sẵn để giao diện và file Excel dùng). */
     @Getter
     public static class FineRow {
 

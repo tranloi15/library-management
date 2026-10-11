@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Data Transfer Object đóng gói dữ liệu thủ tục hoàn trả tài liệu và thu phí/phụ phí tại quầy.
- */
 @Getter
 @Setter
 @NoArgsConstructor

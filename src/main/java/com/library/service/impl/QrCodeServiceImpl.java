@@ -50,7 +50,6 @@ public class QrCodeServiceImpl implements QrCodeService {
         if (document == null || document.getId() == null) {
             throw new IllegalArgumentException("Tài liệu không hợp lệ để tạo mã QR");
         }
-        // Mã hóa đường dẫn yêu cầu mượn tự phục vụ
         String payload = "/borrow/qr-request?bookId=" + document.getId();
         return generateQrCodeImage(payload, width, height);
     }

@@ -36,12 +36,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     void deleteByBroadcastId(String broadcastId);
 
-    /**
-     * Thống kê các đợt phát tin broadcast/nhóm đã gửi đi
-     * Trả về mảng Object:
-     * [0] broadcastId, [1] title, [2] type, [3] senderName, [4] createdAt (min), [5] totalCount, [6] readCount
-     */
-    @Query("""
+        @Query("""
             SELECT n.broadcastId, n.title, n.type, n.senderName, MIN(n.createdAt), COUNT(n.id),
                    SUM(CASE WHEN n.isRead = true THEN 1L ELSE 0L END)
             FROM Notification n

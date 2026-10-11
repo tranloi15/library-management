@@ -115,7 +115,6 @@ public class BorrowCartServiceImpl implements BorrowCartService {
             return response;
         }
 
-        // Kiểm tra độc giả có đang mượn cuốn sách này không
         boolean alreadyBorrowing = userRecords.stream()
                 .anyMatch(r -> r.getBookId().equals(bookId) && (r.getStatus() == BorrowStatus.BORROWING || r.getStatus() == BorrowStatus.PENDING));
         if (alreadyBorrowing) {

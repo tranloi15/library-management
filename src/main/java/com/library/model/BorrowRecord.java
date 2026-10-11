@@ -45,20 +45,13 @@ public class BorrowRecord extends BaseEntity {
 
     private Long fineAmount = 0L;
 
-    private String paymentMethod; // "CASH", "QR_CODE", "NONE"
-
+    private String paymentMethod;
     @Column(length = 500)
     private String note;
 
-    /**
-     * Phương thức khởi tạo yêu cầu: "QR_SELF_SERVICE" hoặc "DESK_MANUAL"
-     */
-    private String requestType;
+        private String requestType;
 
-    /**
-     * Thời điểm hết hạn giữ sách chờ duyệt tại quầy (TTL)
-     */
-    private java.time.LocalDateTime requestExpiresAt;
+        private java.time.LocalDateTime requestExpiresAt;
 
     private String rejectReason;
 

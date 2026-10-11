@@ -114,13 +114,11 @@
             border-color: rgba(255, 255, 255, 0.08) !important;
         }
     </style>
-    <!-- Nút Menu Mobile & Command Search Bar -->
     <div class="d-flex align-items-center gap-2">
         <button id="btnToggleSidebar" class="btn btn-sm btn-outline-secondary" type="button" title="Thu gọn / Mở rộng menu">
             <i class="bi bi-list fs-5"></i>
         </button>
         
-        <!-- Thanh Tìm Kiếm Command Bar (⌘K / Ctrl+K) -->
         <div class="header-search d-none d-md-block">
             <i class="bi bi-search search-icon"></i>
             <form th:action="@{/catalog}" method="get" class="m-0">
@@ -131,9 +129,7 @@
         </div>
     </div>
 
-    <!-- Công cụ & Profile góc phải -->
     <div class="header-actions">
-        <!-- Phím tắt trang chủ và kho tài liệu -->
         <div class="d-flex align-items-center gap-1 me-1">
             <a th:href="@{/}" class="nav-shortcut-btn" title="Trang chủ">
                 <i class="bi bi-house"></i>
@@ -145,7 +141,6 @@
             </a>
         </div>
 
-        <!-- Chuông thông báo thời gian thực -->
         <div class="dropdown" id="notificationDropdownContainer">
             <a href="#" class="notif-btn position-relative" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo hệ thống">
                 <i class="bi bi-bell fs-6"></i>
@@ -169,13 +164,11 @@
                 </div>
 
                 <div class="p-0" id="navbarNotifList" style="overflow: hidden;">
-                    <!-- Trường hợp không có thông báo -->
                     <div class="text-center py-4 text-muted small" th:if="${#lists.isEmpty(recentNotifications)}">
                         <i class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50"></i>
                         Chưa có thông báo nào
                     </div>
 
-                    <!-- Danh sách thông báo gần đây (ngắn gọn, không có thanh trượt) -->
                     <th:block th:each="n : ${recentNotifications}">
                         <div class="notif-item px-3 py-2 d-flex gap-2 align-items-center"
                              role="button"
@@ -225,13 +218,11 @@
             </div>
         </div>
 
-        <!-- Nút truy cập nhanh Giỏ mượn cá nhân -->
         <a th:href="@{/borrow/cart}" class="notif-btn position-relative" title="Giỏ mượn của tôi">
             <i class="bi bi-cart3 fs-6"></i>
             <span id="navbarCartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none; font-size: 0.65rem;">0</span>
         </a>
 
-        <!-- Menu tài khoản -->
         <div class="dropdown">
             <a href="#" class="profile-dropdown-btn d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.35rem 0.75rem; gap: 0.55rem; text-decoration: none;">
                 <div class="profile-avatar-circle" style="width: 28px; height: 28px; border-radius: 50%; background: #F0F8FF; color: #36A4F7; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; border: 1px solid #BAE0FD; flex-shrink: 0;">
@@ -250,7 +241,6 @@
                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle" sec:authorize="hasRole('ADMIN')">Quản lý</span>
                     </div>
                 </li>
-                <!-- Nút chuyển theme -->
                 <li class="px-2">
                     <div class="theme-switch-wrapper">
                         <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem; font-weight: 500;">
@@ -303,7 +293,6 @@
         </div>
     </div>
 
-    <!-- MODAL XEM CHI TIẾT THÔNG BÁO -->
     <div class="modal fade" id="notificationDetailModal" tabindex="-1" aria-labelledby="notificationDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: var(--bg-surface, #FFFFFF); border: 1px solid var(--border-subtle, #E2E8F0); border-radius: 14px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
@@ -356,7 +345,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT XỬ LÝ THÔNG BÁO VÀ MODAL -->
     <script>
     let currentViewingNotifId = null;
 
@@ -373,14 +361,12 @@
 
         currentViewingNotifId = id;
 
-        // Cập nhật nội dung hiển thị trong modal
         document.getElementById('modalNotifTitle').textContent = title || 'Thông báo';
         document.getElementById('modalNotifContent').textContent = content || '';
         document.getElementById('modalNotifBadge').textContent = type || 'Hệ thống';
         document.getElementById('modalNotifTime').textContent = time || '';
         document.getElementById('modalNotifSender').textContent = sender || 'Ban Quản lý';
 
-        // Tùy biến icon & màu sắc theo phân loại
         const iconWrapper = document.getElementById('modalNotifIconWrapper');
         const iconEl = document.getElementById('modalNotifIcon');
         const badgeEl = document.getElementById('modalNotifBadge');
@@ -407,7 +393,6 @@
         iconEl.className = 'bi ' + iconClass;
         iconWrapper.style.backgroundColor = iconBg;
 
-        // Thiết lập trạng thái đã đọc / chưa đọc
         const statusBadge = document.getElementById('modalNotifStatusBadge');
         const readBtn = document.getElementById('modalNotifReadBtn');
         if (isRead) {
@@ -423,7 +408,6 @@
             readBtn.innerHTML = '<i class="bi bi-check2"></i><span>Đánh dấu là đã đọc</span>';
         }
 
-        // Cập nhật nút liên kết chuyển tiếp
         const targetLink = document.getElementById('modalNotifTargetLink');
         if (targetUrl && targetUrl.trim() !== '' && targetUrl.trim() !== '#') {
             targetLink.href = targetUrl;
@@ -432,7 +416,6 @@
             targetLink.style.display = 'none';
         }
 
-        // Mở modal
         const modalEl = document.getElementById('notificationDetailModal');
         const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
         modalInstance.show();
@@ -465,7 +448,6 @@
                 readBtn.disabled = true;
                 document.getElementById('modalNotifStatusBadge').style.display = 'none';
 
-                // Cập nhật item trong dropdown navbar
                 const notifItem = document.getElementById('notif-item-' + currentViewingNotifId);
                 if (notifItem) {
                     notifItem.setAttribute('data-read', 'true');
@@ -474,7 +456,6 @@
                     if (redDot) redDot.remove();
                 }
 
-                // Giảm số lượng chưa đọc trên badge chuông
                 const badgeCount = document.getElementById('navbarNotifCountBadge');
                 const bellDot = document.getElementById('navbarNotifDot');
                 if (badgeCount) {
@@ -527,7 +508,6 @@
                 const readAllBtn = document.getElementById('navbarReadAllBtn');
                 if (readAllBtn) readAllBtn.remove();
 
-                // Cập nhật tất cả items trong dropdown
                 document.querySelectorAll('.notif-item').forEach(item => {
                     item.setAttribute('data-read', 'true');
                     item.classList.remove('is-unread');

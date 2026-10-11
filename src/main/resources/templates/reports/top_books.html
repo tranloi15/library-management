@@ -12,7 +12,6 @@
 
 <div layout:fragment="content">
 
-    <!-- CHỨC NĂNG CHUYỂN ĐỔI BÁO CÁO -->
     <div class="d-flex flex-wrap gap-2 mb-4">
         <a th:href="@{/reports/top-books}" class="btn btn-primary btn-sm">
             <i class="bi bi-trophy me-1"></i> Top Sách Mượn
@@ -25,7 +24,6 @@
         </a>
     </div>
 
-    <!-- HEADER -->
     <div class="d-flex flex-column flex-md-row
                 justify-content-between
                 align-items-start align-items-md-center
@@ -48,8 +46,6 @@
 
         </div>
 
-
-        <!-- CHỌN TOP 5 / TOP 10 + XUẤT EXCEL (giữ nguyên bộ lọc thời gian đang chọn) -->
         <div class="d-flex flex-wrap gap-2">
 
             <a th:href="@{/reports/top-books(limit=5, period=${period}, quarter=${quarter},
@@ -64,7 +60,6 @@
 
             </a>
 
-
             <a th:href="@{/reports/top-books(limit=10, period=${period}, quarter=${quarter},
                           year=${year}, from=${fromDate}, to=${toDate})}"
                class="btn btn-sm"
@@ -76,7 +71,6 @@
                 Top 10
 
             </a>
-
 
             <a th:href="@{/reports/top-books/export(limit=${limit}, period=${period}, quarter=${quarter},
                           year=${year}, from=${fromDate}, to=${toDate})}"
@@ -93,8 +87,6 @@
 
     </div>
 
-
-    <!-- BỘ LỌC THỜI GIAN -->
     <div class="app-card p-3 mb-4">
 
         <form th:action="@{/reports/top-books}" method="get" class="m-0" id="periodFilterForm">
@@ -115,7 +107,6 @@
                     </select>
                 </div>
 
-                <!-- Chọn quý (hiện khi chọn "Theo quý") -->
                 <div class="period-field" data-show-for="QUARTER">
                     <label class="form-label small fw-semibold mb-1">Quý</label>
                     <select name="quarter" class="form-select form-select-sm" style="width: 110px;">
@@ -126,7 +117,6 @@
                     </select>
                 </div>
 
-                <!-- Chọn năm (hiện khi chọn "Theo quý" hoặc "Theo năm") -->
                 <div class="period-field" data-show-for="QUARTER YEAR">
                     <label class="form-label small fw-semibold mb-1">Năm</label>
                     <input type="number" name="year" min="2000" max="2100"
@@ -134,7 +124,6 @@
                            th:value="${year != null ? year : #dates.year(#dates.createNow())}">
                 </div>
 
-                <!-- Từ ngày - đến ngày (hiện khi chọn "Tùy chọn ngày") -->
                 <div class="period-field" data-show-for="CUSTOM">
                     <label class="form-label small fw-semibold mb-1">Từ ngày</label>
                     <input type="date" name="from" class="form-control form-control-sm"
@@ -163,8 +152,6 @@
 
     </div>
 
-
-    <!-- TỔNG LƯỢT MƯỢN + SO SÁNH VỚI KỲ TRƯỚC -->
     <div class="app-card p-3 mb-3 d-flex flex-wrap align-items-center gap-2">
         <i class="bi bi-graph-up-arrow text-primary"></i>
 
@@ -187,11 +174,8 @@
         </span>
     </div>
 
-
-    <!-- THỐNG KÊ -->
     <div class="row g-3 mb-4">
 
-        <!-- SỐ SÁCH -->
         <div class="col-12 col-md-4">
 
             <div class="stat-card">
@@ -210,14 +194,12 @@
 
                 </div>
 
-
                 <div class="stat-value"
                      th:text="${#lists.size(topBooks)}">
 
                     10
 
                 </div>
-
 
                 <div class="stat-trend positive">
 
@@ -227,15 +209,12 @@
                         Top 10
                     </span>
 
-
                 </div>
 
             </div>
 
         </div>
 
-
-        <!-- SÁCH ĐỨNG ĐẦU -->
         <div class="col-12 col-md-4">
 
             <div class="stat-card">
@@ -254,7 +233,6 @@
 
                 </div>
 
-
                 <div class="stat-value"
                      style="font-size: 1.15rem;"
                      th:if="${!#lists.isEmpty(topBooks)}"
@@ -264,14 +242,12 @@
 
                 </div>
 
-
                 <div class="stat-value"
                      th:if="${#lists.isEmpty(topBooks)}">
 
                     -
 
                 </div>
-
 
                 <div class="stat-trend"
                      th:if="${!#lists.isEmpty(topBooks)}">
@@ -284,7 +260,6 @@
 
                 </div>
 
-
                 <div class="stat-trend"
                      th:if="${#lists.isEmpty(topBooks)}">
 
@@ -296,8 +271,6 @@
 
         </div>
 
-
-        <!-- LƯỢT MƯỢN CAO NHẤT -->
         <div class="col-12 col-md-4">
 
             <div class="stat-card">
@@ -316,7 +289,6 @@
 
                 </div>
 
-
                 <div class="stat-value">
 
                     <span th:if="${!#lists.isEmpty(topBooks)}"
@@ -332,7 +304,6 @@
 
                 </div>
 
-
                 <div class="stat-trend">
 
                     lượt mượn
@@ -345,8 +316,6 @@
 
     </div>
 
-
-    <!-- BIỂU ĐỒ CỘT -->
     <div class="app-card p-3 p-sm-4 mb-4" th:if="${!#lists.isEmpty(topBooks)}">
 
         <h6 class="fw-bold mb-1">
@@ -364,8 +333,6 @@
 
     </div>
 
-
-    <!-- SO SÁNH CÁC KỲ GẦN NHẤT -->
     <div class="app-card p-2 p-sm-4 mb-4" th:if="${!#lists.isEmpty(borrowHistory)}">
 
         <div class="mb-3">
@@ -409,8 +376,6 @@
 
     </div>
 
-
-    <!-- BẢNG -->
     <div class="app-card p-2 p-sm-4">
 
         <div class="d-flex flex-column flex-md-row
@@ -431,7 +396,6 @@
 
             </div>
 
-
             <span class="status-pill success">
 
                 <span class="status-dot"></span>
@@ -443,7 +407,6 @@
             </span>
 
         </div>
-
 
         <div class="table-responsive">
 
@@ -477,11 +440,8 @@
 
                 </thead>
 
-
                 <tbody>
 
-
-                <!-- KHÔNG CÓ DỮ LIỆU -->
                 <tr th:if="${topBooks == null || topBooks.isEmpty()}">
 
                     <td th:colspan="${previousRanks != null ? 5 : 4}"
@@ -496,12 +456,8 @@
 
                 </tr>
 
-
-                <!-- DANH SÁCH -->
                 <tr th:each="book, stat : ${topBooks}">
 
-
-                    <!-- HẠNG -->
                     <td>
 
                         <span class="craft-code"
@@ -513,15 +469,12 @@
 
                     </td>
 
-
-                    <!-- SÁCH: ẢNH BÌA + TÊN + MÃ -->
                     <td>
 
                         <div class="d-flex
                                     align-items-center
                                     gap-3">
 
-                            <!-- Ảnh bìa: /images/covers/{ISBN}.jpg -> imageUrl trong DB -> bìa mặc định -->
                             <img th:src="${book.primaryCoverUrl}"
                                  th:attr="data-fallback=${book.fallbackCoverUrl}"
                                  alt="Bìa sách"
@@ -529,7 +482,6 @@
                                  class="rounded-2 border flex-shrink-0"
                                  style="width: 40px; height: 54px; object-fit: cover; background: #f8fafc;"
                                  onerror="if (!this.dataset.tried) { this.dataset.tried = '1'; this.src = this.dataset.fallback; } else { this.onerror = null; this.src = '/images/default-book.svg'; }" />
-
 
                             <div>
 
@@ -539,7 +491,6 @@
                                     Clean Code
 
                                 </div>
-
 
                                 <div class="text-secondary small">
 
@@ -560,8 +511,6 @@
 
                     </td>
 
-
-                    <!-- TÁC GIẢ -->
                     <td>
 
                         <span th:if="${book.author != null
@@ -571,7 +520,6 @@
                             Robert C. Martin
 
                         </span>
-
 
                         <span th:if="${book.author == null
                                       || book.author.isBlank()}"
@@ -583,8 +531,6 @@
 
                     </td>
 
-
-                    <!-- LƯỢT MƯỢN -->
                     <td>
 
                         <div class="d-flex
@@ -606,8 +552,6 @@
 
                     </td>
 
-
-                    <!-- XU HƯỚNG SO VỚI KỲ TRƯỚC -->
                     <td th:if="${previousRanks != null}"
                         th:with="prev=${previousRanks.get(book.bookId)}, cur=${stat.count}">
 
@@ -639,8 +583,6 @@
 
     </div>
 
-
-    <!-- GHI CHÚ -->
     <div class="app-card mt-4">
 
         <div class="d-flex align-items-start gap-3">
@@ -651,7 +593,6 @@
                 <i class="bi bi-info-circle"></i>
 
             </div>
-
 
             <div>
 
@@ -674,8 +615,6 @@
 
     </div>
 
-
-    <!-- Ẩn/hiện ô Quý, Năm, Từ ngày - Đến ngày theo khoảng thời gian đang chọn -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const periodSelect = document.getElementById('periodSelect');
@@ -686,7 +625,6 @@
                     const showFor = field.getAttribute('data-show-for').split(' ');
                     const visible = showFor.includes(current);
                     field.style.display = visible ? '' : 'none';
-                    // Ô bị ẩn thì không gửi lên server, URL gọn hơn
                     field.querySelectorAll('input, select').forEach(function (el) {
                         el.disabled = !visible;
                     });
@@ -698,7 +636,6 @@
         });
     </script>
 
-    <!-- CHART.JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
     <script th:inline="javascript">
@@ -706,7 +643,7 @@
 
             const canvas = document.getElementById('topBooksChart');
             if (!canvas) {
-                return; // không có dữ liệu -> khung biểu đồ không hiển thị
+                return;
             }
             if (typeof Chart === 'undefined') {
                 canvas.parentElement.innerHTML =
@@ -715,14 +652,11 @@
                 return;
             }
 
-            // Dữ liệu lấy từ danh sách topBooks của trang
             const titles = /*[[${topBooks.![title]}]]*/ [];
             const counts = /*[[${topBooks.![borrowCount]}]]*/ [];
 
-            // Rút gọn tên quá dài để nhãn trục không bị tràn
             const labels = titles.map(t => t && t.length > 28 ? t.substring(0, 27) + '…' : t);
 
-            // Màu chữ theo giao diện sáng / tối đang dùng
             Chart.defaults.color = getComputedStyle(canvas.closest('.app-card')).color;
             Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
 
@@ -733,20 +667,19 @@
                     datasets: [{
                         label: 'Lượt mượn',
                         data: counts,
-                        // Sách đứng đầu màu cam, còn lại màu xanh
                         backgroundColor: counts.map((v, i) => i === 0 ? '#F59E0B' : 'rgba(37, 99, 235, 0.75)'),
                         borderRadius: 6,
                         maxBarThickness: 30
                     }]
                 },
                 options: {
-                    indexAxis: 'y',               // cột nằm ngang, dễ đọc tên sách
+                    indexAxis: 'y',
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                title: items => titles[items[0].dataIndex],   // hiện tên đầy đủ
+                                title: items => titles[items[0].dataIndex],
                                 label: ctx => ctx.parsed.x + ' lượt mượn'
                             }
                         }

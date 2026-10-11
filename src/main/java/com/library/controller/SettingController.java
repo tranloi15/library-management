@@ -33,7 +33,6 @@ public class SettingController {
             @RequestParam Map<String, String> allParams,
             RedirectAttributes redirectAttributes) {
 
-        // Xử lý các checkbox toggle: nếu không được tích thì gán giá trị false
         String[] toggleKeys = {
                 "feature_online_registration",
                 "feature_qr_borrow",
