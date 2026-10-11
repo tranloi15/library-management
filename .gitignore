@@ -48,11 +48,14 @@ $RECYCLE.BIN/
 .classpath
 .settings/
 bin/
+tailieu/
 cookies.txt
 scratch/
 *.tmp
 *.bak
 *.swp
+*.md
+!README.md
 
 # --- Environment & Credentials ---
 .env
